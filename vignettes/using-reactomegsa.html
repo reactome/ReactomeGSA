@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Johannes Griss" />
+
+<meta name="date" content="2019-07-01" />
+
+<title>Using the REACTOMEgsa package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using the REACTOMEgsa package</h1>
+<h4 class="author"><em>Johannes Griss</em></h4>
+<h4 class="date"><em>2019-07-01</em></h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The REACTOMEgsa package is a client to the web-based REACTOME Analysis System. Essentially, it performs a gene set analysis using the latest version of the REACTOME pathway database as a backend.</p>
+<p>The main advantages of using the REACTOME Analysis System are:</p>
+<ul>
+<li>Simultaneous analysis and visualization of different types of ’omics data</li>
+<li>Support for direct comparison across different species</li>
+<li>Directly linked with REACTOME’s powerful pathway browser producing publication-ready figures of your gene set analysis</li>
+</ul>
+<div id="citation" class="section level3">
+<h3>Citation</h3>
+<p>To cite this package, use</p>
+<pre><code>Griss J. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)</code></pre>
+</div>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>Currently, the <code>ReactomeGSA</code> package is only available on GitHub. Therefore, you need to have the <code>devtools</code> package installed in order to directly install the <code>ReactomeGSA</code> package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install devtools if needed</span>
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(devtools)) {
+  <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+}
+<span class="co">#&gt; Loading required package: devtools</span>
+
+<span class="co"># install the ReactomeGSA package</span>
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(ReactomeGSA)) {
+  <span class="kw">install_github</span>(<span class="st">&quot;reactome/ReactomeGSA&quot;</span>)
+}</code></pre></div>
+</div>
+<div id="getting-available-methods" class="section level2">
+<h2>Getting available methods</h2>
+<p>The REACTOME Analysis System will be continuously updated. Before starting your analysis it is therefore a good approach to check which methods are available.</p>
+<p>This can simply be done by using:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ReactomeGSA)
+
+<span class="kw">get_reactome_methods</span>(<span class="dt">print_methods =</span> <span class="ot">TRUE</span>, <span class="dt">return_result =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt; +---------+</span>
+<span class="co">#&gt; | Camera: |</span>
+<span class="co">#&gt; +---------+</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; A gene set analysis algorithm similar to the classical GSEA algorithm as implemented in the limma package </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Parameters:</span>
+<span class="co">#&gt; - use_interactors</span>
+<span class="co">#&gt;   Type: bool</span>
+<span class="co">#&gt;   Default: False</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: Indicates whether interactors from IntAct should be used to extent REACTOME's pathways in the analysis.</span>
+<span class="co">#&gt; - max_missing_values</span>
+<span class="co">#&gt;   Type: float</span>
+<span class="co">#&gt;   Default: 0.5</span>
+<span class="co">#&gt;   Scope: dataset</span>
+<span class="co">#&gt;   Description: The maximum (relative) number of missing values within one comparison group before a gene / protein is removed from analysis. If no comparison groups are defined (for example for 'ssGSEA', the number of missing values accross all samples is used. Must be between 0-1.</span>
+<span class="co">#&gt; - create_reactome_visualization</span>
+<span class="co">#&gt;   Type: bool</span>
+<span class="co">#&gt;   Default: True</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: If set to 'False', no REACTOME visualization is created for the performed analysis.</span>
+<span class="co">#&gt; - discrete_norm_function</span>
+<span class="co">#&gt;   Type: string</span>
+<span class="co">#&gt;   Default: none</span>
+<span class="co">#&gt;   Scope: dataset</span>
+<span class="co">#&gt;   Allowed values: TMM, RLE, upperquartile, none</span>
+<span class="co">#&gt;   Description: The normalisation function to use for raw RNA-seq read counts and raw Proteomics spectral counts. By default, the TMM normalisation is used.</span>
+<span class="co">#&gt; - continuous_norm_function</span>
+<span class="co">#&gt;   Type: string</span>
+<span class="co">#&gt;   Default: none</span>
+<span class="co">#&gt;   Scope: dataset</span>
+<span class="co">#&gt;   Allowed values: none, scale, quantile, cyclicloess</span>
+<span class="co">#&gt;   Description: The normalisation function to use for proteomics intensity data. Note that it is generally advised that normalisation is performed on the PSM or peptide level and not on the protein level.</span>
+<span class="co">#&gt; +---------+</span>
+<span class="co">#&gt; | ssGSEA: |</span>
+<span class="co">#&gt; +---------+</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; The ssGSEA approach to derive pathway expression values for every sample. Note that the experimental design is ignored by this analyser. Additionally,no gene/protein level fold-changes are reported. Note: Reactome visualization is only available for up to 15 samples. </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Parameters:</span>
+<span class="co">#&gt; - use_interactors</span>
+<span class="co">#&gt;   Type: bool</span>
+<span class="co">#&gt;   Default: False</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: Indicates whether interactors from IntAct should be used to extent REACTOME's pathways in the analysis.</span>
+<span class="co">#&gt; - max_missing_values</span>
+<span class="co">#&gt;   Type: float</span>
+<span class="co">#&gt;   Default: 0.5</span>
+<span class="co">#&gt;   Scope: dataset</span>
+<span class="co">#&gt;   Description: The maximum (relative) number of missing values within one comparison group before a gene / protein is removed from analysis. If no comparison groups are defined (for example for 'ssGSEA', the number of missing values accross all samples is used. Must be between 0-1.</span>
+<span class="co">#&gt; - create_reactome_visualization</span>
+<span class="co">#&gt;   Type: bool</span>
+<span class="co">#&gt;   Default: True</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: If set to 'False', no REACTOME visualization is created for the performed analysis.</span>
+<span class="co">#&gt; - pathways</span>
+<span class="co">#&gt;   Type: string</span>
+<span class="co">#&gt;   Default: </span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: A comma delimited list of pathways to include in the analysis. All other pathways will be ignored.</span>
+<span class="co">#&gt; - min_size</span>
+<span class="co">#&gt;   Type: int</span>
+<span class="co">#&gt;   Default: 1</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: The minimum pathway size (determined as the number of submitted genes mapped to that pathway) to include a pathway in the analysis.</span>
+<span class="co">#&gt; - max_size</span>
+<span class="co">#&gt;   Type: int</span>
+<span class="co">#&gt;   Default: 1000</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: The maximum pathway size (determined as the number of submitted genes mapped to that pathway) to include a pathway in the analysis.</span></code></pre></div>
+</div>
+<div id="creating-an-analysis-request" class="section level2">
+<h2>Creating an analysis request</h2>
+<p>To start a gene set analysis, you first have to create an analysis request. This is a simple S4 class that takes care of submitting multiple datasets simultaneously to the analysis system.</p>
+<p>When creating the request object, you already have to specify the analysis method you want to use:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a new request object using 'Camera' for the gene set analysis</span>
+my_request &lt;-<span class="st"> </span><span class="kw">new</span>(<span class="st">&quot;ReactomeAnalysisRequest&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;Camera&quot;</span>)
+
+my_request
+<span class="co">#&gt; ReactomeAnalysisRequestObject</span>
+<span class="co">#&gt;   Method = Camera</span>
+<span class="co">#&gt;   No request data stored</span>
+<span class="co">#&gt; ReactomeAnalysisRequest</span></code></pre></div>
+</div>
+<div id="setting-parameters" class="section level2">
+<h2>Setting parameters</h2>
+<p>To get a list of supported parameters for each method, use the <code>get_reactome_methods</code> function (see above).</p>
+<p>Parameters are simply set using the <code>set_parameters</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set the maximum number of allowed missing values to 50%</span>
+my_request &lt;-<span class="st"> </span><span class="kw">set_parameters</span>(<span class="dt">request =</span> my_request, <span class="dt">max_missing_values =</span> <span class="fl">0.5</span>)
+
+my_request
+<span class="co">#&gt; ReactomeAnalysisRequestObject</span>
+<span class="co">#&gt;   Method = Camera</span>
+<span class="co">#&gt;   Parameters:</span>
+<span class="co">#&gt;   - max_missing_values: 0.5</span>
+<span class="co">#&gt;   Datasets: none</span>
+<span class="co">#&gt; ReactomeAnalysisRequest</span></code></pre></div>
+<p>Multiple parameters can by set simulataneously by simply adding more name-value pairs to the function call.</p>
+</div>
+<div id="adding-datasets" class="section level2">
+<h2>Adding datasets</h2>
+<p>One analysis request can contain multiple datasets. This can be used to, for example, visualize the results of an RNA-seq and Proteomics experiment (of the same / similar samples) side by side:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ReactomeGSA.data)
+<span class="co">#&gt; Loading required package: limma</span>
+<span class="co">#&gt; Loading required package: edgeR</span>
+<span class="kw">data</span>(<span class="st">&quot;griss_melanoma_proteomics&quot;</span>)</code></pre></div>
+<p>This is a limma <code>EList</code> object with the sample data already added</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(griss_melanoma_proteomics)
+<span class="co">#&gt; [1] &quot;EList&quot;</span>
+<span class="co">#&gt; attr(,&quot;package&quot;)</span>
+<span class="co">#&gt; [1] &quot;limma&quot;</span>
+<span class="kw">head</span>(griss_melanoma_proteomics<span class="op">$</span>samples)
+<span class="co">#&gt;                patient.id condition cell.type</span>
+<span class="co">#&gt; M-D MOCK PBMCB         P3      MOCK     PBMCB</span>
+<span class="co">#&gt; M-D MCM PBMCB          P3       MCM     PBMCB</span>
+<span class="co">#&gt; M-K MOCK PBMCB         P4      MOCK     PBMCB</span>
+<span class="co">#&gt; M-K MCM PBMCB          P4       MCM     PBMCB</span>
+<span class="co">#&gt; P-A MOCK PBMCB         P1      MOCK     PBMCB</span>
+<span class="co">#&gt; P-A MCM PBMCB          P1       MCM     PBMCB</span></code></pre></div>
+<p>The dataset can now simply be added to the request using the <code>add_dataset</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_request &lt;-<span class="st"> </span><span class="kw">add_dataset</span>(<span class="dt">request =</span> my_request, 
+                          <span class="dt">expression_values =</span> griss_melanoma_proteomics, 
+                          <span class="dt">name =</span> <span class="st">&quot;Proteomics&quot;</span>, 
+                          <span class="dt">type =</span> <span class="st">&quot;proteomics-int&quot;</span>,
+                          <span class="dt">comparison_factor =</span> <span class="st">&quot;condition&quot;</span>, 
+                          <span class="dt">comparison_group_1 =</span> <span class="st">&quot;MOCK&quot;</span>, 
+                          <span class="dt">comparison_group_2 =</span> <span class="st">&quot;MCM&quot;</span>,
+                          <span class="dt">additional_factors =</span> <span class="kw">c</span>(<span class="st">&quot;cell.type&quot;</span>, <span class="st">&quot;patient.id&quot;</span>))
+my_request
+<span class="co">#&gt; ReactomeAnalysisRequestObject</span>
+<span class="co">#&gt;   Method = Camera</span>
+<span class="co">#&gt;   Parameters:</span>
+<span class="co">#&gt;   - max_missing_values: 0.5</span>
+<span class="co">#&gt;   Datasets:</span>
+<span class="co">#&gt;   - Proteomics (proteomics-int)</span>
+<span class="co">#&gt;     No parameters set.</span>
+<span class="co">#&gt; ReactomeAnalysisRequest</span></code></pre></div>
+<p>Several datasets (of the same experiment) can be added to one request. This RNA-seq data is stored as an <code>edgeR</code> <code>DGEList</code> object:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;griss_melanoma_rnaseq&quot;</span>)
+
+<span class="co"># only keep genes with &gt;= 100 transcripts in total</span>
+total_transcripts &lt;-<span class="st"> </span><span class="kw">rowSums</span>(griss_melanoma_rnaseq<span class="op">$</span>counts)
+griss_melanoma_rnaseq &lt;-<span class="st"> </span>griss_melanoma_rnaseq[total_transcripts <span class="op">&gt;=</span><span class="st"> </span><span class="dv">100</span>, ]
+
+<span class="co"># this is a edgeR DGEList object</span>
+<span class="kw">class</span>(griss_melanoma_rnaseq)
+<span class="co">#&gt; [1] &quot;DGEList&quot;</span>
+<span class="co">#&gt; attr(,&quot;package&quot;)</span>
+<span class="co">#&gt; [1] &quot;edgeR&quot;</span>
+<span class="kw">head</span>(griss_melanoma_rnaseq<span class="op">$</span>samples)
+<span class="co">#&gt;        group lib.size norm.factors patient cell_type treatment</span>
+<span class="co">#&gt; 195-13  MOCK 29907534    1.0629977      P1      TIBC      MOCK</span>
+<span class="co">#&gt; 195-14   MCM 26397322    0.9927768      P1      TIBC       MCM</span>
+<span class="co">#&gt; 195-19  MOCK 18194834    1.0077827      P2     PBMCB      MOCK</span>
+<span class="co">#&gt; 195-20   MCM 24282215    1.0041410      P2     PBMCB       MCM</span>
+<span class="co">#&gt; 197-11  MOCK 22628117    0.9522869      P1     PBMCB      MOCK</span>
+<span class="co">#&gt; 197-12   MCM 23319849    1.0115732      P1     PBMCB       MCM</span></code></pre></div>
+<p>Again, the dataset can simply be added using <code>add_dataset</code>. Here, we added an additional parameter to the <code>add_dataset</code> call. Such additional parameters are treated as additional dataset-level parameters.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># add the dataset</span>
+my_request &lt;-<span class="st"> </span><span class="kw">add_dataset</span>(<span class="dt">request =</span> my_request, 
+                          <span class="dt">expression_values =</span> griss_melanoma_rnaseq, 
+                          <span class="dt">name =</span> <span class="st">&quot;RNA-seq&quot;</span>, 
+                          <span class="dt">type =</span> <span class="st">&quot;rnaseq&quot;</span>,
+                          <span class="dt">comparison_factor =</span> <span class="st">&quot;treatment&quot;</span>, 
+                          <span class="dt">comparison_group_1 =</span> <span class="st">&quot;MOCK&quot;</span>, 
+                          <span class="dt">comparison_group_2 =</span> <span class="st">&quot;MCM&quot;</span>,
+                          <span class="dt">additional_factors =</span> <span class="kw">c</span>(<span class="st">&quot;cell_type&quot;</span>, <span class="st">&quot;patient&quot;</span>),
+                          <span class="co"># This adds the dataset-level parameter 'discrete_norm_function' to the request</span>
+                          <span class="dt">discrete_norm_function =</span> <span class="st">&quot;TMM&quot;</span>)
+<span class="co">#&gt; Converting expression data to string... (This may take a moment)</span>
+<span class="co">#&gt; Conversion complete</span>
+my_request
+<span class="co">#&gt; ReactomeAnalysisRequestObject</span>
+<span class="co">#&gt;   Method = Camera</span>
+<span class="co">#&gt;   Parameters:</span>
+<span class="co">#&gt;   - max_missing_values: 0.5</span>
+<span class="co">#&gt;   Datasets:</span>
+<span class="co">#&gt;   - Proteomics (proteomics-int)</span>
+<span class="co">#&gt;     No parameters set.</span>
+<span class="co">#&gt;   - RNA-seq (rnaseq)</span>
+<span class="co">#&gt;     discrete_norm_function: TMM</span>
+<span class="co">#&gt; ReactomeAnalysisRequest</span></code></pre></div>
+<div id="sample-annotations" class="section level3">
+<h3>Sample annotations</h3>
+<p>Datasets can be passed as limma <code>EList</code>, edgeR <code>DGEList</code>, any implementation of the Bioconductor <code>ExpressionSet</code>, or simply a <code>data.frame</code>.</p>
+<p>For the first three, sample annotations are simply read from the respective slot. When supplying the expression values as a <code>data.frame</code>, the <code>sample_data</code> parameter has to be set using a <code>data.frame</code> where each row represents one sample and each column one proptery. If the the <code>sample_data</code> option is set while providing the expression data as an <code>EList</code>, <code>DGEList</code>, or <code>ExpressionSet</code>, the data in <code>sample_data</code> will be used instead of the sample annotations in the expression data object.</p>
+</div>
+<div id="name" class="section level3">
+<h3>Name</h3>
+<p>Each dataset has to have a name. This can be anything but has to be unique within one analysis request.</p>
+</div>
+<div id="type" class="section level3">
+<h3>Type</h3>
+<p>The ReactomeAnalysisSystem supports different types of ’omics data. To get a list of supported types, use the <code>get_reactome_data_types</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_reactome_data_types</span>()
+<span class="co">#&gt; proteomics-int:</span>
+<span class="co">#&gt;    Proteomics (intensity) </span>
+<span class="co">#&gt;    Intensity-based quantitative proteomics data (for example, iTRAQ/TMT or intensity-based label-free quantitation). </span>
+<span class="co">#&gt; proteomics-sc:</span>
+<span class="co">#&gt;    Proteomics (spectral counts) </span>
+<span class="co">#&gt;    Raw spectral-counts of label-free proteomics experiments </span>
+<span class="co">#&gt; rnaseq:</span>
+<span class="co">#&gt;    RNA-seq (raw counts) </span>
+<span class="co">#&gt;    Raw RNA-seq based read counts per gene.</span></code></pre></div>
+</div>
+<div id="defining-the-experimental-design" class="section level3">
+<h3>Defining the experimental design</h3>
+<p>Defining the experimental design for a <code>ReactomeAnalysisRequest</code> is very simple. Basically, it only takes three parameters:</p>
+<ul>
+<li><code>comparison_factor</code>: Name of the property within the sample data to use</li>
+<li><code>comparison_group_1</code>: The first group to compare</li>
+<li><code>comparison_group_2</code>: The second group to compare</li>
+</ul>
+<p>The value set in <code>comparison_factor</code> must match a column name in the sample data (either the slot in an <code>Elist</code>, <code>DGEList</code>, or <code>ExpressionSet</code> object or in the <code>sample_data</code> parameter).</p>
+<p>Additionally, it is possible to define blocking factors. These are supported by all methods that rely on linear models in the backend. Some methods though might simply ignore this parameter. For more information on whether a method supports blocking factors, please use <code>get_reactome_methods</code>.</p>
+<p>Blocking factors can simply be set <code>additional_factors</code> to a vector of names. These should again reference properties (or columns) in the sample data.</p>
+</div>
+</div>
+<div id="submitting-the-request" class="section level2">
+<h2>Submitting the request</h2>
+<p>Once the <code>ReactomeAnalysisRequest</code> is created, the complete analysis can be run using <code>perform_reactome_analysis</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">perform_reactome_analysis</span>(<span class="dt">request =</span> my_request, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)
+<span class="co">#&gt; Submitting request to REACTOME API...</span>
+<span class="co">#&gt; REACTOME Analysis submitted succesfully</span>
+<span class="co">#&gt; Queued</span>
+<span class="co">#&gt; Request received</span>
+<span class="co">#&gt; Mapping identifiers...</span>
+<span class="co">#&gt; Performing gene set analysis using Camera</span>
+<span class="co">#&gt; Creating REACTOME visualization</span>
+<span class="co">#&gt; Retrieving result...</span></code></pre></div>
+</div>
+<div id="investigating-the-result" class="section level2">
+<h2>Investigating the result</h2>
+<p>The result object is a <code>ReactomeAnalysisResult</code> S4 class with several helper functions to access the data.</p>
+<p>To retrieve the names of all available results (generally one per dataset), use the <code>names</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(result)
+<span class="co">#&gt; [1] &quot;Proteomics&quot; &quot;RNA-seq&quot;</span></code></pre></div>
+<p>For every dataset, different result types may be available. These can be shown using the <code>result_types</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">result_types</span>(result)
+<span class="co">#&gt; [1] &quot;pathways&quot;     &quot;fold_changes&quot;</span></code></pre></div>
+<p>The <code>Camera</code> analysis method returns two types of results, pathway-level data and gene- / protein-level fold changes.</p>
+<p>A specific result can be retrieved using the <code>get_result</code> method:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># retrieve the fold-change data for the proteomics dataset</span>
+proteomics_fc &lt;-<span class="st"> </span><span class="kw">get_result</span>(result, <span class="dt">type =</span> <span class="st">&quot;fold_changes&quot;</span>, <span class="dt">name =</span> <span class="st">&quot;Proteomics&quot;</span>)
+<span class="kw">head</span>(proteomics_fc)
+<span class="co">#&gt;   Identifier      logFC   AveExpr         t      P.Value    adj.P.Val</span>
+<span class="co">#&gt; 1     Q14526  0.4937650 -3.346909 14.518451 1.520843e-10 7.954010e-07</span>
+<span class="co">#&gt; 2     Q6VY07  0.2981411 -3.330347 13.560685 4.138931e-10 1.082330e-06</span>
+<span class="co">#&gt; 3     P07093  1.7950301 -3.648968 12.283698 1.734113e-09 3.023137e-06</span>
+<span class="co">#&gt; 4     P10124  1.0758634 -3.436961 10.322872 2.021439e-08 2.643032e-05</span>
+<span class="co">#&gt; 5     P55210  0.5018522 -3.347932  9.510637 6.218169e-08 6.504205e-05</span>
+<span class="co">#&gt; 6     O43683 -0.4754083 -3.345551 -9.362205 7.693269e-08 6.705966e-05</span>
+<span class="co">#&gt;           B</span>
+<span class="co">#&gt; 1 14.010432</span>
+<span class="co">#&gt; 2 13.149460</span>
+<span class="co">#&gt; 3 11.884753</span>
+<span class="co">#&gt; 4  9.640209</span>
+<span class="co">#&gt; 5  8.586399</span>
+<span class="co">#&gt; 6  8.385140</span></code></pre></div>
+<p>Additionally, it is possible to directly merge the pathway level data for all result sets using the <code>pathways</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">combined_pathways &lt;-<span class="st"> </span><span class="kw">pathways</span>(result)
+
+<span class="kw">head</span>(combined_pathways)
+<span class="co">#&gt;                                          Name Direction.Proteomics</span>
+<span class="co">#&gt; R-HSA-1059683         Interleukin-6 signaling                   Up</span>
+<span class="co">#&gt; R-HSA-109581                        Apoptosis                   Up</span>
+<span class="co">#&gt; R-HSA-109582                       Hemostasis                   Up</span>
+<span class="co">#&gt; R-HSA-109606  Intrinsic Pathway for Apoptosis                   Up</span>
+<span class="co">#&gt; R-HSA-109703              PKB-mediated events                 Down</span>
+<span class="co">#&gt; R-HSA-109704                     PI3K Cascade                   Up</span>
+<span class="co">#&gt;               FDR.Proteomics PValue.Proteomics NGenes.Proteomics</span>
+<span class="co">#&gt; R-HSA-1059683      0.9386768         0.8679600                 7</span>
+<span class="co">#&gt; R-HSA-109581       0.8030062         0.6151859               126</span>
+<span class="co">#&gt; R-HSA-109582       0.6464407         0.3611057               275</span>
+<span class="co">#&gt; R-HSA-109606       0.7329707         0.4713613                35</span>
+<span class="co">#&gt; R-HSA-109703       0.4844159         0.1749728                 1</span>
+<span class="co">#&gt; R-HSA-109704       0.6496348         0.3670109                10</span>
+<span class="co">#&gt;               sig.Proteomics Direction.RNA-seq FDR.RNA-seq PValue.RNA-seq</span>
+<span class="co">#&gt; R-HSA-1059683          FALSE                Up   0.2296961     0.07013953</span>
+<span class="co">#&gt; R-HSA-109581           FALSE              Down   0.3761787     0.15874100</span>
+<span class="co">#&gt; R-HSA-109582           FALSE                Up   0.7723698     0.55339592</span>
+<span class="co">#&gt; R-HSA-109606           FALSE                Up   0.9521685     0.86638757</span>
+<span class="co">#&gt; R-HSA-109703           FALSE              Down   0.9451508     0.84487544</span>
+<span class="co">#&gt; R-HSA-109704           FALSE                Up   0.4810858     0.23404173</span>
+<span class="co">#&gt;               NGenes.RNA-seq sig.RNA-seq</span>
+<span class="co">#&gt; R-HSA-1059683             11       FALSE</span>
+<span class="co">#&gt; R-HSA-109581             163       FALSE</span>
+<span class="co">#&gt; R-HSA-109582             469       FALSE</span>
+<span class="co">#&gt; R-HSA-109606              50       FALSE</span>
+<span class="co">#&gt; R-HSA-109703               2       FALSE</span>
+<span class="co">#&gt; R-HSA-109704              23       FALSE</span></code></pre></div>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()
+<span class="co">#&gt; R version 3.6.0 (2019-04-26)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Ubuntu 18.04.2 LTS</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Matrix products: default</span>
+<span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1</span>
+<span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; locale:</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=de_AT.UTF-8        LC_COLLATE=C              </span>
+<span class="co">#&gt;  [5] LC_MONETARY=de_AT.UTF-8    LC_MESSAGES=en_US.UTF-8   </span>
+<span class="co">#&gt;  [7] LC_PAPER=de_AT.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=de_AT.UTF-8 LC_IDENTIFICATION=C       </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; attached base packages:</span>
+<span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; other attached packages:</span>
+<span class="co">#&gt; [1] ReactomeGSA.data_0.1.0 edgeR_3.22.5           limma_3.36.5          </span>
+<span class="co">#&gt; [4] usethis_1.4.0          devtools_2.0.1         ReactomeGSA_0.99.0    </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; loaded via a namespace (and not attached):</span>
+<span class="co">#&gt;  [1] progress_1.2.0    locfit_1.5-9.1    tidyselect_0.2.5 </span>
+<span class="co">#&gt;  [4] xfun_0.4          remotes_2.0.2     purrr_0.2.5      </span>
+<span class="co">#&gt;  [7] lattice_0.20-38   colorspace_1.4-0  testthat_2.0.1   </span>
+<span class="co">#&gt; [10] htmltools_0.3.6   yaml_2.2.0        rlang_0.3.1      </span>
+<span class="co">#&gt; [13] pkgbuild_1.0.2    pillar_1.3.1      glue_1.3.0       </span>
+<span class="co">#&gt; [16] withr_2.1.2       sessioninfo_1.1.1 bindrcpp_0.2.2   </span>
+<span class="co">#&gt; [19] plyr_1.8.4        bindr_0.1.1       stringr_1.3.1    </span>
+<span class="co">#&gt; [22] munsell_0.5.0     commonmark_1.7    gtable_0.2.0     </span>
+<span class="co">#&gt; [25] codetools_0.2-16  memoise_1.1.0     evaluate_0.12    </span>
+<span class="co">#&gt; [28] knitr_1.21        callr_3.1.1       ps_1.3.0         </span>
+<span class="co">#&gt; [31] curl_3.3          Rcpp_1.0.0        backports_1.1.3  </span>
+<span class="co">#&gt; [34] scales_1.0.0      desc_1.2.0        pkgload_1.0.2    </span>
+<span class="co">#&gt; [37] jsonlite_1.6      fs_1.2.6          ggplot2_3.1.0    </span>
+<span class="co">#&gt; [40] hms_0.4.2         digest_0.6.18     stringi_1.2.4    </span>
+<span class="co">#&gt; [43] processx_3.2.1    dplyr_0.7.8       rprojroot_1.3-2  </span>
+<span class="co">#&gt; [46] grid_3.6.0        cli_1.0.1         tools_3.6.0      </span>
+<span class="co">#&gt; [49] magrittr_1.5      lazyeval_0.2.1    tibble_2.0.1     </span>
+<span class="co">#&gt; [52] crayon_1.3.4      pkgconfig_2.0.2   xml2_1.2.0       </span>
+<span class="co">#&gt; [55] prettyunits_1.0.2 assertthat_0.2.0  rmarkdown_1.11   </span>
+<span class="co">#&gt; [58] roxygen2_6.1.1    httr_1.4.0        rstudioapi_0.9.0 </span>
+<span class="co">#&gt; [61] R6_2.3.0          compiler_3.6.0</span></code></pre></div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

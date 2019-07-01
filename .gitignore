@@ -1,0 +1,8 @@
+inst/doc
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rbuildignore
+*.Rproj
+R/local_test.R
