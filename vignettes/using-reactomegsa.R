@@ -15,6 +15,11 @@ if (!require(ReactomeGSA)) {
   install_github("reactome/ReactomeGSA")
 }
 
+# install the ReactomeGSA.data package
+if (!require(ReactomeGSA.data)) {
+  install_github("reactome/ReactomeGSA.data")
+}
+
 ## ----show_methods--------------------------------------------------------
 library(ReactomeGSA)
 

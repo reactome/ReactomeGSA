@@ -12,7 +12,7 @@
 
 <meta name="author" content="Johannes Griss" />
 
-<meta name="date" content="2019-07-01" />
+<meta name="date" content="2019-07-03" />
 
 <title>Using the REACTOMEgsa package</title>
 
@@ -92,7 +92,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using the REACTOMEgsa package</h1>
 <h4 class="author"><em>Johannes Griss</em></h4>
-<h4 class="date"><em>2019-07-01</em></h4>
+<h4 class="date"><em>2019-07-03</em></h4>
 
 
 
@@ -123,7 +123,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co"># install the ReactomeGSA package</span>
 <span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(ReactomeGSA)) {
   <span class="kw">install_github</span>(<span class="st">&quot;reactome/ReactomeGSA&quot;</span>)
-}</code></pre></div>
+}
+
+<span class="co"># install the ReactomeGSA.data package</span>
+<span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(ReactomeGSA.data)) {
+  <span class="kw">install_github</span>(<span class="st">&quot;reactome/ReactomeGSA.data&quot;</span>)
+}
+<span class="co">#&gt; Loading required package: ReactomeGSA.data</span>
+<span class="co">#&gt; Loading required package: limma</span>
+<span class="co">#&gt; Loading required package: edgeR</span></code></pre></div>
 </div>
 <div id="getting-available-methods" class="section level2">
 <h2>Getting available methods</h2>
@@ -237,8 +245,6 @@ my_request
 <h2>Adding datasets</h2>
 <p>One analysis request can contain multiple datasets. This can be used to, for example, visualize the results of an RNA-seq and Proteomics experiment (of the same / similar samples) side by side:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ReactomeGSA.data)
-<span class="co">#&gt; Loading required package: limma</span>
-<span class="co">#&gt; Loading required package: edgeR</span>
 <span class="kw">data</span>(<span class="st">&quot;griss_melanoma_proteomics&quot;</span>)</code></pre></div>
 <p>This is a limma <code>EList</code> object with the sample data already added</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(griss_melanoma_proteomics)
@@ -359,7 +365,6 @@ my_request
 <span class="co">#&gt; Submitting request to REACTOME API...</span>
 <span class="co">#&gt; REACTOME Analysis submitted succesfully</span>
 <span class="co">#&gt; Queued</span>
-<span class="co">#&gt; Request received</span>
 <span class="co">#&gt; Mapping identifiers...</span>
 <span class="co">#&gt; Performing gene set analysis using Camera</span>
 <span class="co">#&gt; Creating REACTOME visualization</span>
@@ -411,20 +416,27 @@ proteomics_fc &lt;-<span class="st"> </span><span class="kw">get_result</span>(r
 <span class="co">#&gt; R-HSA-109606       0.7329707         0.4713613                35</span>
 <span class="co">#&gt; R-HSA-109703       0.4844159         0.1749728                 1</span>
 <span class="co">#&gt; R-HSA-109704       0.6496348         0.3670109                10</span>
-<span class="co">#&gt;               sig.Proteomics Direction.RNA-seq FDR.RNA-seq PValue.RNA-seq</span>
-<span class="co">#&gt; R-HSA-1059683          FALSE                Up   0.2296961     0.07013953</span>
-<span class="co">#&gt; R-HSA-109581           FALSE              Down   0.3761787     0.15874100</span>
-<span class="co">#&gt; R-HSA-109582           FALSE                Up   0.7723698     0.55339592</span>
-<span class="co">#&gt; R-HSA-109606           FALSE                Up   0.9521685     0.86638757</span>
-<span class="co">#&gt; R-HSA-109703           FALSE              Down   0.9451508     0.84487544</span>
-<span class="co">#&gt; R-HSA-109704           FALSE                Up   0.4810858     0.23404173</span>
-<span class="co">#&gt;               NGenes.RNA-seq sig.RNA-seq</span>
-<span class="co">#&gt; R-HSA-1059683             11       FALSE</span>
-<span class="co">#&gt; R-HSA-109581             163       FALSE</span>
-<span class="co">#&gt; R-HSA-109582             469       FALSE</span>
-<span class="co">#&gt; R-HSA-109606              50       FALSE</span>
-<span class="co">#&gt; R-HSA-109703               2       FALSE</span>
-<span class="co">#&gt; R-HSA-109704              23       FALSE</span></code></pre></div>
+<span class="co">#&gt;               av_foldchange.Proteomics sig.Proteomics Direction.RNA-seq</span>
+<span class="co">#&gt; R-HSA-1059683               0.02335793          FALSE                Up</span>
+<span class="co">#&gt; R-HSA-109581                0.04018119          FALSE              Down</span>
+<span class="co">#&gt; R-HSA-109582                0.05919257          FALSE                Up</span>
+<span class="co">#&gt; R-HSA-109606                0.05831192          FALSE                Up</span>
+<span class="co">#&gt; R-HSA-109703               -0.12495292          FALSE              Down</span>
+<span class="co">#&gt; R-HSA-109704                0.05006537          FALSE                Up</span>
+<span class="co">#&gt;               FDR.RNA-seq PValue.RNA-seq NGenes.RNA-seq</span>
+<span class="co">#&gt; R-HSA-1059683   0.2296961     0.07013953             11</span>
+<span class="co">#&gt; R-HSA-109581    0.3761787     0.15874100            163</span>
+<span class="co">#&gt; R-HSA-109582    0.7723698     0.55339592            469</span>
+<span class="co">#&gt; R-HSA-109606    0.9521685     0.86638757             50</span>
+<span class="co">#&gt; R-HSA-109703    0.9451508     0.84487544              2</span>
+<span class="co">#&gt; R-HSA-109704    0.4810858     0.23404173             23</span>
+<span class="co">#&gt;               av_foldchange.RNA-seq sig.RNA-seq</span>
+<span class="co">#&gt; R-HSA-1059683          0.3068970846       FALSE</span>
+<span class="co">#&gt; R-HSA-109581           0.0006928833       FALSE</span>
+<span class="co">#&gt; R-HSA-109582           0.0437470554       FALSE</span>
+<span class="co">#&gt; R-HSA-109606           0.0593885735       FALSE</span>
+<span class="co">#&gt; R-HSA-109703          -0.3164922750       FALSE</span>
+<span class="co">#&gt; R-HSA-109704           0.2070057076       FALSE</span></code></pre></div>
 </div>
 <div id="session-info" class="section level2">
 <h2>Session Info</h2>
