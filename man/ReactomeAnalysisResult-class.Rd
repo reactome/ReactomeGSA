@@ -33,22 +33,22 @@ and possibly combined results as well.}
 \section{Methods}{
 
 
-\bold{\code{\link[ReactomeGSA:names]{names}}}:
+\bold{\code{\link{names}}}:
 Retrieves the names of all datasets in the result object
 
-\bold{\code{\link[ReactomeGSA:result_types]{result_types}}}:
+\bold{\code{\link{result_types}}}:
 Retrieves the available result types
 
-\bold{\code{\link[ReactomeGSA:pathways,]{pathways}}}:
+\bold{\code{\link{pathways}}}:
 Merges the pathway results of all analysed datasets.
 
-\bold{\code{\link[ReactomeGSA:get_result]{get_result}}}:
+\bold{\code{\link{get_result}}}:
 Retrieve a specific result as data.frame
 
-\bold{\code{\link[ReactomeGSA:reactome_links]{reactome_links}}}:
+\bold{\code{\link{reactome_links}}}:
 Displays / retrieves the URLs to the available visualizations in Reactome's pathway browser.
 
-\bold{\code{\link[ReactomeGSA:open_reactome]{open_reactome}}}:
+\bold{\code{\link{open_reactome}}}:
 Opens the specified Reactome visualization in the system's default browser.
 }
 

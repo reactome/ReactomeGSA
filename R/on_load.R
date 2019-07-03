@@ -1,6 +1,4 @@
 .onLoad <- function(libname, pkgname) {
-  library(methods)
-
   op <- options()
   op.reactome_gsa <- list(
     reactome_gsa.url = "http://193.62.55.4/"

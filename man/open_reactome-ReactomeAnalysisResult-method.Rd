@@ -12,7 +12,7 @@
 \item{x}{ReactomeAnalysisResult.}
 
 \item{n_visualization}{numeric The index of the visualization to display (default \code{1}).
-Use \code{\link[ReactomeGSA:reactome_links]{reactome_links}}
+Use \code{\link{reactome_links}}
 to retrieve all available visualizations and their index.}
 
 \item{...}{Additional parameters passed to downstream functions.}

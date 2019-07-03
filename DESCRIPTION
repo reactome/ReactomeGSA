@@ -19,7 +19,8 @@ Suggests:
     knitr,
     rmarkdown,
     ReactomeGSA.data,
-    Biobase
+    Biobase,
+    devtools
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology, GeneExpression, Reactome
 BugReports: https://github.com/reactome/ReactomeGSA/issues

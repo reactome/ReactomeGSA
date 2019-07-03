@@ -5,19 +5,24 @@ knitr::opts_chunk$set(
 )
 
 ## ------------------------------------------------------------------------
-# install devtools if needed
-if (!require(devtools)) {
-  install.packages("devtools")
+load_devtools <- function() {
+  # install devtools if needed
+  if (!require(devtools)) {
+    options(repos=structure(c(CRAN = 'http://cran.ma.imperial.ac.uk')))
+    install.packages("devtools")
+  }
 }
 
 # install the ReactomeGSA package
 if (!require(ReactomeGSA)) {
-  install_github("reactome/ReactomeGSA")
+  load_devtools()
+  devtools::install_github("reactome/ReactomeGSA")
 }
 
 # install the ReactomeGSA.data package
 if (!require(ReactomeGSA.data)) {
-  install_github("reactome/ReactomeGSA.data")
+  load_devtools()
+  devtools::install_github("reactome/ReactomeGSA.data")
 }
 
 ## ----show_methods--------------------------------------------------------
