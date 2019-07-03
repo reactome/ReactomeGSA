@@ -31,19 +31,14 @@ setGeneric("plot_volcano", function(x, ...) standardGeneric("plot_volcano"))
 #'
 #' @inherit plot_volcano
 setMethod("plot_volcano", c("x" = "ReactomeAnalysisResult"), function(x, dataset = 1, ...) {
-  # get the dataset to plot
-  params <- list(...)
-
-  if ("dataset" %in% names(params)) {
-    dataset <- params[["dataset"]]
-  } else {
-    dataset <- names(x@results)[1]
-  }
-
   # convert numeric dataset indices to the name
   if (is.numeric(dataset)) {
     if (dataset > length(names(x@results))) {
       stop("Error: Dataset index ", dataset, " is out of bounds. Result object only contains ", length(names(x)), " datasets.")
+    }
+
+    if (dataset < 1) {
+      stop("Error: Index must be 1-based")
     }
 
     dataset <- names(x)[dataset]
@@ -124,9 +119,11 @@ setMethod("plot_correlations", c("x" = "ReactomeAnalysisResult"), function(x) {
   for (dataset_index_1 in seq(to = n_datasets)) {
     for (dataset_index_2 in seq(from = dataset_index_1+1, to = n_datasets)) {
       # ignore any impossible combinations
-      if (dataset_index_2 > n_datasets) {
+      if (dataset_index_2 > n_datasets || dataset_index_1 == dataset_index_2) {
         next
       }
+
+      message("Comparing ", dataset_index_1, " vs ", dataset_index_2)
 
       # get the dataset's name
       dataset_1 <- names(x)[dataset_index_1]
