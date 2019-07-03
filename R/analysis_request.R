@@ -11,7 +11,7 @@
 #'                      To add parameters, use \code{\link{set_parameters,ReactomeAnalysisRequest-method}}
 #'
 #' @return A ReactomeAnalysisRequest object.
-#' @importFrom methods new
+#' @import methods
 #' @export
 #'
 #' @examples

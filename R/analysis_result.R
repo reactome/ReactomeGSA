@@ -11,24 +11,25 @@
 #'
 #' @section Methods:
 #'
-#' \bold{\code{\link[ReactomeGSA:names,ReactomeAnalysisResult-method]{names}}}:
+#' \bold{\code{\link[ReactomeGSA:names]{names}}}:
 #' Retrieves the names of all datasets in the result object
 #'
-#' \bold{\code{\link[ReactomeGSA:result_types,ReactomeAnalysisResult-method]{result_types}}}:
+#' \bold{\code{\link[ReactomeGSA:result_types]{result_types}}}:
 #' Retrieves the available result types
 #'
-#' \bold{\code{\link[ReactomeGSA:pathways,ReactomeAnalysisResult-method]{pathways}}}:
+#' \bold{\code{\link[ReactomeGSA:pathways,]{pathways}}}:
 #' Merges the pathway results of all analysed datasets.
 #'
-#' \bold{\code{\link[ReactomeGSA:get_result,ReactomeAnalysisResult-method]{get_result}}}:
+#' \bold{\code{\link[ReactomeGSA:get_result]{get_result}}}:
 #' Retrieve a specific result as data.frame
 #'
-#' \bold{\code{\link[ReactomeGSA:reactome_links,ReactomeAnalysisResult-method]{reactome_links}}}:
+#' \bold{\code{\link[ReactomeGSA:reactome_links]{reactome_links}}}:
 #' Displays / retrieves the URLs to the available visualizations in Reactome's pathway browser.
 #'
-#' \bold{\code{\link[ReactomeGSA:open_reactome,ReactomeAnalysisResult-method]{open_reactome}}}:
+#' \bold{\code{\link[ReactomeGSA:open_reactome]{open_reactome}}}:
 #' Opens the specified Reactome visualization in the system's default browser.
 #'
+#' @slot reactome_release The Reactome version used to create this result.
 #' @slot mappings Stores the mapping results that were generated for this analysis.
 #' @slot results A named list containing the actual analysis results for every dataset
 #'               and possibly combined results as well.
@@ -36,7 +37,7 @@
 #'
 #' @return A ReactomeAnalysisResult object.
 #' @export
-#' @importFrom methods new
+#' @import methods
 #'
 #' @examples
 #' # load an example result object
@@ -64,10 +65,12 @@ ReactomeAnalysisResult <- setClass("ReactomeAnalysisResult",
 #' Convert the REACTOME JSON result to a ReactomeAnalysisResult object
 #'
 #' @param reactome_result The JSON result already converted to R objects (name list)
-#' @importFrom methods new
+#' @import methods
 #'
 #' @return A \code{\link{ReactomeAnalysisResult}} object
 convert_reactome_result <- function(reactome_result) {
+  library(methods)
+
   # make sure the object has the required fields
   required_fields <- c("release", "mappings", "results")
   for (field in required_fields) {
@@ -263,9 +266,9 @@ setMethod("result_types", c("x" = "ReactomeAnalysisResult"), function(x) {
 #' Retrieves a result from a \code{\link{ReactomeAnalysisResult}} object.
 #'
 #' @param x ReactomeAnalysisResult.
-#' @param type the type of result. Use \code{\link[ReactomeGSA:result_types,ReactomeAnalysisResult-method]{result_types}}
+#' @param type the type of result. Use \code{\link[ReactomeGSA:result_types]{result_types}}
 #'             to retrieve all available types.
-#' @param name the name of the result. Use \code{\link[ReactomeGSA:names,ReactomeAnalysisResult-method]{names}}
+#' @param name the name of the result. Use \code{\link[ReactomeGSA:names]{names}}
 #'             to retrieve all available results.
 #'
 #' @return A \code{data.frame} containing the respective result.
@@ -487,7 +490,7 @@ setGeneric("open_reactome", function(x, ...) standardGeneric("open_reactome"))
 #' open_reactome - ReactomeAnalysisResult
 #'
 #' @param n_visualization numeric The index of the visualization to display (default \code{1}).
-#'                        Use \code{\link[ReactomeGSA:reactome_links,ReactomeAnalysisResult-method]{reactome_links}}
+#'                        Use \code{\link[ReactomeGSA:reactome_links]{reactome_links}}
 #'                        to retrieve all available visualizations and their index.
 #'
 #' @inherit open_reactome

@@ -20,6 +20,8 @@ Generally, object of this class should not be created manually.
 \section{Slots}{
 
 \describe{
+\item{\code{reactome_release}}{The Reactome version used to create this result.}
+
 \item{\code{mappings}}{Stores the mapping results that were generated for this analysis.}
 
 \item{\code{results}}{A named list containing the actual analysis results for every dataset
@@ -31,22 +33,22 @@ and possibly combined results as well.}
 \section{Methods}{
 
 
-\bold{\code{\link[ReactomeGSA:names,ReactomeAnalysisResult-method]{names}}}:
+\bold{\code{\link[ReactomeGSA:names]{names}}}:
 Retrieves the names of all datasets in the result object
 
-\bold{\code{\link[ReactomeGSA:result_types,ReactomeAnalysisResult-method]{result_types}}}:
+\bold{\code{\link[ReactomeGSA:result_types]{result_types}}}:
 Retrieves the available result types
 
-\bold{\code{\link[ReactomeGSA:pathways,ReactomeAnalysisResult-method]{pathways}}}:
+\bold{\code{\link[ReactomeGSA:pathways,]{pathways}}}:
 Merges the pathway results of all analysed datasets.
 
-\bold{\code{\link[ReactomeGSA:get_result,ReactomeAnalysisResult-method]{get_result}}}:
+\bold{\code{\link[ReactomeGSA:get_result]{get_result}}}:
 Retrieve a specific result as data.frame
 
-\bold{\code{\link[ReactomeGSA:reactome_links,ReactomeAnalysisResult-method]{reactome_links}}}:
+\bold{\code{\link[ReactomeGSA:reactome_links]{reactome_links}}}:
 Displays / retrieves the URLs to the available visualizations in Reactome's pathway browser.
 
-\bold{\code{\link[ReactomeGSA:open_reactome,ReactomeAnalysisResult-method]{open_reactome}}}:
+\bold{\code{\link[ReactomeGSA:open_reactome]{open_reactome}}}:
 Opens the specified Reactome visualization in the system's default browser.
 }
 

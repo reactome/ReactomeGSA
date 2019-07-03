@@ -10,10 +10,10 @@
 \arguments{
 \item{x}{ReactomeAnalysisResult.}
 
-\item{type}{the type of result. Use \code{\link[ReactomeGSA:result_types,ReactomeAnalysisResult-method]{result_types}}
+\item{type}{the type of result. Use \code{\link[ReactomeGSA:result_types]{result_types}}
 to retrieve all available types.}
 
-\item{name}{the name of the result. Use \code{\link[ReactomeGSA:names,ReactomeAnalysisResult-method]{names}}
+\item{name}{the name of the result. Use \code{\link[ReactomeGSA:names]{names}}
 to retrieve all available results.}
 }
 \value{
