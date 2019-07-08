@@ -61,6 +61,11 @@ perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NU
   }
 
   # loop until the analysis is done
+
+  # this only tracks whether the progress bar reached completion as any update afterwards
+  # causes an error
+  is_done <- FALSE
+
   while (completed[["status"]] == "running") {
     Sys.sleep(1)
     completed <- get_reactome_analysis_status(analysis_id)
@@ -69,12 +74,22 @@ perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NU
       current_message <- completed[["description"]]
 
       # only update the message if it's different and the process is still running
-      if (current_message != last_message && completed[["status"]] == "running") {
+      if (current_message != last_message && completed[["status"]] == "running" && !is_done) {
         pb$message(current_message)
         last_message <- current_message
       }
 
-      pb$update(as.numeric(completed[["completed"]]))
+      # only update the progress if it didn't reach "1" before, otherwise this throws an error
+      if (!is_done) {
+        rel_completed <- as.numeric(completed[["completed"]])
+
+        pb$update(rel_completed)
+
+        # prevent future progress bar updates
+        if (rel_completed == 1) {
+          is_done <- TRUE
+        }
+      }
     }
   }
 
