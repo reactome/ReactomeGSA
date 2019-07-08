@@ -428,7 +428,7 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
             user_params <- list(...)
             for (param_name in names(user_params)) {
               dataset_parameters <- rbind(dataset_parameters, data.frame(name = param_name,
-                                                                         value = user_params[[param_name]],
+                                                                         value = as.character(user_params[[param_name]]),
                                                                          stringsAsFactors = F))
             }
 
