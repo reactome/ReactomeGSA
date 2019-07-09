@@ -35,7 +35,7 @@ data(griss_melanoma_proteomics)
 request <- add_dataset(request = request,
              expression_values = griss_melanoma_proteomics,
              name = "Proteomics",
-             type = "proteomics-int",
+             type = "proteomics_int",
              comparison_factor = "condition",
              comparison_group_1 = "MOCK",
              comparison_group_2 = "MCM",

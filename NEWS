@@ -1,2 +1,8 @@
+Changes in version 0.99.5 (2019-07-09)
++ Updated vignette to new API data types
++ Added new function remove_dataset
++ Fixed bugs when overwriting existing datasets in AnalysisRequests
++ Fixed bug that pathways function did not sort the pathway table
+
 Changes in version 0.99.0 (2019-07-01)
 + Submitted to Bioconductor

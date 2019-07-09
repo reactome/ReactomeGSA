@@ -392,9 +392,12 @@ setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p = 0.01, o
     order_by <- names(x@results)[1]
   }
 
+  # use the PValue of that dataset
+  order_by <- paste0("PValue.", order_by)[[1]]
+
   # make sure this column is present - which is not the case in GSVA results
   if (order_by %in% colnames(combined_result)) {
-    combined_result <- combined_result[order(combined_result[, paste0("FDR.", order_by)]), ]
+    combined_result <- combined_result[order(combined_result[, order_by]), ]
   }
 
   # move the "name" as the second column

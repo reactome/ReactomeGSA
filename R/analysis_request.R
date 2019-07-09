@@ -27,7 +27,7 @@
 #' request <- add_dataset(request = request,
 #'              expression_values = griss_melanoma_proteomics,
 #'              name = "Proteomics",
-#'              type = "proteomics-int",
+#'              type = "proteomics_int",
 #'              comparison_factor = "condition",
 #'              comparison_group_1 = "MOCK",
 #'              comparison_group_2 = "MCM",
@@ -249,7 +249,7 @@ setMethod("set_parameters", c("request" = "ReactomeAnalysisRequest"), function(r
 #' my_request <- add_dataset(request = my_request,
 #'                           expression_values = griss_melanoma_proteomics,
 #'                           name = "Proteomics",
-#'                           type = "proteomics-int",
+#'                           type = "proteomics_int",
 #'                           comparison_factor = "condition",
 #'                           comparison_group_1 = "MOCK",
 #'                           comparison_group_2 = "MCM",
@@ -404,6 +404,12 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
               stop("Error: No comparison_group_2 samples found. No samples annotated as '", comparison_group_2, "' in '", comparison_factor, "'")
             }
 
+            # delete the dataset if it exists
+            if (name %in% dataset_df$name) {
+              message("Overwriting ", name, "...")
+              dataset_df <- dataset_df[dataset_df$name != name, ]
+            }
+
             # create the list representing the design
             design <- list(
               "analysisGroup" = comparison_group,
@@ -448,6 +454,63 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
 
             return(request)
           })
+
+# remove_dataset ----
+#' remove_dataset
+#'
+#' Remove the dataset from the \code{\link{ReactomeAnalysisRequest}} object.
+#'
+#' @param x The \code{\link{ReactomeAnalysisRequest}} to remove the dataset from
+#' @param dataset_name character The dataset's name
+#'
+#' @return The updated \code{\link{ReactomeAnalysisRequest}}
+#' @export
+#'
+#' @examples
+#' # create a request using Camera as an analysis
+#' library(ReactomeGSA.data)
+#' data(griss_melanoma_proteomics)
+#' library(methods)
+#'
+#' my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+#'
+#' # since the expression_values object is a limma EList object, the sample_data is
+#' # retrieved from there
+#'
+#' # add the dataset
+#' my_request <- add_dataset(request = my_request,
+#'                           expression_values = griss_melanoma_proteomics,
+#'                           name = "Proteomics",
+#'                           type = "proteomics_int",
+#'                           comparison_factor = "condition",
+#'                           comparison_group_1 = "MOCK",
+#'                           comparison_group_2 = "MCM",
+#'                           additional_factors = c("cell.type", "patient.id"))
+#'
+#' # remove the dataset again
+#' my_request <- remove_dataset(x = my_request, dataset_name = "Proteomics)
+setGeneric("remove_dataset", function(x, dataset_name) standardGeneric("remove_dataset"))
+
+#' remove_dataset - ReactomeAnalysisRequest
+#'
+#' @inherit remove_dataset
+setMethod("remove_dataset", c("x" = "ReactomeAnalysisRequest"), function(x, dataset_name) {
+  # make sure the dataset exists
+  if (!"datasets" %in% names(x@request_object)) {
+    stop("Error: ReactomeAnalysisRequest object does not contain any datasets.")
+  }
+  if (!dataset_name %in% x@request_object[["datasets"]][, "name"]) {
+    stop("Error: Dataset '", dataset_name, "' does not exist in the passed ReactomeAnalysisRequest object.")
+  }
+
+  # get the dataset's index
+  dataset_index <- which(x@request_object[["datasets"]][, "name"] == dataset_name)
+
+  # remove the dataset from the table
+  x@request_object[["datasets"]] <- x@request_object[["datasets"]][dataset_index * -1, ]
+
+  return(x)
+})
 
 # to JSON ----
 setGeneric("toJSON", function(x, ...) standardGeneric("toJSON"))
