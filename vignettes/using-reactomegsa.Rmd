@@ -72,6 +72,12 @@ library(ReactomeGSA)
 get_reactome_methods(print_methods = TRUE, return_result = FALSE)
 ```
 
+To get more information about a specific method, set `print_details` to `TRUE` and specify the `method`:
+
+```{r get_method_details}
+get_reactome_methods(print_methods = TRUE, print_details = TRUE, method = "PADOG", return_result = FALSE)
+```
+
 ## Creating an analysis request
 
 To start a gene set analysis, you first have to create an analysis request. This is a simple S4 class that takes care of submitting multiple datasets simultaneously to the analysis system.

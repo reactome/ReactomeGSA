@@ -12,7 +12,7 @@
 
 <meta name="author" content="Johannes Griss" />
 
-<meta name="date" content="2019-07-09" />
+<meta name="date" content="2019-07-22" />
 
 <title>Using the REACTOMEgsa package</title>
 
@@ -92,7 +92,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using the REACTOMEgsa package</h1>
 <h4 class="author"><em>Johannes Griss</em></h4>
-<h4 class="date"><em>2019-07-09</em></h4>
+<h4 class="date"><em>2019-07-22</em></h4>
 
 
 
@@ -144,6 +144,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ReactomeGSA)
 
 <span class="kw">get_reactome_methods</span>(<span class="dt">print_methods =</span> <span class="ot">TRUE</span>, <span class="dt">return_result =</span> <span class="ot">FALSE</span>)
+<span class="co">#&gt; PADOG: Weighted gene set analysis method that down-weighs genes that are present in many pathways.</span>
+<span class="co">#&gt; Camera: A gene set analysis algorithm similar to the classical GSEA algorithm as implemented in the limma package</span>
+<span class="co">#&gt; ssGSEA: The ssGSEA approach to derive pathway expression values for every sample. Note: The Reactome visualization is only available for up to 15 samples.</span></code></pre></div>
+<p>To get more information about a specific method, set <code>print_details</code> to <code>TRUE</code> and specify the <code>method</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_reactome_methods</span>(<span class="dt">print_methods =</span> <span class="ot">TRUE</span>, <span class="dt">print_details =</span> <span class="ot">TRUE</span>, <span class="dt">method =</span> <span class="st">&quot;PADOG&quot;</span>, <span class="dt">return_result =</span> <span class="ot">FALSE</span>)
 <span class="co">#&gt; +--------+</span>
 <span class="co">#&gt; | PADOG: |</span>
 <span class="co">#&gt; +--------+</span>
@@ -166,6 +171,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&gt;   Default: True</span>
 <span class="co">#&gt;   Scope: analysis</span>
 <span class="co">#&gt;   Description: If set to 'False', no REACTOME visualization is created for the performed analysis.</span>
+<span class="co">#&gt; - create_reports</span>
+<span class="co">#&gt;   Type: bool</span>
+<span class="co">#&gt;   Default: False</span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: If set to 'True', additional Microsoft Excel and PDF-based reports of the analysis result will be created.</span>
+<span class="co">#&gt; - email</span>
+<span class="co">#&gt;   Type: string</span>
+<span class="co">#&gt;   Default: </span>
+<span class="co">#&gt;   Scope: analysis</span>
+<span class="co">#&gt;   Description: If set to a valid e-mail address, links to the analysis result (and report) will be sent once the analysis is complete.</span>
 <span class="co">#&gt; - sample_groups</span>
 <span class="co">#&gt;   Type: string</span>
 <span class="co">#&gt;   Default: </span>
@@ -182,78 +197,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&gt;   Default: none</span>
 <span class="co">#&gt;   Scope: dataset</span>
 <span class="co">#&gt;   Allowed values: none, scale, quantile, cyclicloess</span>
-<span class="co">#&gt;   Description: The normalisation function to use for proteomics intensity data. Note that it is generally advised that normalisation is performed on the PSM or peptide level and not on the protein level.</span>
-<span class="co">#&gt; +---------+</span>
-<span class="co">#&gt; | Camera: |</span>
-<span class="co">#&gt; +---------+</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; A gene set analysis algorithm similar to the classical GSEA algorithm as implemented in the limma package </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Parameters:</span>
-<span class="co">#&gt; - use_interactors</span>
-<span class="co">#&gt;   Type: bool</span>
-<span class="co">#&gt;   Default: False</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: Indicates whether interactors from IntAct should be used to extent REACTOME's pathways in the analysis.</span>
-<span class="co">#&gt; - max_missing_values</span>
-<span class="co">#&gt;   Type: float</span>
-<span class="co">#&gt;   Default: 0.5</span>
-<span class="co">#&gt;   Scope: dataset</span>
-<span class="co">#&gt;   Description: The maximum (relative) number of missing values within one comparison group before a gene / protein is removed from analysis. If no comparison groups are defined (for example for 'ssGSEA', the number of missing values accross all samples is used. Must be between 0-1.</span>
-<span class="co">#&gt; - create_reactome_visualization</span>
-<span class="co">#&gt;   Type: bool</span>
-<span class="co">#&gt;   Default: True</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: If set to 'False', no REACTOME visualization is created for the performed analysis.</span>
-<span class="co">#&gt; - discrete_norm_function</span>
-<span class="co">#&gt;   Type: string</span>
-<span class="co">#&gt;   Default: TMM</span>
-<span class="co">#&gt;   Scope: dataset</span>
-<span class="co">#&gt;   Allowed values: TMM, RLE, upperquartile, none</span>
-<span class="co">#&gt;   Description: The normalisation function to use for raw RNA-seq read counts and raw Proteomics spectral counts. By default, the TMM normalisation is used.</span>
-<span class="co">#&gt; - continuous_norm_function</span>
-<span class="co">#&gt;   Type: string</span>
-<span class="co">#&gt;   Default: none</span>
-<span class="co">#&gt;   Scope: dataset</span>
-<span class="co">#&gt;   Allowed values: none, scale, quantile, cyclicloess</span>
-<span class="co">#&gt;   Description: The normalisation function to use for proteomics intensity data. Note that it is generally advised that normalisation is performed on the PSM or peptide level and not on the protein level.</span>
-<span class="co">#&gt; +---------+</span>
-<span class="co">#&gt; | ssGSEA: |</span>
-<span class="co">#&gt; +---------+</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; The ssGSEA approach to derive pathway expression values for every sample. Note: The Reactome visualization is only available for up to 15 samples. </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Parameters:</span>
-<span class="co">#&gt; - use_interactors</span>
-<span class="co">#&gt;   Type: bool</span>
-<span class="co">#&gt;   Default: False</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: Indicates whether interactors from IntAct should be used to extent REACTOME's pathways in the analysis.</span>
-<span class="co">#&gt; - max_missing_values</span>
-<span class="co">#&gt;   Type: float</span>
-<span class="co">#&gt;   Default: 0.5</span>
-<span class="co">#&gt;   Scope: dataset</span>
-<span class="co">#&gt;   Description: The maximum (relative) number of missing values within one comparison group before a gene / protein is removed from analysis. If no comparison groups are defined (for example for 'ssGSEA', the number of missing values accross all samples is used. Must be between 0-1.</span>
-<span class="co">#&gt; - create_reactome_visualization</span>
-<span class="co">#&gt;   Type: bool</span>
-<span class="co">#&gt;   Default: True</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: If set to 'False', no REACTOME visualization is created for the performed analysis.</span>
-<span class="co">#&gt; - pathways</span>
-<span class="co">#&gt;   Type: string</span>
-<span class="co">#&gt;   Default: </span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: A comma delimited list of pathways to include in the analysis. All other pathways will be ignored.</span>
-<span class="co">#&gt; - min_size</span>
-<span class="co">#&gt;   Type: int</span>
-<span class="co">#&gt;   Default: 1</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: The minimum pathway size (determined as the number of submitted genes mapped to that pathway) to include a pathway in the analysis.</span>
-<span class="co">#&gt; - max_size</span>
-<span class="co">#&gt;   Type: int</span>
-<span class="co">#&gt;   Default: 1000</span>
-<span class="co">#&gt;   Scope: analysis</span>
-<span class="co">#&gt;   Description: The maximum pathway size (determined as the number of submitted genes mapped to that pathway) to include a pathway in the analysis.</span></code></pre></div>
+<span class="co">#&gt;   Description: The normalisation function to use for proteomics intensity data. Note that it is generally advised that normalisation is performed on the PSM or peptide level and not on the protein level.</span></code></pre></div>
 </div>
 <div id="creating-an-analysis-request" class="section level2">
 <h2>Creating an analysis request</h2>
@@ -414,6 +358,7 @@ my_request
 <span class="co">#&gt; Submitting request to REACTOME API...</span>
 <span class="co">#&gt; REACTOME Analysis submitted succesfully</span>
 <span class="co">#&gt; Queued</span>
+<span class="co">#&gt; Request received</span>
 <span class="co">#&gt; Mapping identifiers...</span>
 <span class="co">#&gt; Performing gene set analysis using Camera</span>
 <span class="co">#&gt; Analysing dataset 'RNA-seq' using Camera</span>
@@ -512,7 +457,7 @@ proteomics_fc &lt;-<span class="st"> </span><span class="kw">get_result</span>(r
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt; [1] ReactomeGSA.data_0.1.0 edgeR_3.22.5           limma_3.36.5          </span>
-<span class="co">#&gt; [4] ReactomeGSA_0.99.5    </span>
+<span class="co">#&gt; [4] ReactomeGSA_0.99.7    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] progress_1.2.0    locfit_1.5-9.1    tidyselect_0.2.5 </span>

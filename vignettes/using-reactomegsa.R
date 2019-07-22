@@ -30,6 +30,9 @@ library(ReactomeGSA)
 
 get_reactome_methods(print_methods = TRUE, return_result = FALSE)
 
+## ----get_method_details--------------------------------------------------
+get_reactome_methods(print_methods = TRUE, print_details = TRUE, method = "PADOG", return_result = FALSE)
+
 ## ----create_request------------------------------------------------------
 # Create a new request object using 'Camera' for the gene set analysis
 my_request <- new("ReactomeAnalysisRequest", method = "Camera")

@@ -2,15 +2,22 @@
 % Please edit documentation in R/get_methods.R
 \name{get_reactome_methods}
 \alias{get_reactome_methods}
-\title{Returns all available analysis methods from the REACTOME service}
+\title{get_reactome_methods}
 \usage{
-get_reactome_methods(print_methods = TRUE, return_result = FALSE,
-  reactome_url = NULL)
+get_reactome_methods(print_methods = TRUE, print_details = FALSE,
+  return_result = FALSE, method = NULL, reactome_url = NULL)
 }
 \arguments{
 \item{print_methods}{If set to \code{TRUE} (default) a (relatively) nice formatted version of the result is printed.}
 
+\item{print_details}{If set to \code{TRUE} detailed information about every method, including available parameters and
+description are displayed. This does not affect the data returned if \code{return_result} is \code{TRUE}.}
+
 \item{return_result}{If set to \code{TRUE}, the result is returned as a data.frame (see below)}
+
+\item{method}{If set to a method's id, only information for this method will be shown. This is especially useful if
+detailed information about a single method should be retrieved. This does not affect the data returned
+if \code{return_result} is \code{TRUE}.}
 
 \item{reactome_url}{URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}
@@ -20,7 +27,17 @@ If \code{return_result} is set to \code{TRUE}, a data.frame with one row per met
         (optional) a list of parameters. Parameters again have a name, type, and description.
 }
 \description{
-Returns all available analysis methods from the REACTOME service
+Returns all available analysis methods from the REACTOME analysis service.
+}
+\details{
+Every method has a type, a scope, and sometimes a list of allowed values. The type (string, int = integer, float) define
+the expected data type. The \strong{scope} defines at what level the parameter can be set. \emph{dataset} level parameters
+can be set at the dataset level (using the \code{\link{add_dataset}} function) or at the analysis request level (using
+\code{\link{set_parameters}}). If these parameters are set at the analysis request level, this overwrites the default
+value for all datasets. \emph{analysis} and \emph{global} level parameters must only be set at the analysis request level
+using \code{\link{set_parameters}}. The difference between these two types of parameters is that while \emph{analysis}
+parameters influence the results, \emph{global} parameters only influence the behaviour of the analysis system (for example
+whether a Reactome visualization is created).
 }
 \examples{
 # retrieve the available methods only in an object
@@ -35,6 +52,9 @@ first_method_parameters
 
 # simply print the available methods
 get_reactome_methods()
+
+# get the details for PADOG
+get_reactome_methods(print_details = TRUE, method = "PADOG")
 }
 \seealso{
 Other Reactome Service functions: \code{\link{get_reactome_data_types}}
