@@ -5,15 +5,15 @@
 \alias{open_reactome,ReactomeAnalysisResult-method}
 \title{open_reactome - ReactomeAnalysisResult}
 \usage{
-\S4method{open_reactome}{ReactomeAnalysisResult}(x, n_visualization = 1,
-  ...)
+\S4method{open_reactome}{ReactomeAnalysisResult}(x, n_visualization, ...)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}
 
 \item{n_visualization}{numeric The index of the visualization to display (default \code{1}).
 Use \code{\link{reactome_links}}
-to retrieve all available visualizations and their index.}
+to retrieve all available visualizations and their index. By default,
+the first visualization is opened.}
 
 \item{...}{Additional parameters passed to downstream functions.}
 }

@@ -5,13 +5,12 @@
 \alias{pathways,ReactomeAnalysisResult-method}
 \title{ReactomeAnalysisResult - pathways}
 \usage{
-\S4method{pathways}{ReactomeAnalysisResult}(x, p = 0.01,
-  order_by = NULL, ...)
+\S4method{pathways}{ReactomeAnalysisResult}(x, p, order_by, ...)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}
 
-\item{p}{Minimum p-value to accept a pathway as significantly regulated.}
+\item{p}{Minimum p-value to accept a pathway as significantly regulated. Default is 0.01.}
 
 \item{order_by}{Name of the dataset to sort the result list by. By default, the
 results are sorted based on the first dataset.}

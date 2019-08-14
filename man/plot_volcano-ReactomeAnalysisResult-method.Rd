@@ -5,7 +5,7 @@
 \alias{plot_volcano,ReactomeAnalysisResult-method}
 \title{ReactomeAnalysisResult - plot_volcano}
 \usage{
-\S4method{plot_volcano}{ReactomeAnalysisResult}(x, dataset = 1, ...)
+\S4method{plot_volcano}{ReactomeAnalysisResult}(x, dataset, ...)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult. The analysis result to plot the volcano plot for.}

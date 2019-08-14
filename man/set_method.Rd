@@ -25,7 +25,7 @@ Set the analysis method used by the \code{\link{ReactomeAnalysisRequest}}
 data(griss_melanoma_proteomics)
 library(methods)
 
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <- ReactomeAnalysisRequest(method = "Camera")
 
 print(my_request)
 

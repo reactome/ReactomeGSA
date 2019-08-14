@@ -5,37 +5,32 @@ knitr::opts_chunk$set(
 )
 
 ## ------------------------------------------------------------------------
-load_devtools <- function() {
-  # install devtools if needed
-  if (!require(devtools)) {
-    options(repos=structure(c(CRAN = 'http://cran.ma.imperial.ac.uk')))
-    install.packages("devtools")
-  }
-}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
 
-# install the ReactomeGSA package
-if (!require(ReactomeGSA)) {
-  load_devtools()
-  devtools::install_github("reactome/ReactomeGSA")
-}
-
-# install the ReactomeGSA.data package
-if (!require(ReactomeGSA.data)) {
-  load_devtools()
-  devtools::install_github("reactome/ReactomeGSA.data")
-}
+if (!require(ReactomeGSA))
+  BiocManager::install("ReactomeGSA")
 
 ## ----show_methods--------------------------------------------------------
 library(ReactomeGSA)
 
-get_reactome_methods(print_methods = TRUE, return_result = FALSE)
+available_methods <- get_reactome_methods(print_methods = FALSE, return_result = TRUE)
+
+# only show the names of the available methods
+available_methods$name
 
 ## ----get_method_details--------------------------------------------------
-get_reactome_methods(print_methods = TRUE, print_details = TRUE, method = "PADOG", return_result = FALSE)
+# Use this command to print the description of the specific method to the console
+# get_reactome_methods(print_methods = TRUE, print_details = TRUE, method = "PADOG", return_result = FALSE)
+
+# show the parameter names for the method
+padog_params <- available_methods$parameters[available_methods$name == "PADOG"][[1]]
+
+paste0(padog_params$name, " (", padog_params$type, ", ", padog_params$default, ")")
 
 ## ----create_request------------------------------------------------------
 # Create a new request object using 'Camera' for the gene set analysis
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <-ReactomeAnalysisRequest(method = "Camera")
 
 my_request
 
@@ -67,9 +62,9 @@ my_request
 ## ------------------------------------------------------------------------
 data("griss_melanoma_rnaseq")
 
-# only keep genes with >= 100 transcripts in total
-total_transcripts <- rowSums(griss_melanoma_rnaseq$counts)
-griss_melanoma_rnaseq <- griss_melanoma_rnaseq[total_transcripts >= 100, ]
+# only keep genes with >= 100 reads in total
+total_reads <- rowSums(griss_melanoma_rnaseq$counts)
+griss_melanoma_rnaseq <- griss_melanoma_rnaseq[total_reads >= 100, ]
 
 # this is a edgeR DGEList object
 class(griss_melanoma_rnaseq)

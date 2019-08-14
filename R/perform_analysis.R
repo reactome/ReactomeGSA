@@ -1,14 +1,14 @@
-#' Perform a REACTOME Analaysis
+#' Perform a Reactome Analaysis
 #'
 #' This function wraps all steps required to perform
-#' an Analysis using the REACTOME Analysis Service. It submits
+#' an Analysis using the Reactome Analysis Service. It submits
 #' the passed \code{\link{ReactomeAnalysisRequest}} object to the
 #' Reactome Analysis Service API, checks the submitted analysis'
 #' status and returns the result once the analysis is complete.
 #'
 #' @param request \code{\link{ReactomeAnalysisRequest}} to submit.
-#' @param verbose logical. Indicates whether progress messages should be displayed.
-#' @param reactome_url URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+#' @param verbose logical. If \code{FALSE} status messages are not printed to the console.
+#' @param reactome_url URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 #'                     Specific ports can be set using the standard URL specification (for example http://your.service:1234)
 #'
 #' @return The analysis' result
@@ -19,7 +19,7 @@
 #' library(ReactomeGSA.data)
 #' data(griss_melanoma_proteomics)
 #'
-#' my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' my_request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' # set maximum missing values to 0.5 and do not create any reactome visualizations
 #' my_request <- set_parameters(request = my_request,
@@ -38,13 +38,16 @@
 #'
 #' # perform the analysis
 #' my_result <- perform_reactome_analysis(request = my_request, verbose = FALSE)
-perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NULL) {
+perform_reactome_analysis <- function(request, verbose, reactome_url) {
+  if (missing(verbose)) verbose <- TRUE
+  if (missing(reactome_url)) reactome_url <- NULL
+
   if (!methods::is(request, "ReactomeAnalysisRequest")) {
     stop("Error: request must be a 'ReactomeAnalysisRequest' object.")
   }
 
   # submit the request
-  if (verbose) message("Submitting request to REACTOME API...")
+  if (verbose) message("Submitting request to Reactome API...")
   analysis_id <- start_reactome_analysis(request = request, reactome_url = reactome_url)
 
   # get the status
@@ -95,7 +98,7 @@ perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NU
 
   # test if the analysis failed
   if (completed[["status"]] == "failed") {
-    if (verbose) warning("REACTOME Analysis failed: ", completed[["description"]])
+    if (verbose) warning("Reactome Analysis failed: ", completed[["description"]])
     return(NULL)
   }
 

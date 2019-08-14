@@ -2,16 +2,16 @@
 % Please edit documentation in R/perform_analysis.R
 \name{perform_reactome_analysis}
 \alias{perform_reactome_analysis}
-\title{Perform a REACTOME Analaysis}
+\title{Perform a Reactome Analaysis}
 \usage{
-perform_reactome_analysis(request, verbose = TRUE, reactome_url = NULL)
+perform_reactome_analysis(request, verbose, reactome_url)
 }
 \arguments{
 \item{request}{\code{\link{ReactomeAnalysisRequest}} to submit.}
 
-\item{verbose}{logical. Indicates whether progress messages should be displayed.}
+\item{verbose}{logical. If \code{FALSE} status messages are not printed to the console.}
 
-\item{reactome_url}{URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+\item{reactome_url}{URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}
 }
 \value{
@@ -19,7 +19,7 @@ The analysis' result
 }
 \description{
 This function wraps all steps required to perform
-an Analysis using the REACTOME Analysis Service. It submits
+an Analysis using the Reactome Analysis Service. It submits
 the passed \code{\link{ReactomeAnalysisRequest}} object to the
 Reactome Analysis Service API, checks the submitted analysis'
 status and returns the result once the analysis is complete.
@@ -29,7 +29,7 @@ status and returns the result once the analysis is complete.
 library(ReactomeGSA.data)
 data(griss_melanoma_proteomics)
 
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <- ReactomeAnalysisRequest(method = "Camera")
 
 # set maximum missing values to 0.5 and do not create any reactome visualizations
 my_request <- set_parameters(request = my_request,

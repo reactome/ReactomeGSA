@@ -10,22 +10,5 @@
 }
 
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("
-  +-------------------------------------+
-  |                                     |
-  |   REACTOME Gene Set Analsis (GSA)   |
-  |                                     |
-+-+-------------------------------------+-+
-|                                         |
-|   The ReactomeGSA package provides an   |
-|   R interface to the REACTOME Analysis  |
-|   Service API.                          |
-|                                         |
-|   The main feature is to perform gene   |
-|   set analysis using the API and view   |
-|   the results in REACTOME's web-based   |
-|   pathway brower.                       |
-|                                         |
-+-----------------------------------------+
-")
+
 }

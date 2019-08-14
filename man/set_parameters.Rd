@@ -30,7 +30,7 @@ the analysis' scope value for the given dataset.
 library(methods)
 
 # create a request object
-request <- new("ReactomeAnalysisRequest", method = "Camera")
+request <- ReactomeAnalysisRequest(method = "Camera")
 
 # add a parameter
 request <- set_parameters(request, max_missing_values = 0.5, discrete_norm_function = "TMM")

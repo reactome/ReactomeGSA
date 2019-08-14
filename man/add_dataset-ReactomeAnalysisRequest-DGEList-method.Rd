@@ -50,7 +50,7 @@ library(ReactomeGSA.data)
 data(griss_melanoma_proteomics)
 library(methods)
 
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <- ReactomeAnalysisRequest(method = "Camera")
 
 # since the expression_values object is a limma EList object, the sample_data is
 # retrieved from there

@@ -1,6 +1,6 @@
 #' get_reactome_methods
 #'
-#' Returns all available analysis methods from the REACTOME analysis service.
+#' Returns all available analysis methods from the Reactome analysis service.
 #'
 #' Every method has a type, a scope, and sometimes a list of allowed values. The type (string, int = integer, float) define
 #' the expected data type. The \strong{scope} defines at what level the parameter can be set. \emph{dataset} level parameters
@@ -18,7 +18,7 @@
 #' @param method If set to a method's id, only information for this method will be shown. This is especially useful if
 #'               detailed information about a single method should be retrieved. This does not affect the data returned
 #'               if \code{return_result} is \code{TRUE}.
-#' @param reactome_url URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+#' @param reactome_url URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 #'                     Specific ports can be set using the standard URL specification (for example http://your.service:1234)
 #' @return If \code{return_result} is set to \code{TRUE}, a data.frame with one row per method. Each method has a name, description, and
 #'         (optional) a list of parameters. Parameters again have a name, type, and description.
@@ -44,7 +44,13 @@
 #'
 #' # get the details for PADOG
 #' get_reactome_methods(print_details = TRUE, method = "PADOG")
-get_reactome_methods <- function(print_methods=TRUE, print_details=FALSE, return_result=FALSE, method=NULL, reactome_url=NULL) {
+get_reactome_methods <- function(print_methods, print_details, return_result, method, reactome_url) {
+  # set the default values
+  if (missing(print_methods)) print_methods <- TRUE
+  if (missing(print_details)) print_details <- FALSE
+  if (missing(return_result)) return_result <- FALSE
+  if (missing(reactome_url)) reactome_url <- NULL
+
   reactome_url <- check_reactome_url(reactome_url)
 
   # fetch the methods
@@ -54,7 +60,7 @@ get_reactome_methods <- function(print_methods=TRUE, print_details=FALSE, return
   if (print_methods) {
     for (n_method in seq(to = nrow(available_methods))) {
       # ignore all methods that are not "method" if set
-      if (!is.null(method) && tolower(available_methods[n_method, "name"]) != tolower(method)) {
+      if (!missing(method) && tolower(available_methods[n_method, "name"]) != tolower(method)) {
         next
       }
 
@@ -93,11 +99,11 @@ get_reactome_methods <- function(print_methods=TRUE, print_details=FALSE, return
   }
 }
 
-#' REACTOMEgsa supported data types
+#' ReactomeGSA supported data types
 #'
 #' @param print_types If set to \code{TRUE} (default) a (relatively) nice formatted version of the result is printed.
 #' @param return_result If set to \code{TRUE}, the result is returned as a data.frame (see below)
-#' @param reactome_url URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+#' @param reactome_url URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 #'                     Specific ports can be set using the standard URL specification (for example http://your.service:1234)
 #' @return A \code{data.frame} containing one row per data type with its \code{id} and \code{description}.
 #' @author Johannes Griss
@@ -113,7 +119,12 @@ get_reactome_methods <- function(print_methods=TRUE, print_details=FALSE, return
 #'
 #' # simply print the available methods
 #' get_reactome_data_types()
-get_reactome_data_types <- function(print_types=TRUE, return_result=FALSE, reactome_url=NULL) {
+get_reactome_data_types <- function(print_types, return_result, reactome_url) {
+  # set the default values
+  if (missing(print_types)) print_types <- TRUE
+  if (missing(return_result)) return_result <- FALSE
+  if (missing(reactome_url)) reactome_url <- NULL
+
   reactome_url <- check_reactome_url(reactome_url)
 
   # fetch the types

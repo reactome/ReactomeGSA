@@ -1,13 +1,15 @@
-#' Start REACTOME Analysis
+#' Start Reactome Analysis
 #'
-#' Submits a \code{\link{ReactomeAnalysisRequest}} to the REACTOME Analysis Service API and
+#' Submits a \code{\link{ReactomeAnalysisRequest}} to the Reactome Analysis Service API and
 #' returns the analysis id of the submitted job.
 #'
 #' @param request \code{\link{ReactomeAnalysisRequest}} object to submit.
-#' @param reactome_url URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+#' @param reactome_url URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 #'                     Specific ports can be set using the standard URL specification (for example http://your.service:1234)
 #' @return character The analysis job's id.
-start_reactome_analysis <- function(request, reactome_url=NULL) {
+start_reactome_analysis <- function(request, reactome_url) {
+  if (missing(reactome_url)) reactome_url <- NULL
+
   if (!methods::is(request, "ReactomeAnalysisRequest")) {
     stop("'request' must be a ReactomeAnalysisRequest object")
   }
@@ -32,7 +34,7 @@ start_reactome_analysis <- function(request, reactome_url=NULL) {
 
   analysis_id = httr::content(request, "text")
 
-  message("REACTOME Analysis submitted succesfully")
+  message("Reactome Analysis submitted succesfully")
 
   # return the analysis_id
   return(analysis_id)

@@ -5,13 +5,13 @@
 \alias{reactome_links,ReactomeAnalysisResult-method}
 \title{ReactomeAnalysisResult - reactome_links}
 \usage{
-\S4method{reactome_links}{ReactomeAnalysisResult}(x, print_result = TRUE,
-  return_result = FALSE)
+\S4method{reactome_links}{ReactomeAnalysisResult}(x, print_result,
+  return_result)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}
 
-\item{print_result}{If \code{TRUE} (default), the available links are printed.}
+\item{print_result}{If set to \code{FALSE} the links are not printed to the console.}
 
 \item{return_result}{If \code{TRUE} the available visualizations are returned as a list containing
 named vectors for every visualization. These vectors' have a \code{url}, \code{name},

@@ -7,8 +7,8 @@
 \usage{
 \S4method{add_dataset}{ReactomeAnalysisRequest,data.frame}(request,
   expression_values, name, type, comparison_factor, comparison_group_1,
-  comparison_group_2, sample_data = NULL, additional_factors = NULL,
-  overwrite = FALSE, ...)
+  comparison_group_2, sample_data = NULL, additional_factors, overwrite,
+  ...)
 }
 \arguments{
 \item{request}{ReactomeAnalysisRequest.}
@@ -49,7 +49,7 @@ library(ReactomeGSA.data)
 data(griss_melanoma_proteomics)
 library(methods)
 
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <- ReactomeAnalysisRequest(method = "Camera")
 
 # since the expression_values object is a limma EList object, the sample_data is
 # retrieved from there

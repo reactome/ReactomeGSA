@@ -21,7 +21,7 @@ Shows a \code{\link{ReactomeAnalysisRequest}} object summary.
 \examples{
 library(methods)
 
-request <- new("ReactomeAnalysisRequest", method = "Camera")
+request <- ReactomeAnalysisRequest(method = "Camera")
 print(request)
 
 # add additional parameters

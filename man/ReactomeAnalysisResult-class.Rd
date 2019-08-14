@@ -13,7 +13,7 @@ A ReactomeAnalysisResult object contains the pathway analysis results of all
 submitted datasets at once.
 }
 \details{
-This class represents a result retrieved from the REACTOME Analysis Service. It is returned
+This class represents a result retrieved from the Reactome Analysis Service. It is returned
 by \code{\link{get_reactome_analysis_result}} and its wrapper \code{\link{perform_reactome_analysis}}.
 Generally, object of this class should not be created manually.
 }

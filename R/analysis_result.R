@@ -5,7 +5,7 @@
 #' A ReactomeAnalysisResult object contains the pathway analysis results of all
 #' submitted datasets at once.
 #'
-#' This class represents a result retrieved from the REACTOME Analysis Service. It is returned
+#' This class represents a result retrieved from the Reactome Analysis Service. It is returned
 #' by \code{\link{get_reactome_analysis_result}} and its wrapper \code{\link{perform_reactome_analysis}}.
 #' Generally, object of this class should not be created manually.
 #'
@@ -62,7 +62,7 @@ ReactomeAnalysisResult <- setClass("ReactomeAnalysisResult",
 
 # create request function ---------------------------------------------
 
-#' Convert the REACTOME JSON result to a ReactomeAnalysisResult object
+#' Convert the Reactome JSON result to a ReactomeAnalysisResult object
 #'
 #' @param reactome_result The JSON result already converted to R objects (name list)
 #' @import methods
@@ -75,7 +75,7 @@ convert_reactome_result <- function(reactome_result) {
   required_fields <- c("release", "mappings", "results")
   for (field in required_fields) {
     if (!field %in% names(reactome_result)) {
-      stop("Error: Invalid REACTOME result JSON object found. Missing required field '", field, "'")
+      stop("Error: Invalid Reactome result JSON object found. Missing required field '", field, "'")
     }
   }
 
@@ -165,7 +165,7 @@ setMethod("show", c("object" = "ReactomeAnalysisResult"), function(object) print
 #' print(griss_melanoma_result)
 setMethod("print", c("x" = "ReactomeAnalysisResult"), function(x, ...) {
   cat("ReactomeAnalysisResult object\n")
-  cat("  REACTOME Release: ", x@reactome_release, "\n", sep = "")
+  cat("  Reactome Release: ", x@reactome_release, "\n", sep = "")
 
   if (length(x@results) < 0) {
     cat("  - no results -\n")
@@ -226,7 +226,7 @@ setMethod("names", c("x" = "ReactomeAnalysisResult"), function(x) {
 #' result_types
 #'
 #' Retrieves the available result types for the \code{\link{ReactomeAnalysisResult}} object. Currently,
-#' the REACTOME Analysis System supports \code{pathways} and gene level \code{fold_changes}
+#' the Reactome Analysis System supports \code{pathways} and gene level \code{fold_changes}
 #' as result types. Not all analysis methods return both data types though.
 #' Use the \code{names} function to find out which datasets are available
 #' in the result object.
@@ -331,13 +331,16 @@ setGeneric("pathways", function(x, ...) standardGeneric("pathways"))
 
 #' ReactomeAnalysisResult - pathways
 #'
-#' @param p Minimum p-value to accept a pathway as significantly regulated.
+#' @param p Minimum p-value to accept a pathway as significantly regulated. Default is 0.01.
 #' @param order_by Name of the dataset to sort the result list by. By default, the
 #'                 results are sorted based on the first dataset.
 #'
 #' @inherit pathways
-setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p = 0.01, order_by = NULL, ...) {
+setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p, order_by, ...) {
   combined_result <- data.frame()
+
+  # set the default value for p
+  if (missing(p)) p <- 0.01
 
   params <- list(...)
 
@@ -382,13 +385,13 @@ setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p = 0.01, o
   }
 
   # sort the result if the parameter is set
-  if (!is.null(order_by) && !order_by %in% names(x@results)) {
+  if (!missing(order_by) && !order_by %in% names(x@results)) {
     warning("Warning: order_by dataset '", order_by, "' does not exist. Ignoring parameter.")
     order_by <- names(x@results)[1]
   }
 
   # if not set, sort according to the first dataset
-  if (is.null(order_by)) {
+  if (missing(order_by) || is.null(order_by)) {
     order_by <- names(x@results)[1]
   }
 
@@ -436,13 +439,16 @@ setGeneric("reactome_links", function(x, ...) standardGeneric("reactome_links"))
 
 #' ReactomeAnalysisResult - reactome_links
 #'
-#' @param print_result If \code{TRUE} (default), the available links are printed.
+#' @param print_result If set to \code{FALSE} the links are not printed to the console.
 #' @param return_result If \code{TRUE} the available visualizations are returned as a list containing
 #'                      named vectors for every visualization. These vectors' have a \code{url}, \code{name},
 #'                      and optionally a \code{description} slot.
 #'
 #' @inherit reactome_links
-setMethod("reactome_links", c("x" = "ReactomeAnalysisResult"), function(x, print_result=TRUE, return_result=FALSE) {
+setMethod("reactome_links", c("x" = "ReactomeAnalysisResult"), function(x, print_result, return_result) {
+  if (missing(print_result)) print_result <- TRUE
+  if (missing(return_result)) return_result <- FALSE
+
   if (length(x@reactome_links) == 0) {
     message("No Reactome links available\n")
 
@@ -494,10 +500,13 @@ setGeneric("open_reactome", function(x, ...) standardGeneric("open_reactome"))
 #'
 #' @param n_visualization numeric The index of the visualization to display (default \code{1}).
 #'                        Use \code{\link{reactome_links}}
-#'                        to retrieve all available visualizations and their index.
+#'                        to retrieve all available visualizations and their index. By default,
+#'                        the first visualization is opened.
 #'
 #' @inherit open_reactome
-setMethod("open_reactome", c("x" = "ReactomeAnalysisResult"), function(x, n_visualization = 1, ...) {
+setMethod("open_reactome", c("x" = "ReactomeAnalysisResult"), function(x, n_visualization, ...) {
+  if (missing(n_visualization)) n_visualization <- 1
+
   if (length(x@reactome_links) < 1) {
     stop("Result does not contain any visualizations.")
   }

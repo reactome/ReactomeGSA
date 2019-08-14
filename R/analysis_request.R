@@ -3,7 +3,7 @@
 #' ReactomeAnalysisRequest class
 #'
 #' This class is used to collect all information required to submit an
-#' analysis request to the REACTOME Analysis System.
+#' analysis request to the Reactome Analysis System.
 #'
 #' @slot method character. Name of the method to use
 #' @slot request_object list. This slot should not be set manually. It stores the internal
@@ -19,7 +19,7 @@
 #' library(methods)
 #'
 #' # create the request method and specify its method
-#' request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' # add a dataset to the request
 #' data(griss_melanoma_proteomics)
@@ -38,12 +38,63 @@ ReactomeAnalysisRequest <- setClass("ReactomeAnalysisRequest",
                                        slots = list(method = "character", request_object = "list"),
                                        prototype = prototype(method = "Camera"))
 
+# ---- constructor function
+
+#' ReactomeAnalysisRequest
+#'
+#' Creates a new \code{ReactomeAnalysisRequest} object.
+#'
+#' The \code{ReactomeAnalysisRequest} class is used to collect all
+#' information required to submit an analysis request to the Reactome
+#' Analysis System.
+#'
+#' @param method character. Name of the method to use
+#'
+#' @return A ReactomeAnalysisRequest object.
+#' @export
+#'
+#' @examples
+#' library(ReactomeGSA.data)
+#' library(methods)
+#'
+#' # create the request method and specify its method
+#' request <- ReactomeAnalysisRequest(method = "Camera")
+#'
+#' # add a dataset to the request
+#' data(griss_melanoma_proteomics)
+#'
+#' request <- add_dataset(request = request,
+#'              expression_values = griss_melanoma_proteomics,
+#'              name = "Proteomics",
+#'              type = "proteomics_int",
+#'              comparison_factor = "condition",
+#'              comparison_group_1 = "MOCK",
+#'              comparison_group_2 = "MCM",
+#'              additional_factors = c("cell.type", "patient.id"))
+#'
+#' # to launch the actual analysis use the perform_reactome_analysis function
+ReactomeAnalysisRequest <- function(method) {
+  request <- methods::new("ReactomeAnalysisRequest", method = method)
+  return(request)
+}
+
 #' Check's if a ReactomeAnalysisRequest object is valid
 #'
 #' @param request The request object to check.
 #'
 #' @return TRUE if the object is valid or a string with the reason why it is not
 checkRequestValidity <- function(request) {
+  # the method name must be a string
+  if (!methods::is(request@method, "character")) {
+    return("'method' must be of class 'character'")
+  }
+
+  # method must only contain one element
+  if (length(request@method) != 1) {
+    return("'method' must be a single string.")
+  }
+
+  # make sure that method is not empty
   if (nchar(request@method) < 1) {
     return("'method' must be set")
   }
@@ -73,7 +124,7 @@ setValidity("ReactomeAnalysisRequest", checkRequestValidity)
 #' @examples
 #' library(methods)
 #'
-#' request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' request <- ReactomeAnalysisRequest(method = "Camera")
 #' print(request)
 #'
 #' # add additional parameters
@@ -94,7 +145,7 @@ setMethod("show", c("object" = "ReactomeAnalysisRequest"), function(object) prin
 #' @examples
 #' library(methods)
 #'
-#' request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' request <- ReactomeAnalysisRequest(method = "Camera")
 #' print(request)
 #'
 #' # add additional parameters
@@ -168,7 +219,7 @@ setMethod("print", c("x" = "ReactomeAnalysisRequest"), function(x, ...) {
 #' library(methods)
 #'
 #' # create a request object
-#' request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' # add a parameter
 #' request <- set_parameters(request, max_missing_values = 0.5, discrete_norm_function = "TMM")
@@ -240,7 +291,7 @@ setMethod("set_parameters", c("request" = "ReactomeAnalysisRequest"), function(r
 #' data(griss_melanoma_proteomics)
 #' library(methods)
 #'
-#' my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' my_request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' # since the expression_values object is a limma EList object, the sample_data is
 #' # retrieved from there
@@ -256,7 +307,7 @@ setMethod("set_parameters", c("request" = "ReactomeAnalysisRequest"), function(r
 #'                           additional_factors = c("cell.type", "patient.id"))
 setGeneric("add_dataset",
            function(request, expression_values, name, type, comparison_factor,
-                    comparison_group_1, comparison_group_2, sample_data = NULL, additional_factors = NULL, overwrite = FALSE, ...) {
+                    comparison_group_1, comparison_group_2, sample_data = NULL, additional_factors, overwrite, ...) {
              standardGeneric("add_dataset")
             })
 
@@ -363,8 +414,11 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
 #' @inherit add_dataset
 setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_values" = "data.frame"),
           function(request, expression_values, name, type, comparison_factor,
-                   comparison_group_1, comparison_group_2, sample_data, additional_factors = NULL, overwrite = FALSE,
+                   comparison_group_1, comparison_group_2, sample_data, additional_factors, overwrite,
                    ...) {
+            # set the default value for "overwrite"
+            if (missing(overwrite)) overwrite <- FALSE
+
             # get the dataset_df object or create a new one if none exists
             if ("datasets" %in% names(request@request_object)) {
               dataset_df <- request@request_object[["datasets"]]
@@ -420,12 +474,14 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
               "samples" = sample_names)
 
             # add additional factors if set
-            if (methods::is(additional_factors, "list") || methods::is(additional_factors, "character")) {
-              for (factor_name in additional_factors) {
-                if (!factor_name %in% colnames(sample_data)) {
-                  stop("Error: Failed to find additional_factor '", factor_name, "' in the passed sample_data (not in colnames)")
+            if (!missing(additional_factors)) {
+              if (methods::is(additional_factors, "list") || methods::is(additional_factors, "character")) {
+                for (factor_name in additional_factors) {
+                  if (!factor_name %in% colnames(sample_data)) {
+                    stop("Error: Failed to find additional_factor '", factor_name, "' in the passed sample_data (not in colnames)")
+                  }
+                  design[[factor_name]] <- as.character(sample_data[, factor_name])
                 }
-                design[[factor_name]] <- as.character(sample_data[, factor_name])
               }
             }
 
@@ -472,7 +528,7 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
 #' data(griss_melanoma_proteomics)
 #' library(methods)
 #'
-#' my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' my_request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' # since the expression_values object is a limma EList object, the sample_data is
 #' # retrieved from there
@@ -553,7 +609,7 @@ setMethod("toJSON", c("x" = "ReactomeAnalysisRequest"), function(x, ...) {
 #' data(griss_melanoma_proteomics)
 #' library(methods)
 #'
-#' my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+#' my_request <- ReactomeAnalysisRequest(method = "Camera")
 #'
 #' print(my_request)
 #'

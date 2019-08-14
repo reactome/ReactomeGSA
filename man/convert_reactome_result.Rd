@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_result.R
 \name{convert_reactome_result}
 \alias{convert_reactome_result}
-\title{Convert the REACTOME JSON result to a ReactomeAnalysisResult object}
+\title{Convert the Reactome JSON result to a ReactomeAnalysisResult object}
 \usage{
 convert_reactome_result(reactome_result)
 }
@@ -13,5 +13,5 @@ convert_reactome_result(reactome_result)
 A \code{\link{ReactomeAnalysisResult}} object
 }
 \description{
-Convert the REACTOME JSON result to a ReactomeAnalysisResult object
+Convert the Reactome JSON result to a ReactomeAnalysisResult object
 }

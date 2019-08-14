@@ -4,12 +4,12 @@
 \alias{get_reactome_analysis_result}
 \title{Retrieves the result of the submitted analysis using \code{\link{perform_reactome_analysis}}}
 \usage{
-get_reactome_analysis_result(analysis_id, reactome_url = NULL)
+get_reactome_analysis_result(analysis_id, reactome_url)
 }
 \arguments{
 \item{analysis_id}{The running analysis' id}
 
-\item{reactome_url}{URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+\item{reactome_url}{URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}
 }
 \value{

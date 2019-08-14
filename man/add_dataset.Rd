@@ -6,7 +6,7 @@
 \usage{
 add_dataset(request, expression_values, name, type, comparison_factor,
   comparison_group_1, comparison_group_2, sample_data = NULL,
-  additional_factors = NULL, overwrite = FALSE, ...)
+  additional_factors, overwrite, ...)
 }
 \arguments{
 \item{request}{The request to add the dataset to. Commonly a \code{\link{ReactomeAnalysisRequest}} object.}
@@ -47,7 +47,7 @@ library(ReactomeGSA.data)
 data(griss_melanoma_proteomics)
 library(methods)
 
-my_request <- new("ReactomeAnalysisRequest", method = "Camera")
+my_request <- ReactomeAnalysisRequest(method = "Camera")
 
 # since the expression_values object is a limma EList object, the sample_data is
 # retrieved from there

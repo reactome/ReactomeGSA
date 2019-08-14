@@ -14,7 +14,7 @@ A cacharacter vector of result types.
 }
 \description{
 Retrieves the available result types for the \code{\link{ReactomeAnalysisResult}} object. Currently,
-the REACTOME Analysis System supports \code{pathways} and gene level \code{fold_changes}
+the Reactome Analysis System supports \code{pathways} and gene level \code{fold_changes}
 as result types. Not all analysis methods return both data types though.
 Use the \code{names} function to find out which datasets are available
 in the result object.

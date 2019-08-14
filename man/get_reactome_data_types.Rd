@@ -2,24 +2,23 @@
 % Please edit documentation in R/get_methods.R
 \name{get_reactome_data_types}
 \alias{get_reactome_data_types}
-\title{REACTOMEgsa supported data types}
+\title{ReactomeGSA supported data types}
 \usage{
-get_reactome_data_types(print_types = TRUE, return_result = FALSE,
-  reactome_url = NULL)
+get_reactome_data_types(print_types, return_result, reactome_url)
 }
 \arguments{
 \item{print_types}{If set to \code{TRUE} (default) a (relatively) nice formatted version of the result is printed.}
 
 \item{return_result}{If set to \code{TRUE}, the result is returned as a data.frame (see below)}
 
-\item{reactome_url}{URL of the REACTOME API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
+\item{reactome_url}{URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}
 }
 \value{
 A \code{data.frame} containing one row per data type with its \code{id} and \code{description}.
 }
 \description{
-REACTOMEgsa supported data types
+ReactomeGSA supported data types
 }
 \examples{
 # retrieve the avialable data types
