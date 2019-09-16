@@ -1,0 +1,6 @@
+nav {
+	@extend .navbar, .navbar-inverse, .navbar-fixed-top;
+	button { @extend .navbar-toggle; }
+	#menu { @extend .collapse, .navbar-collapse; }
+  ul { @extend .nav, .navbar-nav; }
+}

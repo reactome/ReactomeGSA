@@ -1,0 +1,13 @@
+<main>
+  {% for feature in site.features %}
+    <hr id='{{ feature.id }}'>
+
+    <section>
+      <img class='{% cycle 'pull-right', 'pull-left' %}' src='{{ feature.image }}'>
+      <h2>{{ feature.heading }}<span>{{ feature.subheading }}</span></h2>
+      <div class='lead'>{{ feature.content }}</div>
+    </section>
+  {% endfor %}
+
+  <hr>
+</main>
