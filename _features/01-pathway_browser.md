@@ -3,7 +3,7 @@ id: pathway_browser
 name: Pathway browser
 heading: Reactome Pathway Browser<br>
 subheading: Web-based multi-omics cross-species pathway analyses
-image: "/assets/images/fig_analyses.png"
+image: "assets/images/fig_analyses.png"
 ---
 
 The Reactome pathway browser is the simplest approach to use the new

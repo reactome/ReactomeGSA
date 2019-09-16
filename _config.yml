@@ -1,7 +1,7 @@
 title: ReactomeGSA - Comparative multi-omics pathway analyses
 description: The ReactomeGSA project supports multi-omics, comparative pathway analyses using the Reactome pathway database.
 sitename: ReactomeGSA
-#baseurl: '/'
+baseurl: '/ReactomeGSA'
 sass:
   sass_dir: /assets/_sass
   style: :compressed

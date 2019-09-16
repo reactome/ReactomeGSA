@@ -3,7 +3,7 @@ id: backend
 name: Backend
 heading: ReactomeGSA Backend<br>
 subheading: A kubernetes application
-image: "/assets/images/fig_backend.png"
+image: "assets/images/fig_backend.png"
 ---
 
 The complete backend of the Reactome Gene Set Analysis service is developed

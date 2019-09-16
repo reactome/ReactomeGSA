@@ -3,7 +3,7 @@ id: r_package
 name: R Package
 heading: ReactomeGSA<br>
 subheading: A Bioconductor R package
-image: "/assets/images/fig_r_package.png"
+image: "assets/images/fig_r_package.png"
 ---
 
 The [ReactomeGSA](https://github.com/reactome/ReactomeGSA) R package is available
