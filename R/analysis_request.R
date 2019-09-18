@@ -40,6 +40,7 @@ ReactomeAnalysisRequest <- setClass("ReactomeAnalysisRequest",
 
 # ---- constructor function
 
+#' @param method character. Name of the method to use.
 #' @export
 ReactomeAnalysisRequest <- function(method) {
   request <- methods::new("ReactomeAnalysisRequest", method = method)

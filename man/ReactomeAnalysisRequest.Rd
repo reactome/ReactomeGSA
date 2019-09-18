@@ -6,6 +6,9 @@
 \usage{
 ReactomeAnalysisRequest(method)
 }
+\arguments{
+\item{method}{character. Name of the method to use.}
+}
 \value{
 A ReactomeAnalysisRequest object.
 }
