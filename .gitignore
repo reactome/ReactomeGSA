@@ -6,3 +6,5 @@ inst/doc
 .Rbuildignore
 *.Rproj
 R/local_test.R
+vignettes/*.html
+vignettes/*.R
