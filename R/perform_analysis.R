@@ -38,10 +38,7 @@
 #'
 #' # perform the analysis
 #' my_result <- perform_reactome_analysis(request = my_request, verbose = FALSE)
-perform_reactome_analysis <- function(request, verbose, reactome_url) {
-  if (missing(verbose)) verbose <- TRUE
-  if (missing(reactome_url)) reactome_url <- NULL
-
+perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NULL) {
   if (!methods::is(request, "ReactomeAnalysisRequest")) {
     stop("Error: request must be a 'ReactomeAnalysisRequest' object.")
   }

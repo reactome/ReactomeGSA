@@ -201,7 +201,7 @@ Blocking factors can simply be set `additional_factors` to a vector of names. Th
 Once the `ReactomeAnalysisRequest` is created, the complete analysis can be run using `perform_reactome_analysis`:
 
 ```{r perform_analysis}
-result <- perform_reactome_analysis(request = my_request, verbose = TRUE)
+result <- perform_reactome_analysis(request = my_request)
 ```
 
 ## Investigating the result

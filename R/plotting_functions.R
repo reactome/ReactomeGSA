@@ -19,8 +19,8 @@
 #' library(ReactomeGSA.data)
 #' data(griss_melanoma_result)
 #'
-#' # create the volcano plot
-#' plot_obj <- plot_volcano(griss_melanoma_result, dataset = "rnaseq")
+#' # create the volcano plot for the first dataset
+#' plot_obj <- plot_volcano(griss_melanoma_result)
 #'
 #' # display the plot using `print(plot_obj)`
 setGeneric("plot_volcano", function(x, ...) standardGeneric("plot_volcano"))
@@ -30,9 +30,7 @@ setGeneric("plot_volcano", function(x, ...) standardGeneric("plot_volcano"))
 #' @param dataset The name or index of the dataset to plot (first one by default).
 #'
 #' @inherit plot_volcano
-setMethod("plot_volcano", c("x" = "ReactomeAnalysisResult"), function(x, dataset, ...) {
-  if (missing(dataset)) dataset <- 1
-
+setMethod("plot_volcano", c("x" = "ReactomeAnalysisResult"), function(x, dataset = 1, ...) {
   # convert numeric dataset indices to the name
   if (is.numeric(dataset)) {
     if (dataset > length(names(x@results))) {

@@ -8,9 +8,7 @@
 #'         \code{description}, and \code{completed} (numeric between 0 - 1)
 #'
 #' @export
-get_reactome_analysis_status <- function(analysis_id, reactome_url) {
-  if (missing(reactome_url)) reactome_url <- NULL
-
+get_reactome_analysis_status <- function(analysis_id, reactome_url = NULL) {
   reactome_url <- check_reactome_url(reactome_url)
 
   # get the status
@@ -31,9 +29,7 @@ get_reactome_analysis_status <- function(analysis_id, reactome_url) {
 #' @return The result object
 #'
 #' @export
-get_reactome_analysis_result <- function(analysis_id, reactome_url) {
-  if (missing(reactome_url)) reactome_url <- NULL
-
+get_reactome_analysis_result <- function(analysis_id, reactome_url = NULL) {
   reactome_url <- check_reactome_url(reactome_url)
 
   # get the status

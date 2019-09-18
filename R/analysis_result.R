@@ -336,11 +336,8 @@ setGeneric("pathways", function(x, ...) standardGeneric("pathways"))
 #'                 results are sorted based on the first dataset.
 #'
 #' @inherit pathways
-setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p, order_by, ...) {
+setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p = 0.01, order_by = NULL, ...) {
   combined_result <- data.frame()
-
-  # set the default value for p
-  if (missing(p)) p <- 0.01
 
   params <- list(...)
 
@@ -385,13 +382,13 @@ setMethod("pathways", c("x" = "ReactomeAnalysisResult"), function(x, p, order_by
   }
 
   # sort the result if the parameter is set
-  if (!missing(order_by) && !order_by %in% names(x@results)) {
+  if (!is.null(order_by) && !order_by %in% names(x@results)) {
     warning("Warning: order_by dataset '", order_by, "' does not exist. Ignoring parameter.")
     order_by <- names(x@results)[1]
   }
 
   # if not set, sort according to the first dataset
-  if (missing(order_by) || is.null(order_by)) {
+  if (is.null(order_by)) {
     order_by <- names(x@results)[1]
   }
 
@@ -445,10 +442,7 @@ setGeneric("reactome_links", function(x, ...) standardGeneric("reactome_links"))
 #'                      and optionally a \code{description} slot.
 #'
 #' @inherit reactome_links
-setMethod("reactome_links", c("x" = "ReactomeAnalysisResult"), function(x, print_result, return_result) {
-  if (missing(print_result)) print_result <- TRUE
-  if (missing(return_result)) return_result <- FALSE
-
+setMethod("reactome_links", c("x" = "ReactomeAnalysisResult"), function(x, print_result = TRUE, return_result = FALSE) {
   if (length(x@reactome_links) == 0) {
     message("No Reactome links available\n")
 
@@ -504,9 +498,7 @@ setGeneric("open_reactome", function(x, ...) standardGeneric("open_reactome"))
 #'                        the first visualization is opened.
 #'
 #' @inherit open_reactome
-setMethod("open_reactome", c("x" = "ReactomeAnalysisResult"), function(x, n_visualization, ...) {
-  if (missing(n_visualization)) n_visualization <- 1
-
+setMethod("open_reactome", c("x" = "ReactomeAnalysisResult"), function(x, n_visualization = 1, ...) {
   if (length(x@reactome_links) < 1) {
     stop("Result does not contain any visualizations.")
   }

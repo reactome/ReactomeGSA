@@ -382,11 +382,8 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
 #' @inherit add_dataset
 setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_values" = "data.frame"),
           function(request, expression_values, name, type, comparison_factor,
-                   comparison_group_1, comparison_group_2, sample_data, additional_factors, overwrite,
+                   comparison_group_1, comparison_group_2, sample_data, additional_factors = NULL, overwrite = FALSE,
                    ...) {
-            # set the default value for "overwrite"
-            if (missing(overwrite)) overwrite <- FALSE
-
             # get the dataset_df object or create a new one if none exists
             if ("datasets" %in% names(request@request_object)) {
               dataset_df <- request@request_object[["datasets"]]
@@ -442,7 +439,7 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
               "samples" = sample_names)
 
             # add additional factors if set
-            if (!missing(additional_factors)) {
+            if (!is.null(additional_factors)) {
               if (methods::is(additional_factors, "list") || methods::is(additional_factors, "character")) {
                 for (factor_name in additional_factors) {
                   if (!factor_name %in% colnames(sample_data)) {

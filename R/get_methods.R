@@ -44,13 +44,7 @@
 #'
 #' # get the details for PADOG
 #' get_reactome_methods(print_details = TRUE, method = "PADOG")
-get_reactome_methods <- function(print_methods, print_details, return_result, method, reactome_url) {
-  # set the default values
-  if (missing(print_methods)) print_methods <- TRUE
-  if (missing(print_details)) print_details <- FALSE
-  if (missing(return_result)) return_result <- FALSE
-  if (missing(reactome_url)) reactome_url <- NULL
-
+get_reactome_methods <- function(print_methods = TRUE, print_details = FALSE, return_result = FALSE, method = NULL, reactome_url = NULL) {
   reactome_url <- check_reactome_url(reactome_url)
 
   # fetch the methods
@@ -60,7 +54,7 @@ get_reactome_methods <- function(print_methods, print_details, return_result, me
   if (print_methods) {
     for (n_method in seq(to = nrow(available_methods))) {
       # ignore all methods that are not "method" if set
-      if (!missing(method) && tolower(available_methods[n_method, "name"]) != tolower(method)) {
+      if (!is.null(method) && tolower(available_methods[n_method, "name"]) != tolower(method)) {
         next
       }
 
@@ -119,12 +113,7 @@ get_reactome_methods <- function(print_methods, print_details, return_result, me
 #'
 #' # simply print the available methods
 #' get_reactome_data_types()
-get_reactome_data_types <- function(print_types, return_result, reactome_url) {
-  # set the default values
-  if (missing(print_types)) print_types <- TRUE
-  if (missing(return_result)) return_result <- FALSE
-  if (missing(reactome_url)) reactome_url <- NULL
-
+get_reactome_data_types <- function(print_types = TRUE, return_result = FALSE, reactome_url = NULL) {
   reactome_url <- check_reactome_url(reactome_url)
 
   # fetch the types
