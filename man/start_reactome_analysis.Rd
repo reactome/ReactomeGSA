@@ -4,7 +4,7 @@
 \alias{start_reactome_analysis}
 \title{Start Reactome Analysis}
 \usage{
-start_reactome_analysis(request, reactome_url)
+start_reactome_analysis(request, reactome_url = NULL)
 }
 \arguments{
 \item{request}{\code{\link{ReactomeAnalysisRequest}} object to submit.}

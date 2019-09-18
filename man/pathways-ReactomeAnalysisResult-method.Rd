@@ -5,7 +5,8 @@
 \alias{pathways,ReactomeAnalysisResult-method}
 \title{ReactomeAnalysisResult - pathways}
 \usage{
-\S4method{pathways}{ReactomeAnalysisResult}(x, p, order_by, ...)
+\S4method{pathways}{ReactomeAnalysisResult}(x, p = 0.01,
+  order_by = NULL, ...)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}

@@ -4,10 +4,10 @@
 \alias{checkRequestValidity}
 \title{Check's if a ReactomeAnalysisRequest object is valid}
 \usage{
-checkRequestValidity(request)
+checkRequestValidity(object)
 }
 \arguments{
-\item{request}{The request object to check.}
+\item{object}{The request object to check.}
 }
 \value{
 TRUE if the object is valid or a string with the reason why it is not

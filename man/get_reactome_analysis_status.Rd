@@ -4,7 +4,7 @@
 \alias{get_reactome_analysis_status}
 \title{Retrieves the status of the submitted analysis using \code{\link{start_reactome_analysis}}}
 \usage{
-get_reactome_analysis_status(analysis_id, reactome_url)
+get_reactome_analysis_status(analysis_id, reactome_url = NULL)
 }
 \arguments{
 \item{analysis_id}{The running analysis' id}

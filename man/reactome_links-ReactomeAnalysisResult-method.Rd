@@ -5,8 +5,8 @@
 \alias{reactome_links,ReactomeAnalysisResult-method}
 \title{ReactomeAnalysisResult - reactome_links}
 \usage{
-\S4method{reactome_links}{ReactomeAnalysisResult}(x, print_result,
-  return_result)
+\S4method{reactome_links}{ReactomeAnalysisResult}(x, print_result = TRUE,
+  return_result = FALSE)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}

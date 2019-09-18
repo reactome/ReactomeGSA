@@ -48,28 +48,28 @@ ReactomeAnalysisRequest <- function(method) {
 
 #' Check's if a ReactomeAnalysisRequest object is valid
 #'
-#' @param request The request object to check.
+#' @param object The request object to check.
 #'
 #' @return TRUE if the object is valid or a string with the reason why it is not
-checkRequestValidity <- function(request) {
+checkRequestValidity <- function(object) {
   # the method name must be a string
-  if (!methods::is(request@method, "character")) {
+  if (!methods::is(object@method, "character")) {
     return("'method' must be of class 'character'")
   }
 
   # method must only contain one element
-  if (length(request@method) != 1) {
+  if (length(object@method) != 1) {
     return("'method' must be a single string.")
   }
 
   # make sure that method is not empty
-  if (nchar(request@method) < 1) {
+  if (nchar(object@method) < 1) {
     return("'method' must be set")
   }
 
-  if (length(request@request_object) > 0) {
+  if (length(object@request_object) > 0) {
     # TODO: make sure the request object is valid
-    if (!all(names(request@request_object) %in% c("parameters", "datasets")) || length(request@request_object) > 2) {
+    if (!all(names(object@request_object) %in% c("parameters", "datasets")) || length(object@request_object) > 2) {
       return("'request_object' must only contain 'parameters' and 'datasets' slots")
     }
   }
@@ -275,7 +275,7 @@ setMethod("set_parameters", c("request" = "ReactomeAnalysisRequest"), function(r
 #'                           additional_factors = c("cell.type", "patient.id"))
 setGeneric("add_dataset",
            function(request, expression_values, name, type, comparison_factor,
-                    comparison_group_1, comparison_group_2, sample_data = NULL, additional_factors, overwrite, ...) {
+                    comparison_group_1, comparison_group_2, sample_data = NULL, additional_factors = NULL, overwrite = FALSE, ...) {
              standardGeneric("add_dataset")
             })
 

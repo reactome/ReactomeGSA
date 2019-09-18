@@ -4,7 +4,7 @@
 \alias{get_reactome_analysis_result}
 \title{Retrieves the result of the submitted analysis using \code{\link{perform_reactome_analysis}}}
 \usage{
-get_reactome_analysis_result(analysis_id, reactome_url)
+get_reactome_analysis_result(analysis_id, reactome_url = NULL)
 }
 \arguments{
 \item{analysis_id}{The running analysis' id}

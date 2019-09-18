@@ -7,8 +7,8 @@
 \usage{
 \S4method{add_dataset}{ReactomeAnalysisRequest,data.frame}(request,
   expression_values, name, type, comparison_factor, comparison_group_1,
-  comparison_group_2, sample_data = NULL, additional_factors, overwrite,
-  ...)
+  comparison_group_2, sample_data = NULL, additional_factors = NULL,
+  overwrite = FALSE, ...)
 }
 \arguments{
 \item{request}{ReactomeAnalysisRequest.}

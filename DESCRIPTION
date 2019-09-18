@@ -1,7 +1,7 @@
 Package: ReactomeGSA
 Type: Package
 Title: Client for the Reactome Analysis Service for comparative multi-omics gene set analysis
-Version: 0.99.8
+Version: 0.99.9
 Authors@R: person("Johannes", "Griss", email = "johannes.griss@meduniwien.ac.at", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2206-9511"))
 Description: The ReactomeGSA packages uses Reactome's online analysis service to perform a multi-omics
     gene set analysis. The main advantage of this package is, that the retrieved results can be 
@@ -21,6 +21,9 @@ Suggests:
     ReactomeGSA.data,
     Biobase,
     devtools
+Enhances:
+    limma,
+    edgeR
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology, GeneExpression, Reactome
 BugReports: https://github.com/reactome/ReactomeGSA/issues

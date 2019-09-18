@@ -26,8 +26,8 @@ This function is only available for GSA-based analysis results.
 library(ReactomeGSA.data)
 data(griss_melanoma_result)
 
-# create the volcano plot
-plot_obj <- plot_volcano(griss_melanoma_result, dataset = "rnaseq")
+# create the volcano plot for the first dataset
+plot_obj <- plot_volcano(griss_melanoma_result)
 
 # display the plot using `print(plot_obj)`
 }

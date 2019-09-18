@@ -5,7 +5,8 @@
 \alias{open_reactome,ReactomeAnalysisResult-method}
 \title{open_reactome - ReactomeAnalysisResult}
 \usage{
-\S4method{open_reactome}{ReactomeAnalysisResult}(x, n_visualization, ...)
+\S4method{open_reactome}{ReactomeAnalysisResult}(x, n_visualization = 1,
+  ...)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult.}
