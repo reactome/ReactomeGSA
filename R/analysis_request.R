@@ -40,39 +40,7 @@ ReactomeAnalysisRequest <- setClass("ReactomeAnalysisRequest",
 
 # ---- constructor function
 
-#' ReactomeAnalysisRequest
-#'
-#' Creates a new \code{ReactomeAnalysisRequest} object.
-#'
-#' The \code{ReactomeAnalysisRequest} class is used to collect all
-#' information required to submit an analysis request to the Reactome
-#' Analysis System.
-#'
-#' @param method character. Name of the method to use
-#'
-#' @return A ReactomeAnalysisRequest object.
 #' @export
-#'
-#' @examples
-#' library(ReactomeGSA.data)
-#' library(methods)
-#'
-#' # create the request method and specify its method
-#' request <- ReactomeAnalysisRequest(method = "Camera")
-#'
-#' # add a dataset to the request
-#' data(griss_melanoma_proteomics)
-#'
-#' request <- add_dataset(request = request,
-#'              expression_values = griss_melanoma_proteomics,
-#'              name = "Proteomics",
-#'              type = "proteomics_int",
-#'              comparison_factor = "condition",
-#'              comparison_group_1 = "MOCK",
-#'              comparison_group_2 = "MCM",
-#'              additional_factors = c("cell.type", "patient.id"))
-#'
-#' # to launch the actual analysis use the perform_reactome_analysis function
 ReactomeAnalysisRequest <- function(method) {
   request <- methods::new("ReactomeAnalysisRequest", method = method)
   return(request)
