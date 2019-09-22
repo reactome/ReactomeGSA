@@ -2,7 +2,7 @@
 id: pathway_browser
 name: Pathway browser
 heading: Reactome Pathway Browser<br>
-subheading: Web-based multi-omics cross-species pathway analyses
+subheading: Web-based multi-omics cross-species pathway analysis
 image: "assets/images/fig_analyses.png"
 ---
 
