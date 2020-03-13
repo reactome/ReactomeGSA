@@ -1,3 +1,6 @@
+Changes in version 1.2.0 (2020-03-13)
++ Add support manually track the status of submitted analyses
+
 Changes in version 1.1.1 (2020-02-19)
 + Compress JSON requests using gzip to improve performance for large datasets
 
