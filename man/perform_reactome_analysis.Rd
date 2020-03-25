@@ -4,12 +4,16 @@
 \alias{perform_reactome_analysis}
 \title{Perform a Reactome Analaysis}
 \usage{
-perform_reactome_analysis(request, verbose = TRUE, reactome_url = NULL)
+perform_reactome_analysis(request, verbose = TRUE, compress = TRUE,
+  reactome_url = NULL)
 }
 \arguments{
 \item{request}{\code{\link{ReactomeAnalysisRequest}} to submit.}
 
 \item{verbose}{logical. If \code{FALSE} status messages are not printed to the console.}
+
+\item{compress}{logical. If \code{TRUE} (default) the request data is compressed before submitting it to the ReactomeGSA API.
+This is the generally recommended way and should only be disabled for debugging purposes.}
 
 \item{reactome_url}{URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}

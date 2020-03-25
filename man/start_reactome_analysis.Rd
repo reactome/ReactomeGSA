@@ -4,18 +4,48 @@
 \alias{start_reactome_analysis}
 \title{Start Reactome Analysis}
 \usage{
-start_reactome_analysis(request, reactome_url = NULL)
+start_reactome_analysis(request, compress = TRUE, reactome_url = NULL)
 }
 \arguments{
 \item{request}{\code{\link{ReactomeAnalysisRequest}} object to submit.}
+
+\item{compress}{If set (default) the JSON request data is compressed using gzip.}
 
 \item{reactome_url}{URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 Specific ports can be set using the standard URL specification (for example http://your.service:1234)}
 }
 \value{
 character The analysis job's id.
+
+#' @examples
+# create a request using Camera as an analysis
+library(ReactomeGSA.data)
+data(griss_melanoma_proteomics)
+
+my_request <- ReactomeAnalysisRequest(method = "Camera")
+
+# set maximum missing values to 0.5 and do not create any reactome visualizations
+my_request <- set_parameters(request = my_request,
+                             max_missing_values = 0.5,
+                             create_reactome_visualization = FALSE)
+
+# add the dataset
+my_request <- add_dataset(request = my_request,
+                          expression_values = griss_melanoma_proteomics,
+                          name = "Proteomics",
+                          type = "proteomics_int",
+                          comparison_factor = "condition",
+                          comparison_group_1 = "MOCK",
+                          comparison_group_2 = "MCM",
+                          additional_factors = c("cell.type", "patient.id"))
+# start the analysis      
+analysis_id <- start_reactome_analysis(my_request)
 }
 \description{
 Submits a \code{\link{ReactomeAnalysisRequest}} to the Reactome Analysis Service API and
 returns the analysis id of the submitted job.
+}
+\details{
+This function should only be used for very large requests that likely take a long time to complete.
+By default, users should use the \code{\link{perform_reactome_analysis}} function to run an analysis.
 }
