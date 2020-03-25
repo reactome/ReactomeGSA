@@ -374,6 +374,23 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
 
           })
 
+#' add_dataset - matrix
+#'
+#' @param request ReactomeAnalysisRequest.
+#' @param expression_values matrix. In this case, the \code{sample_data} must be set.
+#'
+#' @family add_dataset methods
+#' @inherit add_dataset
+setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_values" = "matrix"),
+          function(request, expression_values, name, type, comparison_factor,
+                   comparison_group_1, comparison_group_2, sample_data, additional_factors = NULL, overwrite = FALSE,
+                   ...) {
+            # simply convert to a data.frame and call the respective method
+            expression_values <- as.data.frame(expression_values)
+            return(add_dataset(request, expression_values, name, type, comparison_factor, comparison_group_1, comparison_group_2,
+                               sample_data, additional_factors, overwrite, ...))
+})
+
 #' add_dataset - data.frame
 #'
 #' @param request ReactomeAnalysisRequest.
@@ -475,7 +492,7 @@ setMethod("add_dataset", c("request" = "ReactomeAnalysisRequest", "expression_va
             request@request_object[["datasets"]] <- rbind(dataset_df, dataset_row)
 
             return(request)
-          })
+})
 
 # remove_dataset ----
 #' remove_dataset
