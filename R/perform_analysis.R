@@ -8,6 +8,8 @@
 #'
 #' @param request \code{\link{ReactomeAnalysisRequest}} to submit.
 #' @param verbose logical. If \code{FALSE} status messages are not printed to the console.
+#' @param compress logical. If \code{TRUE} (default) the request data is compressed before submitting it to the ReactomeGSA API.
+#'                 This is the generally recommended way and should only be disabled for debugging purposes.
 #' @param reactome_url URL of the Reactome API Server. Overwrites the URL set in the 'reactome_gsa.url' option.
 #'                     Specific ports can be set using the standard URL specification (for example http://your.service:1234)
 #'
@@ -38,14 +40,14 @@
 #'
 #' # perform the analysis
 #' my_result <- perform_reactome_analysis(request = my_request, verbose = FALSE)
-perform_reactome_analysis <- function(request, verbose = TRUE, reactome_url = NULL) {
+perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, reactome_url = NULL) {
   if (!methods::is(request, "ReactomeAnalysisRequest")) {
     stop("Error: request must be a 'ReactomeAnalysisRequest' object.")
   }
 
   # submit the request
   if (verbose) message("Submitting request to Reactome API...")
-  analysis_id <- start_reactome_analysis(request = request, reactome_url = reactome_url)
+  analysis_id <- start_reactome_analysis(request = request, compress = compress, reactome_url = reactome_url)
 
   # get the status
   completed <- get_reactome_analysis_status(analysis_id)

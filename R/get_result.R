@@ -11,8 +11,11 @@
 get_reactome_analysis_status <- function(analysis_id, reactome_url = NULL) {
   reactome_url <- check_reactome_url(reactome_url)
 
-  # get the status
-  status_obj <- jsonlite::fromJSON(paste0(reactome_url, "0.1/status/", analysis_id))
+  # get the status - on error return a default status
+  status_obj <- tryCatch(
+    jsonlite::fromJSON(paste0(reactome_url, "0.1/status/", analysis_id)),
+    error = function(e) list(completed = 0, description = "Unknown", status = "running")
+  )
 
   return(status_obj)
 }
