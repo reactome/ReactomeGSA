@@ -8,7 +8,8 @@
 \S4method{analyse_sc_clusters}{Seurat}(object, use_interactors = TRUE,
   include_disease_pathways = FALSE,
   create_reactome_visualization = FALSE, create_reports = FALSE,
-  report_email = NULL, verbose = FALSE, ...)
+  report_email = NULL, verbose = FALSE, assay = "RNA",
+  slot = "counts", ...)
 }
 \arguments{
 \item{object}{The \code{Seurat} object containing the single cell RNA-sequencing data.}
@@ -30,7 +31,12 @@ are send to the supplied e-mail address.}
 
 \item{verbose}{If set, additional status messages are printed.}
 
-\item{...}{Parameters passed to Seurat's \code{AverageExpression} function.}
+\item{assay}{By default, the "RNA" assay is used, which contains the original read counts.}
+
+\item{slot}{The slot in the Seurat object to use. Default and recommended approach is to use the raw counts.}
+
+\item{...}{Parameters passed to the specific implementation. Detailed documentations
+can be found there.}
 }
 \value{
 A \code{\link{ReactomeAnalysisResult}} object.

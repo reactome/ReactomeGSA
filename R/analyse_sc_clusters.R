@@ -80,7 +80,7 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
   })
   
   # convert to a data.frame
-  av_counts <- t( data.frame(av_count) )
+  av_counts <- t( data.frame(av_counts) )
   
   # create the ReactomeGSA request
   request <- ReactomeGSA::ReactomeAnalysisRequest(method = "ssGSEA")
