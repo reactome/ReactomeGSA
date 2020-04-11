@@ -4,7 +4,22 @@ The `ReactomeGSA` package is an R client to the `Reactome Analysis System`. This
 
 ## Installation
 
-The `ReactomeGSA` package is currently only available on GitHub. Therefore, you need the `devtools` package to install it:
+### Bioconductor
+
+The `ReactomeGSA` package is part of Bioconductor since version 3.10. You can find detailed information on the latest stable version on [ReactomeGSA's Bioconductor page](https://doi.org/doi:10.18129/B9.bioc.ReactomeGSA).
+
+To install the latest version from Bioconductor use
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("ReactomeGSA")
+```
+
+### Latest Version
+
+Bioconductor is updated every 6 months. You can still get the latest version of the ReactomeGSA package directly from GitHub:
 
 ```r
 # install devtools if needed
