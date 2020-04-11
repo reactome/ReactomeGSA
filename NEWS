@@ -1,3 +1,6 @@
+Changes in version 1.1.3 (2020-04-11)
++ Added custom function to calculate average cluster expression for Seurat objects
+
 Changes in version 1.1.2 (2020-03-13)
 + Add support manually track the status of submitted analyses
 + Added additional signature to add_dataset to support expression values as matrix

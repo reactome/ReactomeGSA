@@ -51,33 +51,36 @@ setGeneric("analyse_sc_clusters", function(object, use_interactors = TRUE,
 #' @inherit analyse_sc_clusters
 #' 
 #' @param object The \code{Seurat} object containing the single cell RNA-sequencing data.
-#' @param ... Parameters passed to Seurat's \code{AverageExpression} function.
+#' @param assay By default, the "RNA" assay is used, which contains the original read counts.
+#' @param slot The slot in the Seurat object to use. Default and recommended approach is to use the raw counts.
 setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_interactors = TRUE, 
                                                                   include_disease_pathways = FALSE,  
                                                                   create_reactome_visualization = FALSE,
                                                                   create_reports = FALSE,
                                                                   report_email = NULL,
-                                                                  verbose = FALSE, ...) {
-  # create the parameters for the AverageExpression call
-  if (verbose) message("Converting parameters...")
-  seurat_params <- list(...)
-  seurat_params["object"] = object
-  seurat_params["verbose"] = verbose
-  
-  # get the count data
-  if (verbose) message("Calculating average expression per cluster...")
-  counts <- do.call(Seurat::AverageExpression, seurat_params)
-  
-  # only use default assay
-  if (is(counts, "list")) {
-    default_assay <- Seurat::DefaultAssay(object)
-    
-    if (!default_assay %in% names(counts)) {
-      stop("Error: Failed to retrieve average expression for default assay '", default_assay, "'")
-    }
-    
-    counts <- counts[[default_assay]]
+                                                                  verbose = FALSE, 
+                                                                  assay = "RNA",
+                                                                  slot = "counts", ...) {
+  # make sure the assay exists
+  if (!assay %in% Seurat::Assays(object)) {
+    stop("Error: Assay '", assay, "' does not exist in passed Seurat object.")
   }
+  
+  # get the data
+  raw_data <- Seurat::GetAssayData(object, assay = assay, slot = slot)
+  
+  # get the identis
+  cell_ids <- as.character( Seurat::Idents(object) )
+  
+  # get the average counts
+  if (verbose) message("Calculating average cluster expression...")
+  
+  av_counts <- apply(raw_data, 1, function(row_data) {
+    by(row_data, cell_ids, mean)
+  })
+  
+  # convert to a data.frame
+  av_counts <- t( data.frame(av_count) )
   
   # create the ReactomeGSA request
   request <- ReactomeGSA::ReactomeAnalysisRequest(method = "ssGSEA")
@@ -93,10 +96,9 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
   }
   
   # create the request object
-  df_counts <- data.frame(counts)
-  cell_groups <- colnames(df_counts)
+  cell_groups <- colnames(av_counts)
   
-  request <- ReactomeGSA::add_dataset(request, expression_values = df_counts, 
+  request <- ReactomeGSA::add_dataset(request, expression_values = av_counts, 
                                       name = "Seurat", type = "rnaseq_counts", 
                                       comparison_factor = "Cluster", comparison_group_1 = unique(cell_groups)[1], comparison_group_2 = unique(cell_groups)[2], 
                                       sample_data = data.frame(row.names = cell_groups, Cluster = cell_groups))
