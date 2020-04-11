@@ -32,6 +32,8 @@ Other ReactomeAnalysisResult functions: \code{\link{get_result}},
   \code{\link{names,ReactomeAnalysisResult-method}},
   \code{\link{open_reactome}},
   \code{\link{plot_correlations}},
+  \code{\link{plot_gsva_heatmap}},
+  \code{\link{plot_gsva_pathway}},
   \code{\link{plot_volcano}}, \code{\link{reactome_links}},
   \code{\link{result_types}}
 }

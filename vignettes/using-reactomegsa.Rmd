@@ -201,7 +201,7 @@ Blocking factors can simply be set `additional_factors` to a vector of names. Th
 Once the `ReactomeAnalysisRequest` is created, the complete analysis can be run using `perform_reactome_analysis`:
 
 ```{r perform_analysis}
-result <- perform_reactome_analysis(request = my_request)
+result <- perform_reactome_analysis(request = my_request, compress = F)
 ```
 
 ## Investigating the result
@@ -236,6 +236,22 @@ Additionally, it is possible to directly merge the pathway level data for all re
 combined_pathways <- pathways(result)
 
 head(combined_pathways)
+```
+
+## Visualising results
+
+The ReactomeGSA package includes several basic plotting functions to visualise the pathway results. For comparative gene set analysis like the one presented here, two functions are available: `plot_correlations` and `plot_volcano`.
+
+`plot_correlations` can be used to quickly assess how similar two datasets are on the pathway level:
+
+```{r}
+plot_correlations(result)
+```
+
+Individual datasets can further be visualised using volcano plots of the pathway data:
+
+```{r}
+plot_volcano(result, 2)
 ```
 
 ## Session Info

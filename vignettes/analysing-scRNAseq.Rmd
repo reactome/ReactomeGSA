@@ -1,0 +1,158 @@
+---
+title: "Analysing single-cell RNA-sequencing Data"
+author: "Johannes Griss"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analysing single-cell RNAseq data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The ReactomeGSA package is a client to the web-based Reactome Analysis System. Essentially, it performs a gene set analysis using the latest version of the Reactome pathway database as a backend.
+
+This vignette shows how the ReactomeGSA package can be used to perform a pathway analysis of cell clusters in single-cell RNA-sequencing data.
+
+### Citation
+
+To cite this package, use 
+
+```
+Griss J. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)
+```
+
+## Installation
+
+The `ReactomeGSA` package can be directly installed from Bioconductor:
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+if (!require(ReactomeGSA))
+  BiocManager::install("ReactomeGSA")
+
+# install the ReactomeGSA.data package for the example data
+if (!require(ReactomeGSA))
+  BiocManager::install("ReactomeGSA.data")
+```
+
+For more information, see https://bioconductor.org/install/.
+
+## Example data
+
+As an example we load single-cell RNA-sequencing data of B cells extracted from the dataset published by Jerby-Arnon *et al.* (Cell, 2018).
+
+**Note**: This is not a complete Seurat object. To decrease the size, the object only contains gene expression values and cluster annotations.
+
+```{r}
+library(ReactomeGSA.data)
+data(jerby_b_cells)
+
+jerby_b_cells
+```
+
+## Pathway analysis of cell clusters
+
+The pathway analysis is at the very end of a scRNA-seq workflow. This means, that any Q/C was already performed, the data was normalized and cells were already clustered.
+
+The ReactomeGSA package can now be used to get pathway-level expression values for every cell cluster. This is achieved by calculating the mean gene expression for every cluster and then submitting this data to a gene set variation analysis. 
+
+All of this is wrapped in the single `analyse_sc_clusters` function.
+
+```{R}
+library(ReactomeGSA)
+
+gsva_result <- analyse_sc_clusters(jerby_b_cells, verbose = TRUE)
+```
+
+The resulting object is a standard `ReactomeAnalysisResult` object.
+
+```{r}
+gsva_result
+```
+
+`pathways` returns the pathway-level expression values per cell cluster:
+
+```{r}
+pathway_expression <- pathways(gsva_result)
+
+# simplify the column names by removing the default dataset identifier
+colnames(pathway_expression) <- gsub("\\.Seurat", "", colnames(pathway_expression))
+
+pathway_expression[1:3,]
+```
+
+A simple approach to find the most relevant pathways is to assess the maximum difference in expression for every pathway:
+
+```{r}
+# find the maximum differently expressed pathway
+max_difference <- do.call(rbind, apply(pathway_expression, 1, function(row) {
+    values <- as.numeric(row[2:length(row)])
+    return(data.frame(name = row[1], min = min(values), max = max(values)))
+}))
+
+max_difference$diff <- max_difference$max - max_difference$min
+
+# sort based on the difference
+max_difference <- max_difference[order(max_difference$diff, decreasing = T), ]
+
+head(max_difference)
+```
+
+## Plotting the results
+
+The ReactomeGSA package contains two functions to visualize these pathway results. The first simply plots the expression for a selected pathway:
+
+```{r, fig.width=7, fig.height=4}
+plot_gsva_pathway(gsva_result, pathway_id = rownames(max_difference)[1])
+```
+
+For a better overview, the expression of multiple pathways can be shown as a heatmap using `gplots` `heatmap.2` function:
+
+```{r, fig.width=7, fig.height=8}
+# Additional parameters are directly passed to gplots heatmap.2 function
+plot_gsva_heatmap(gsva_result, max_pathways = 15, margins = c(6,20))
+```
+
+The `plot_gsva_heatmap` function can also be used to only display specific pahtways:
+```{r, fig.width=7, fig.height=4}
+# limit to selected B cell related pathways
+relevant_pathways <- c("R-HSA-983170", "R-HSA-388841", "R-HSA-2132295", "R-HSA-983705", "R-HSA-5690714")
+plot_gsva_heatmap(gsva_result, 
+                  pathway_ids = relevant_pathways, # limit to these pathways
+                  margins = c(6,30), # adapt the figure margins in heatmap.2
+                  dendrogram = "col", # only plot column dendrogram
+                  scale = "row", # scale for each pathway
+                  key = FALSE, # don't display the color key
+                  lwid=c(0.1,4)) # remove the white space on the left
+```
+
+This analysis shows us that cluster 8 has a marked up-regulation of B Cell receptor signalling, which is linked to a co-stimulation of the CD28 family. Additionally, there is a gradient among the cluster with respect to genes releated to antigen presentation. 
+
+Therefore, we are able to further classify the observed B cell subtypes based on their pathway activity.
+
+## Pathway-level PCA
+
+The pathway-level expression analysis can also be used to run a Principal Component Analysis on the samples. This is simplified through the function `plot_gsva_pca`:
+
+```{r, fig.width=6, fig.height=4}
+plot_gsva_pca(gsva_result)
+```
+
+In this analysis, cluster 11 is a clear outlier from the other B cell subtypes and therefore might be prioritised for further evaluation.
+
+## Session Info
+
+```{r}
+sessionInfo()
+```

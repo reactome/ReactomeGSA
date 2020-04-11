@@ -1,4 +1,4 @@
-Changes in version 1.2.0 (2020-03-13)
+Changes in version 1.1.2 (2020-03-13)
 + Add support manually track the status of submitted analyses
 + Added additional signature to add_dataset to support expression values as matrix
 
