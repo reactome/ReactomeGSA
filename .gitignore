@@ -2,3 +2,6 @@
 _site
 Gemfile.lock
 .Rproj.user
+.Rbuildignore
+.Rhistory
+ReactomeGSA.Rproj
