@@ -1,0 +1,17 @@
+citHeader("To cite the ReactomeGSA in publications use:")
+
+citEntry(entry="article",  
+         title  = "ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis",
+         author = personList(
+           person(given="Johannes", family="Griss"),
+           person(given="Guilherme", family="Viteri"),
+           person(given="Konstantinos", family="Sidiropoulos"),
+           person(given="Vy", family="Nguyen"),
+           person(given="Antonio", family="Fabregat"),
+           person(given="Henning", family="Hermjakob")),
+         journal = "bioRxiv",
+         year = "2020",
+         doi = "10.1101/2020.04.16.044958",
+         url = "https://www.biorxiv.org/content/early/2020/04/18/2020.04.16.044958",
+         textVersion = "J Griss, G Viteri, K Sidiropoulos, V Nguyen, A Fabregat, and H Hermjakob (2020). bioRxiv ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis. doi: 10.1101/2020.04.16.044958"
+)
