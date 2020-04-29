@@ -158,7 +158,7 @@ setMethod("plot_correlations", c("x" = "ReactomeAnalysisResult"), function(x, hi
       
       # remove non-significant if set
       if (hide_non_sig) {
-        plot_data <- plot_data[plot_data$combined_sig, ]
+        plot_data <- plot_data[plot_data$combined_sig != "non-sig.", ]
       }
 
       # create the plot obj
