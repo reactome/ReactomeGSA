@@ -4,10 +4,16 @@
 \alias{analyse_sc_clusters}
 \title{analyse_sc_clusters}
 \usage{
-analyse_sc_clusters(object, use_interactors = TRUE,
+analyse_sc_clusters(
+  object,
+  use_interactors = TRUE,
   include_disease_pathways = FALSE,
-  create_reactome_visualization = FALSE, create_reports = FALSE,
-  report_email = NULL, verbose = FALSE, ...)
+  create_reactome_visualization = FALSE,
+  create_reports = FALSE,
+  report_email = NULL,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{The object containing the single-cell RNA-sequencing data.}

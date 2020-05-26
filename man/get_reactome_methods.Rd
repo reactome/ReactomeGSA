@@ -4,8 +4,13 @@
 \alias{get_reactome_methods}
 \title{get_reactome_methods}
 \usage{
-get_reactome_methods(print_methods = TRUE, print_details = FALSE,
-  return_result = FALSE, method = NULL, reactome_url = NULL)
+get_reactome_methods(
+  print_methods = TRUE,
+  print_details = FALSE,
+  return_result = FALSE,
+  method = NULL,
+  reactome_url = NULL
+)
 }
 \arguments{
 \item{print_methods}{If set to \code{TRUE} (default) a (relatively) nice formatted version of the result is printed.}
@@ -57,7 +62,8 @@ get_reactome_methods()
 get_reactome_methods(print_details = TRUE, method = "PADOG")
 }
 \seealso{
-Other Reactome Service functions: \code{\link{get_reactome_data_types}}
+Other Reactome Service functions: 
+\code{\link{get_reactome_data_types}()}
 }
 \author{
 Johannes Griss

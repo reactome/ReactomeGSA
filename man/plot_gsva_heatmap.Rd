@@ -4,8 +4,13 @@
 \alias{plot_gsva_heatmap}
 \title{plot_gsva_heatmap}
 \usage{
-plot_gsva_heatmap(object, pathway_ids = NULL, max_pathways = 20,
-  truncate_names = TRUE, ...)
+plot_gsva_heatmap(
+  object,
+  pathway_ids = NULL,
+  max_pathways = 20,
+  truncate_names = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{The \code{\link{ReactomeAnalysisResult}} object.}
@@ -45,12 +50,15 @@ plot_gsva_heatmap(gsva_result,
                   lwid=c(0.1,4)) # remove the white space on the left
 }
 \seealso{
-Other ReactomeAnalysisResult functions: \code{\link{get_result}},
-  \code{\link{names,ReactomeAnalysisResult-method}},
-  \code{\link{open_reactome}}, \code{\link{pathways}},
-  \code{\link{plot_correlations}},
-  \code{\link{plot_gsva_pathway}},
-  \code{\link{plot_volcano}}, \code{\link{reactome_links}},
-  \code{\link{result_types}}
+Other ReactomeAnalysisResult functions: 
+\code{\link{get_result}()},
+\code{\link{names,ReactomeAnalysisResult-method}},
+\code{\link{open_reactome}()},
+\code{\link{pathways}()},
+\code{\link{plot_correlations}()},
+\code{\link{plot_gsva_pathway}()},
+\code{\link{plot_volcano}()},
+\code{\link{reactome_links}()},
+\code{\link{result_types}()}
 }
 \concept{ReactomeAnalysisResult functions}

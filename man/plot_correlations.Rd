@@ -31,12 +31,15 @@ length(plot_objs)
 # show the plot using `print(plot_objs[[1]])`
 }
 \seealso{
-Other ReactomeAnalysisResult functions: \code{\link{get_result}},
-  \code{\link{names,ReactomeAnalysisResult-method}},
-  \code{\link{open_reactome}}, \code{\link{pathways}},
-  \code{\link{plot_gsva_heatmap}},
-  \code{\link{plot_gsva_pathway}},
-  \code{\link{plot_volcano}}, \code{\link{reactome_links}},
-  \code{\link{result_types}}
+Other ReactomeAnalysisResult functions: 
+\code{\link{get_result}()},
+\code{\link{names,ReactomeAnalysisResult-method}},
+\code{\link{open_reactome}()},
+\code{\link{pathways}()},
+\code{\link{plot_gsva_heatmap}()},
+\code{\link{plot_gsva_pathway}()},
+\code{\link{plot_volcano}()},
+\code{\link{reactome_links}()},
+\code{\link{result_types}()}
 }
 \concept{ReactomeAnalysisResult functions}

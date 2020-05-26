@@ -30,12 +30,15 @@ data(griss_melanoma_result)
 reactome_links(griss_melanoma_result)
 }
 \seealso{
-Other ReactomeAnalysisResult functions: \code{\link{get_result}},
-  \code{\link{names,ReactomeAnalysisResult-method}},
-  \code{\link{open_reactome}}, \code{\link{pathways}},
-  \code{\link{plot_correlations}},
-  \code{\link{plot_gsva_heatmap}},
-  \code{\link{plot_gsva_pathway}},
-  \code{\link{plot_volcano}}, \code{\link{result_types}}
+Other ReactomeAnalysisResult functions: 
+\code{\link{get_result}()},
+\code{\link{names,ReactomeAnalysisResult-method}},
+\code{\link{open_reactome}()},
+\code{\link{pathways}()},
+\code{\link{plot_correlations}()},
+\code{\link{plot_gsva_heatmap}()},
+\code{\link{plot_gsva_pathway}()},
+\code{\link{plot_volcano}()},
+\code{\link{result_types}()}
 }
 \concept{ReactomeAnalysisResult functions}
