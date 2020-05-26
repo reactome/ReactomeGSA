@@ -4,9 +4,19 @@
 \alias{add_dataset}
 \title{add_dataset}
 \usage{
-add_dataset(request, expression_values, name, type, comparison_factor,
-  comparison_group_1, comparison_group_2, sample_data = NULL,
-  additional_factors = NULL, overwrite = FALSE, ...)
+add_dataset(
+  request,
+  expression_values,
+  name,
+  type,
+  comparison_factor,
+  comparison_group_1,
+  comparison_group_2,
+  sample_data = NULL,
+  additional_factors = NULL,
+  overwrite = FALSE,
+  ...
+)
 }
 \arguments{
 \item{request}{The request to add the dataset to. Commonly a \code{\link{ReactomeAnalysisRequest}} object.}
@@ -63,10 +73,11 @@ my_request <- add_dataset(request = my_request,
                           additional_factors = c("cell.type", "patient.id"))
 }
 \seealso{
-Other add_dataset methods: \code{\link{add_dataset,ReactomeAnalysisRequest,DGEList-method}},
-  \code{\link{add_dataset,ReactomeAnalysisRequest,EList-method}},
-  \code{\link{add_dataset,ReactomeAnalysisRequest,ExpressionSet-method}},
-  \code{\link{add_dataset,ReactomeAnalysisRequest,data.frame-method}},
-  \code{\link{add_dataset,ReactomeAnalysisRequest,matrix-method}}
+Other add_dataset methods: 
+\code{\link{add_dataset,ReactomeAnalysisRequest,DGEList-method}},
+\code{\link{add_dataset,ReactomeAnalysisRequest,EList-method}},
+\code{\link{add_dataset,ReactomeAnalysisRequest,ExpressionSet-method}},
+\code{\link{add_dataset,ReactomeAnalysisRequest,data.frame-method}},
+\code{\link{add_dataset,ReactomeAnalysisRequest,matrix-method}}
 }
 \concept{add_dataset methods}

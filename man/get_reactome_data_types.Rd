@@ -4,8 +4,11 @@
 \alias{get_reactome_data_types}
 \title{ReactomeGSA supported data types}
 \usage{
-get_reactome_data_types(print_types = TRUE, return_result = FALSE,
-  reactome_url = NULL)
+get_reactome_data_types(
+  print_types = TRUE,
+  return_result = FALSE,
+  reactome_url = NULL
+)
 }
 \arguments{
 \item{print_types}{If set to \code{TRUE} (default) a (relatively) nice formatted version of the result is printed.}
@@ -32,7 +35,8 @@ available_types$id
 get_reactome_data_types()
 }
 \seealso{
-Other Reactome Service functions: \code{\link{get_reactome_methods}}
+Other Reactome Service functions: 
+\code{\link{get_reactome_methods}()}
 }
 \author{
 Johannes Griss

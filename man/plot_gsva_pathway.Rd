@@ -31,12 +31,15 @@ gsva_result <- analyse_sc_clusters(jerby_b_cells, verbose = FALSE)
 plot_obj <- plot_gsva_pathway(gsva_result, "R-HSA-389542")
 }
 \seealso{
-Other ReactomeAnalysisResult functions: \code{\link{get_result}},
-  \code{\link{names,ReactomeAnalysisResult-method}},
-  \code{\link{open_reactome}}, \code{\link{pathways}},
-  \code{\link{plot_correlations}},
-  \code{\link{plot_gsva_heatmap}},
-  \code{\link{plot_volcano}}, \code{\link{reactome_links}},
-  \code{\link{result_types}}
+Other ReactomeAnalysisResult functions: 
+\code{\link{get_result}()},
+\code{\link{names,ReactomeAnalysisResult-method}},
+\code{\link{open_reactome}()},
+\code{\link{pathways}()},
+\code{\link{plot_correlations}()},
+\code{\link{plot_gsva_heatmap}()},
+\code{\link{plot_volcano}()},
+\code{\link{reactome_links}()},
+\code{\link{result_types}()}
 }
 \concept{ReactomeAnalysisResult functions}
