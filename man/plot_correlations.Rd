@@ -4,10 +4,12 @@
 \alias{plot_correlations}
 \title{plot_correlations}
 \usage{
-plot_correlations(x)
+plot_correlations(x, hide_non_sig = FALSE)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult. The result object to use as input}
+
+\item{hide_non_sig}{If set, non-significant pathways are not shown.}
 }
 \value{
 A list of ggplot2 plot objects representing one plot per combination

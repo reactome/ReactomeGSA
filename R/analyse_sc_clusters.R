@@ -111,7 +111,8 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
 
 #' analyse_sc_clusters - SingleCellExperiment
 #'
-#' @param cell_id The metadata field to use to group cells (for example "cluster")
+#' @param cell_ids A factor specifying the group to which each cell belongs. For example, \code{object$cluster}. 
+#'                 Alternatively, a string specifying the metada field's name may be passed.
 #' @inherit analyse_sc_clusters
 #' 
 #' @param object The \code{SingleCellExperiment} object containing the single cell RNA-sequencing data.
@@ -122,16 +123,28 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
                                                                   create_reports = FALSE,
                                                                   report_email = NULL,
                                                                   verbose = FALSE,
-                                                                  cell_id, ...) {
+                                                                  cell_ids, ...) {
   # make sure scater is available
   if (!requireNamespace("scater")) {
     stop("Error: This function requires 'scater'. Please install it using BiocManager::install(\"scater\")")
   }
   
+  # check if cell_ids specifies a metadata field
+  if (is.character(cell_ids) && length(cell_ids) == 1) {
+    if (verbose) message("Using metadata field '", cell_ids, "' for cell grouping.")
+    
+    if (!cell_ids %in% colnames(SingleCellExperiment::colData(object))) {
+      stop("Error: Failed to find metadata field '", cell_ids, "'", call. = FALSE)
+    }
+    
+    # get the metadata
+    cell_ids <- SingleCellExperiment::colData(object)[, cell_ids]
+  }
+  
   # create the parameters for the AverageExpression call
   scater_params <- list(...)
-  scater_params["x"] <- object
-  scater_params["ids"] = cell_id
+  scater_params[["x"]] <- object
+  scater_params[["ids"]] = cell_id
   
   # get the count data
   if (verbose) message("Calculating average expression per cluster...")

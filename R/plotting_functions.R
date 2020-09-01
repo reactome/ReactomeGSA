@@ -77,6 +77,7 @@ setMethod("plot_volcano", c("x" = "ReactomeAnalysisResult"), function(x, dataset
 #' results (not GSVA ones).
 #'
 #' @param x ReactomeAnalysisResult. The result object to use as input
+#' @param hide_non_sig If set, non-significant pathways are not shown.
 #' @return A list of ggplot2 plot objects representing one plot per combination
 #' @export
 #'
@@ -94,12 +95,12 @@ setMethod("plot_volcano", c("x" = "ReactomeAnalysisResult"), function(x, dataset
 #' length(plot_objs)
 #'
 #' # show the plot using `print(plot_objs[[1]])`
-setGeneric("plot_correlations", function(x) standardGeneric("plot_correlations"))
+setGeneric("plot_correlations", function(x, hide_non_sig = FALSE) standardGeneric("plot_correlations"))
 
 
 #' plot_correlations - ReactomeAnalysisResult
 #' @inherit plot_correlations
-setMethod("plot_correlations", c("x" = "ReactomeAnalysisResult"), function(x) {
+setMethod("plot_correlations", c("x" = "ReactomeAnalysisResult"), function(x, hide_non_sig = FALSE) {
   n_datasets <- length(names(x))
 
   # only works if the number of datasets > 1
@@ -154,11 +155,18 @@ setMethod("plot_correlations", c("x" = "ReactomeAnalysisResult"), function(x) {
       plot_data$combined_sig <- factor(plot_data$combined_sig, levels = c(3, 2, 1), labels = c("non-sig.", "p <= 0.05", "p <= 0.01"))
       plot_data$alpha <- 0.05
       plot_data$alpha[plot_data$combined_sig != "non-sig."] <- 1
+      point_colours <- c("#CCCCCC", "#CC333F", "#00A0B0")
+      
+      # remove non-significant if set
+      if (hide_non_sig) {
+        plot_data <- plot_data[plot_data$combined_sig != "non-sig.", ]
+        point_colours <- c("#CC333F", "#00A0B0")
+      }
 
       # create the plot obj
       plot_obj <- ggplot2::ggplot(plot_data, ggplot2::aes(x = fc_1, y = fc_2, color = combined_sig)) +
         ggplot2::geom_point(ggplot2::aes(alpha = alpha)) +
-        ggplot2::scale_color_manual(values = c("#CCCCCC", "#CC333F", "#00A0B0")) +
+        ggplot2::scale_color_manual(values = point_colours) +
         ggplot2::geom_hline(yintercept = 0, color = "#666666", linetype = 2) +
         ggplot2::geom_vline(xintercept = 0, color = "#666666", linetype = 2) +
         ggplot2::labs(x = paste0("Av. foldchange ", dataset_1), y = paste0("Av. foldchange ", dataset_2), color = "Lowest significance",
