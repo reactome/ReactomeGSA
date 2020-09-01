@@ -135,7 +135,7 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
   
   # get the count data
   if (verbose) message("Calculating average expression per cluster...")
-  agg_counts <- do.call(scater::aggregateAccrossCells, scater_params)
+  agg_counts <- do.call(scater::agregateAccrossCells, scater_params)
   counts <- SingleCellExperiment::counts(agg_counts)
   
   # create the ReactomeGSA request
