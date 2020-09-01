@@ -12,7 +12,7 @@
   create_reports = FALSE,
   report_email = NULL,
   verbose = FALSE,
-  cell_id,
+  cell_ids,
   ...
 )
 }
@@ -36,7 +36,8 @@ are send to the supplied e-mail address.}
 
 \item{verbose}{If set, additional status messages are printed.}
 
-\item{cell_id}{The metadata field to use to group cells (for example "cluster")}
+\item{cell_ids}{A factor specifying the group to which each cell belongs. For example, \code{object$cluster}. 
+Alternatively, a string specifying the metada field's name may be passed.}
 
 \item{...}{Parameters passed to scater's \code{aggregateAcrossCells} function.}
 }
