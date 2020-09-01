@@ -144,7 +144,7 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
   # create the parameters for the AverageExpression call
   scater_params <- list(...)
   scater_params[["x"]] <- object
-  scater_params[["ids"]] = cell_id
+  scater_params[["ids"]] = cell_ids
   
   # get the count data
   if (verbose) message("Calculating average expression per cluster...")
