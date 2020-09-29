@@ -1,3 +1,6 @@
+Changes in version 1.3.7 (2020-09-29)
++ Fixed bug in plot_gsva_pathway
+
 Changes in version 1.3.6 (2020-09-01)
 + Improved analyse_sc_clusters for SingleCellExperiment objects to define cell grouping using factors and a single character string specifying the metada field.
 

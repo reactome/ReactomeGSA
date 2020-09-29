@@ -55,7 +55,7 @@ setMethod("plot_gsva_pathway", c("object" = "ReactomeAnalysisResult"), function(
   )
   
   sorted_ids <- plot_data$cluster_id[order(plot_data$expr)]
-  plot_data$cluster_id <- factor(plot_data$cluster_id, levels = sorted_ids)
+  plot_data$cluster_id <- factor(plot_data$cluster_id, levels = unique(sorted_ids))
   
   plot_obj <- ggplot2::ggplot(plot_data, ggplot2::aes(x = cluster_id, y = expr)) + 
     ggplot2::geom_bar(stat = "identity") +
