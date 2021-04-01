@@ -57,7 +57,9 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
     pb <- progress::progress_bar$new(total = 100, format = "Running analysis [:bar:]", show_after = 0)
 
     pb$message(completed[["description"]])
-    pb$update(as.numeric(completed[["completed"]]))
+    
+    if (is.numeric(completed[["completed"]]))
+      pb$update(as.numeric(completed[["completed"]]))
 
     last_message <- completed[["description"]]
   }
