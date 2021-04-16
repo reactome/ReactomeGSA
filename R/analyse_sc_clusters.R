@@ -63,7 +63,7 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
                                                                   slot = "counts", ...) {
   # make sure the assay exists
   if (!assay %in% Seurat::Assays(object)) {
-    stop("Error: Assay '", assay, "' does not exist in passed Seurat object.")
+    stop("Error: Assay '", assay, "' does not exist in passed Seurat object.", call. = FALSE)
   }
   
   # get the data
@@ -71,6 +71,13 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
   
   # get the identis
   cell_ids <- as.character( Seurat::Idents(object) )
+  
+  if (length(unique(cell_ids)) < 2) {
+    stop("Only one identification found: '", cell_ids[1], 
+         "'. Please ensure that cell / cluster ids are stored as the primary identification (Ident) of your Seurat object.",
+         " Clustering has to be performed prior to this pathway analysis.",
+         call. = FALSE)
+  }
   
   # get the average counts
   if (verbose) message("Calculating average cluster expression...")
