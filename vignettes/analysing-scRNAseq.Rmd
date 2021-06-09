@@ -42,7 +42,7 @@ if (!require(ReactomeGSA))
   BiocManager::install("ReactomeGSA")
 
 # install the ReactomeGSA.data package for the example data
-if (!require(ReactomeGSA))
+if (!require(ReactomeGSA.data))
   BiocManager::install("ReactomeGSA.data")
 ```
 
