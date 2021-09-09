@@ -69,10 +69,28 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
   # this only tracks whether the progress bar reached completion as any update afterwards
   # causes an error
   is_done <- FALSE
+  error_count <- 0
 
   while (completed[["status"]] == "running") {
     Sys.sleep(1)
-    completed <- get_reactome_analysis_status(analysis_id)
+    
+    completed <- tryCatch({
+        cur_status <- get_reactome_analysis_status(analysis_id)
+        # reset the error count
+        error_count <- 0
+        
+        return(cur_status)
+      },
+      error=function(cond) {
+        # simply ignore this the first 10 times
+        if (error_count < 10) {
+          error_count <- error_count + 1
+          return(completed)
+        }
+        
+        # fail if the error count is too high
+        stop("Error: Failed to connect to ReactomeGSA. Please contact support if this error persists at help@reactome.org", call. = FALSE)
+      })
 
     if (verbose) {
       current_message <- completed[["description"]]
