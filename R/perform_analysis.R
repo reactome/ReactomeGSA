@@ -75,11 +75,7 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
     Sys.sleep(1)
     
     completed <- tryCatch({
-        cur_status <- get_reactome_analysis_status(analysis_id)
-        # reset the error count
-        error_count <- 0
-        
-        return(cur_status)
+        get_reactome_analysis_status(analysis_id)
       },
       error=function(cond) {
         # simply ignore this the first 10 times
