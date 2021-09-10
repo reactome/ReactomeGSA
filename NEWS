@@ -1,4 +1,4 @@
-Changes in version 1.5.3 (2021-09-09)
+Changes in version 1.6.1 (2021-09-09)
 + Fixed timeout issue during large requests in perform_reactome_analysis 
 + Fixed bug in scRNA-seq vignette.
 
