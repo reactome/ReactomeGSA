@@ -44,3 +44,9 @@ if (!require(ReactomeGSA)) {
   install_github("reactome/ReactomeGSA")
 }
 ```
+
+## Citation
+
+If you used ReactomeGSA in your research, we would be grateful if you could cite the following manuscript:
+
+Griss *et al.*, ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis (2020), MCP 19 (12) P2115-2125, DOI: [10.1074/mcp.TIR120.002155](https://doi.org/10.1074/mcp.TIR120.002155)
