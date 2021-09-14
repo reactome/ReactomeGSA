@@ -2,6 +2,23 @@
 
 The `ReactomeGSA` package is an R client to the `Reactome Analysis System`. This new analysis system supports **multi-species, multi-omics, comparative pathway analyses**.
 
+## KNOWN HTTPS ISSUE
+
+Currently, the ReactomeGSA package may fail showing the following / a similar issue:
+
+```
+Failed to connect to ReactomeGSA at 'https://gsa.reactome.org/: 
+SSL certificate problem: certificate has expired. Try reverting 
+the ReactomeGSA url to http://gsa.reactome.org using 
+options(reactome_gsa.url = "http://gsa.reactome.org").
+```
+
+This is caused by an issue on our cluster. You can solve it by changing the ReactomeGSA url to `http://gsa.reactome.org` using the following command:
+
+```r
+options(reactome_gsa.url = "http://gsa.reactome.org")
+```
+
 ## Getting Help
 
   * For any questions surrounding the use of ReactomeGSA, please simply post it in our [Q&A Section](https://github.com/reactome/ReactomeGSA/discussions)
