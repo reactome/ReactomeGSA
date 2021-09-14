@@ -254,6 +254,17 @@ Individual datasets can further be visualised using volcano plots of the pathway
 plot_volcano(result, 2)
 ```
 
+### Opening web-based visualization
+
+Additionally, it is possible to open the analysis in Reactome's web interface using the `open_reactome` command:
+
+```{r}
+# Note: This command is not execute in the vignette, since it tries
+# to open the default web browser
+
+# open_reactom(result)
+```
+
 ## Session Info
 
 ```{r}
