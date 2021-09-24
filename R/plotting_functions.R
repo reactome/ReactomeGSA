@@ -217,3 +217,124 @@ get_is_sig_dataset <- function(dataset, pathway_result) {
 
   return(is_sig)
 }
+
+# plot_heatmap --------------------------------------------------------
+
+#' plot_heatmap
+#'
+#' Creates a heatmap to show which pathways are up- and down-regulated
+#' in different datasets
+#'
+#' @param x ReactomeAnalysisResult. The result object to use as input
+#' 
+#' @param fdr numeric. The minimum FDR to consider a pathways a significantly
+#'        regulated. (Default 0.05)
+#' @param max_pathways numeric. The maximum number of pathways to plot. Pathways
+#'        are sorted based on in how many datasets they are significantly regulated.
+#'        This has no effect if \code{return_data} is set to \code{TRUE}.
+#' @param break_long_names logical. If set, long pathway names are broken into
+#'        two lines.
+#' @param return_data logical. If set, only the plotting data, but not the plot
+#'        object itself is returned. This can be used to create customized plots
+#'        that use the same data structure.
+#' 
+#' @return A ggplot2 plot object representing the heatmap of pathways
+#'
+#' @family ReactomeAnalysisResult functions
+#' @export
+#' 
+#' @examples
+#' # load an example result
+#' library(ReactomeGSA.data)
+#' data(griss_melanoma_result)
+#'
+#' # create the heatmap plot
+#' plot_obj <- plot_heatmap(griss_melanoma_result)
+#'
+#' # show the plot
+#' print(plot_obj)
+setGeneric("plot_heatmap", function(x, fdr = 0.05, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) standardGeneric("plot_heatmap"))
+
+#' plot_heatmap - ReactomeAnalysisResult
+#' 
+#' @importFrom ggplot2 ggplot aes geom_point geom_hline labs
+#' @importFrom dplyr select any_of
+#' @importFrom tidyr pivot_longer
+#' @inherit plot_heatmap
+setMethod("plot_heatmap", c("x" = "ReactomeAnalysisResult"), function(x, fdr = 0.05, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) {
+  # get all pathways from the object
+  all_pathways <- ReactomeGSA::pathways(x)
+  
+  # create the plot data
+  all_pathways[["n_sig"]] <- 0
+  
+  for (dataset_name in names(x)) {
+    pathway_fdr <- all_pathways[[paste0("FDR.", dataset_name)]]
+    direction <- all_pathways[[paste0("Direction.", dataset_name)]]
+    
+    all_pathways[[dataset_name]] <- paste0(ifelse(pathway_fdr <= fdr, "sig", "non-sig"), " ", direction)
+    
+    all_pathways[["n_sig"]] <- all_pathways[["n_sig"]] + as.numeric(pathway_fdr <= fdr)
+  }
+  
+  # filter the pathways if set
+  if (!return_data) {
+    all_pathways <- dplyr::arrange(all_pathways, desc(n_sig))
+    all_pathways <- dplyr::slice_head(all_pathways, n = max_pathways)
+  }
+  
+  # limit the data
+  plot_data <- dplyr::select(all_pathways, "Name" | "n_sig" | dplyr::any_of(names(x)))
+  plot_data <- tidyr::pivot_longer(plot_data, !c("Name", "n_sig"), names_to = "dataset", values_to = "direction")
+  plot_data <- dplyr::mutate(plot_data, direction = factor(direction, levels = c("sig Down", "non-sig Down", "non-sig Up", "sig Up")))
+  
+  # short the names if set
+  if (break_long_names) {
+    plot_data$Name <- break_names(plot_data$Name)
+  }
+  
+  # return the data if set
+  if (return_data) {
+    return(plot_data)
+  }
+  
+  # create the plot
+  plot_obj <- ggplot2::ggplot(plot_data, ggplot2::aes(x = dataset, y = Name, fill = direction)) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_brewer(palette = "RdYlBu") +
+    ggplot2::labs(x = "Dataset", fill = "Direction")
+  
+  return(plot_obj)
+})
+
+#' break_names
+#' 
+#' Introduce a line break in the middle of a long name.
+#'
+#' @param the_names A vector of names
+#' @param long_name_limit The limit to define a long name (defautl 46 chars.)
+#'
+#' @return The list of adapted names
+break_names <- function(the_names, long_name_limit = 46) {
+  # add a line break to very long names
+  is_long_name <- nchar(the_names) > long_name_limit
+  
+  for (name_index in which(is_long_name)) {
+    the_name <- the_names[name_index]
+    
+    # get the words
+    words <- strsplit(the_name, " ")[[1]]
+    
+    # merge the first half of the words
+    middle <- ceiling(length(words) / 2)
+    
+    first_line <- paste0(words[1:middle], collapse = " ")
+    second_line <- paste0(words[(middle+1):length(words)], collapse = " ")
+    new_name <- paste0(c(first_line, second_line), collapse = "\n")
+    
+    # update the name
+    the_names[name_index] <- new_name
+  }
+  
+  return(the_names)
+}

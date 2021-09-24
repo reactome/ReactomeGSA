@@ -254,6 +254,35 @@ Individual datasets can further be visualised using volcano plots of the pathway
 plot_volcano(result, 2)
 ```
 
+Finally, it is possible to view the result as a heatmap:
+
+```{r}
+plot_heatmap(result) +
+  # reduce text size to create a better HTML rendering
+  ggplot2::theme(text = ggplot2::element_text(size = 6))
+```
+
+By default, only 30 pathways are shown in the heatmap. It is also possible to easily manually select
+pathways of interest to plot:
+
+```{r}
+# get the data ready to plot with ggplot2
+plot_data <- plot_heatmap(result, return_data = TRUE)
+
+# select the pathways of interest - here all pathways
+# with "Interleukin" in their name
+interleukin_pathways <- grepl("Interleukin", plot_data$Name)
+
+interesting_data <- plot_data[interleukin_pathways, ]
+
+# create the heatmap
+ggplot2::ggplot(interesting_data, ggplot2::aes(x = dataset, y = Name, fill = direction)) +
+    ggplot2::geom_tile() +
+    ggplot2::scale_fill_brewer(palette = "RdYlBu") +
+    ggplot2::labs(x = "Dataset", fill = "Direction") +
+    ggplot2::theme(text = ggplot2::element_text(size = 6))
+```
+
 ### Opening web-based visualization
 
 Additionally, it is possible to open the analysis in Reactome's web interface using the `open_reactome` command:
@@ -262,7 +291,7 @@ Additionally, it is possible to open the analysis in Reactome's web interface us
 # Note: This command is not execute in the vignette, since it tries
 # to open the default web browser
 
-# open_reactom(result)
+# open_reactome(result)
 ```
 
 ## Session Info

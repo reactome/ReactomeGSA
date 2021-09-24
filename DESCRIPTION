@@ -1,7 +1,7 @@
 Package: ReactomeGSA
 Type: Package
 Title: Client for the Reactome Analysis Service for comparative multi-omics gene set analysis
-Version: 1.7.3
+Version: 1.7.4
 Authors@R: person("Johannes", "Griss", email = "johannes.griss@meduniwien.ac.at", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2206-9511"))
 Description: The ReactomeGSA packages uses Reactome's online analysis service to perform a multi-omics
     gene set analysis. The main advantage of this package is, that the retrieved results can be 
@@ -12,8 +12,8 @@ Description: The ReactomeGSA packages uses Reactome's online analysis service to
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
-Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer
-RoxygenNote: 7.1.1
+Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr
+RoxygenNote: 7.1.2
 Suggests: 
     testthat,
     knitr,

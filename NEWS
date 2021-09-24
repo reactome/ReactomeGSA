@@ -1,3 +1,6 @@
+Changes in version 1.7.4 (2021-09-24)
++ Added new plotting function "plot_heatmap"
+
 Changes in version 1.7.3 (2021-09-14)
 + Updated vignette to introduce the "open_reactome" command
 
