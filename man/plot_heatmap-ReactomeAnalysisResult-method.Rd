@@ -4,17 +4,26 @@
 \alias{plot_heatmap,ReactomeAnalysisResult-method}
 \title{plot_heatmap - ReactomeAnalysisResult}
 \usage{
-\S4method{plot_heatmap}{ReactomeAnalysisResult}(x, fdr = 0.05, max_pathways = 30, return_data = FALSE)
+\S4method{plot_heatmap}{ReactomeAnalysisResult}(
+  x,
+  fdr = 0.05,
+  max_pathways = 30,
+  break_long_names = TRUE,
+  return_data = FALSE
+)
 }
 \arguments{
 \item{x}{ReactomeAnalysisResult. The result object to use as input}
 
-\item{fdr}{numeric. The minimum FDR to consider a pathways a significantly
+\item{fdr}{numeric. The minimum FDR to consider a pathways as significantly
 regulated. (Default 0.05)}
 
 \item{max_pathways}{numeric. The maximum number of pathways to plot. Pathways
 are sorted based on in how many datasets they are significantly regulated.
 This has no effect if \code{return_data} is set to \code{TRUE}.}
+
+\item{break_long_names}{logical. If set, long pathway names are broken into
+two lines.}
 
 \item{return_data}{logical. If set, only the plotting data, but not the plot
 object itself is returned. This can be used to create customized plots

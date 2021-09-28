@@ -1,3 +1,6 @@
+Changes in version 1.7.5 (2021-09-28)
++ Fixed documentation of "plot_heatmap"
+
 Changes in version 1.7.4 (2021-09-24)
 + Added new plotting function "plot_heatmap"
 

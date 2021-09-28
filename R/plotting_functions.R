@@ -227,7 +227,7 @@ get_is_sig_dataset <- function(dataset, pathway_result) {
 #'
 #' @param x ReactomeAnalysisResult. The result object to use as input
 #' 
-#' @param fdr numeric. The minimum FDR to consider a pathways a significantly
+#' @param fdr numeric. The minimum FDR to consider a pathways as significantly
 #'        regulated. (Default 0.05)
 #' @param max_pathways numeric. The maximum number of pathways to plot. Pathways
 #'        are sorted based on in how many datasets they are significantly regulated.
