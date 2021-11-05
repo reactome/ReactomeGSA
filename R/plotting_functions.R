@@ -261,7 +261,7 @@ setGeneric("plot_heatmap", function(x, fdr = 0.05, max_pathways = 30, break_long
 #' @importFrom dplyr select any_of
 #' @importFrom tidyr pivot_longer
 #' @inherit plot_heatmap
-setMethod("plot_heatmap", c("x" = "ReactomeAnalysisResult"), function(x, fdr = 0.05, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) {
+setMethod("plot_heatmap", c("x" = "ReactomeAnalysisResult"), function(x, fdr = 0.01, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) {
   # get all pathways from the object
   all_pathways <- ReactomeGSA::pathways(x)
   

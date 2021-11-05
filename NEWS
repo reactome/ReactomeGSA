@@ -1,3 +1,6 @@
+Changes in version 1.9.1 (2021-11-05)
++ Adapted default FDR threshold in "plot_heatmap" to match other functions.
+
 Changes in version 1.7.5 (2021-09-28)
 + Fixed documentation of "plot_heatmap"
 
