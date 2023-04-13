@@ -228,7 +228,7 @@ get_is_sig_dataset <- function(dataset, pathway_result) {
 #' @param x ReactomeAnalysisResult. The result object to use as input
 #' 
 #' @param fdr numeric. The minimum FDR to consider a pathways as significantly
-#'        regulated. (Default 0.05)
+#'        regulated. (Default 0.01)
 #' @param max_pathways numeric. The maximum number of pathways to plot. Pathways
 #'        are sorted based on in how many datasets they are significantly regulated.
 #'        This has no effect if \code{return_data} is set to \code{TRUE}.
@@ -253,7 +253,7 @@ get_is_sig_dataset <- function(dataset, pathway_result) {
 #'
 #' # show the plot
 #' print(plot_obj)
-setGeneric("plot_heatmap", function(x, fdr = 0.05, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) standardGeneric("plot_heatmap"))
+setGeneric("plot_heatmap", function(x, fdr = 0.01, max_pathways = 30, break_long_names = TRUE, return_data = FALSE) standardGeneric("plot_heatmap"))
 
 #' plot_heatmap - ReactomeAnalysisResult
 #' 

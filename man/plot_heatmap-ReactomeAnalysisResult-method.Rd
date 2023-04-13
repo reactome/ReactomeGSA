@@ -6,7 +6,7 @@
 \usage{
 \S4method{plot_heatmap}{ReactomeAnalysisResult}(
   x,
-  fdr = 0.05,
+  fdr = 0.01,
   max_pathways = 30,
   break_long_names = TRUE,
   return_data = FALSE
@@ -16,7 +16,7 @@
 \item{x}{ReactomeAnalysisResult. The result object to use as input}
 
 \item{fdr}{numeric. The minimum FDR to consider a pathways as significantly
-regulated. (Default 0.05)}
+regulated. (Default 0.01)}
 
 \item{max_pathways}{numeric. The maximum number of pathways to plot. Pathways
 are sorted based on in how many datasets they are significantly regulated.
