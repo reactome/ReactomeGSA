@@ -34,7 +34,7 @@ Griss J. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)
 
 The `ReactomeGSA` package can be directly installed from Bioconductor:
 
-```{r}
+```{r, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
