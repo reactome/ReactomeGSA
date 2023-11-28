@@ -5,6 +5,7 @@ inst/doc
 .Ruserdata
 .Rbuildignore
 *.Rproj
+.vscode
 R/local_test.R
 vignettes/*.html
 vignettes/*.R
