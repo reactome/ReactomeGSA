@@ -51,6 +51,8 @@ By default, the datasets are limited to human studies. This can be changed by se
 parameter. The complete list of available species is returned by the `get_public_species` function.
 
 ```{r}
+library(ReactomeGSA)
+
 # get all available species found in the datasets
 all_species <- get_public_species()
 
