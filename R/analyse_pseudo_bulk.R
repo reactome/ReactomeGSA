@@ -90,13 +90,6 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
 }
 
 
-
-
-
-
-
-
-
 #' generate_pseudo_bulk_data
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable wihtin the metadata; k must be a string
