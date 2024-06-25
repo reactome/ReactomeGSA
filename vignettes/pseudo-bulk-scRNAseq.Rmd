@@ -56,6 +56,10 @@ if(!require(Seurat))
 
 ```
 
+
+### Load libraries
+Load libraries from Reactome and Seurat. The Seurat package is required to perform the subaggegration and subclustering.  
+
 ```{r}
 # load libraries
 
@@ -64,8 +68,9 @@ library(ReactomeGSA.data)
 library(Seurat)
 ```
 
+### Prepare example dataset
 
-```{r}
+```{r prepare}
 # prepare example data set
 
 assay_data <- HeOrganAtlasData()
@@ -76,49 +81,86 @@ seurat_data
 ```
 
 
-```{r}
+Check metadata to find variable which is required by split_by variable in the generate_pseudo_bulk_data() function
+
+```{r seurat metadata}
+seurat_data@metadata
+```
+
+
+### Generate Pseudo bulk data 
+|Method       |split_by                 | k parameter                           | 
+|-------------|-------------------------|---------------------------------------|
+|random       | "random"                |number of random pools                 |
+|variable     | "variable"              |variable in metadata                   |
+|subclustering| subclustering algorithm | (resolution group, comparison group)  |
+
+
+To set different subclustering algorithm the following are provided: 
+- Louvian
+- Louvian_multilevel
+- SLM
+- Leiden
+
+```{r bulk-data}
 # generate pseudo bulk data
 
 # random
-pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_data, "reclustered.broad","random",3) 
+pseudo_bulk_data_random <- generate_pseudo_bulk_data(seurat_data, "reclustered.broad","random",3) 
 
 # variable
-pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","samples")
+pseudo_bulk_data_variable <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","variable","samples")
 
 # subclustering
-pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad",list(1,"B_and_plasma","Epithelial_cells")
+pseudo_bulk_data_subclustering <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","SLM",list(1,"B_and_plasma","Epithelial_cells"))
 
 ```
 
 
-```{r}
+### Gernerate Metadata
+The funtion generate_metadata() automatically generates the metadata based on the split_by variable provided in the generate_pseudo_bulk_data() function
+ 
+
+```{r bulk metadata}
 # generate meta data
-metadata <- generate_metadata(pseudo_bulk_data)
+metadata <- generate_metadata(pseudo_bulk_data_random)
+metadata
+
 ```
 
-```{r}
+```{r request analysis}
 # get pathways and DEG using Reactome workflow
 my_request <- ReactomeAnalysisRequest(method = "Camera")
 my_request <- set_parameters(request = my_request, max_missing_values = 0.5)
 my_request <- add_dataset(request = my_request, 
-                          expression_values = pbmc_pseudo_random_k3, 
+                          expression_values = pseudo_bulk_data_random, 
                           name = "Pseudo Bulk example",     # name for experiment
                           type = "rnaseq_counts",           # we expect the data to already be raw
                           comparison_factor = "Group",      # comparison for DEG;  must be string with ""
                           comparison_group_1 = "NK",        # must be string with ""
                           comparison_group_2 = "B",         # must be string with ""
-                          sample_data = meta_data_random_k3,
+                          sample_data = metadata,
                           additional_factors = NULL)
 
 result <- perform_reactome_analysis(request = my_request)
+
 ```
 
-```{r}
+
+### Result 
+
+Reactome provides the differentially expressed between the choosen groups, with group 2 as reference and the regulated pathways. 
+Both are saved within the result object and can be accessed using the get_result() and pathway() function. 
+
+
+```{r DEG result}
 # get result table
 result_table <- get_result(result, type="fold_changes", name = "Pseudo Bulk example")
+result_table
 ```
 
-```{r}
+```{r pathway results}
 # get pathway result
 result_pathways <- pathways(result)
+result_pathways
 ```
