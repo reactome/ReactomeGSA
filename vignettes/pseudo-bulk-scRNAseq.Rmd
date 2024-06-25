@@ -1,0 +1,124 @@
+---
+title: "Analysing single-cell RNA-sequencing Pathways using Pseudo Bulk"
+author: "Alexander Grentner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pseudo-bulk-scRNAseq}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+The ReactomeGSA package is a client to the web-based Reactome Analysis System. Essentially, it performs a gene set analysis using the latest version of the Reactome pathway database as a backend.
+
+This vignette shows how the ReactomeGSA package can be used to perform a pathway analysis of cell clusters in single-cell RNA-sequencing data.
+
+
+
+### Citation
+
+To cite this package, use 
+
+```
+Grentner A. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)
+```
+
+```{r setup, include = FALSE}
+    knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+    )
+```
+
+
+## Installation
+
+Install the Seurat package from CRAN or github documentation from the satijalab/Seurat is provided by https://satijalab.org/seurat/articles/install.html 
+The `ReactomeGSA` package can be directly installed from Bioconductor:
+
+
+```{r, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+if (!require(ReactomeGSA))
+  BiocManager::install("ReactomeGSA")
+
+# install the ReactomeGSA.data package for the example data
+if (!require(ReactomeGSA.data))
+  BiocManager::install("ReactomeGSA.data")
+
+
+# install Seurat from CRAN
+if(!require(Seurat))
+    install.packages('Seurat')
+
+```
+
+```{r}
+# load libraries
+
+library(ReactomeGSA)
+library(ReactomeGSA.data)
+library(Seurat)
+```
+
+
+```{r}
+# prepare example data set
+
+assay_data <- HeOrganAtlasData()
+counts <- assays(assay_data)[[1]]
+seurat_data <- CreateSeuratObject(counts = counts, project = "Test dataset", min.cells = 5) # data must be a Seurat object 
+
+seurat_data
+```
+
+
+```{r}
+# generate pseudo bulk data
+
+# random
+pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_data, "reclustered.broad","random",3) 
+
+# variable
+pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","samples")
+
+# subclustering
+pseudo_bulk_data <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad",list(1,"B_and_plasma","Epithelial_cells")
+
+```
+
+
+```{r}
+# generate meta data
+metadata <- generate_metadata(pseudo_bulk_data)
+```
+
+```{r}
+# get pathways and DEG using Reactome workflow
+my_request <- ReactomeAnalysisRequest(method = "Camera")
+my_request <- set_parameters(request = my_request, max_missing_values = 0.5)
+my_request <- add_dataset(request = my_request, 
+                          expression_values = pbmc_pseudo_random_k3, 
+                          name = "Pseudo Bulk example",     # name for experiment
+                          type = "rnaseq_counts",           # we expect the data to already be raw
+                          comparison_factor = "Group",      # comparison for DEG;  must be string with ""
+                          comparison_group_1 = "NK",        # must be string with ""
+                          comparison_group_2 = "B",         # must be string with ""
+                          sample_data = meta_data_random_k3,
+                          additional_factors = NULL)
+
+result <- perform_reactome_analysis(request = my_request)
+```
+
+```{r}
+# get result table
+result_table <- get_result(result, type="fold_changes", name = "Pseudo Bulk example")
+```
+
+```{r}
+# get pathway result
+result_pathways <- pathways(result)
+```
