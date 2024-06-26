@@ -5,22 +5,27 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{pseudo-bulk-scRNAseq}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ## Introduction
-The ReactomeGSA package is a client to the web-based Reactome Analysis System. Essentially, it performs a gene set analysis using the latest version of the Reactome pathway database as a backend.
 
-This vignette shows how the ReactomeGSA package can be used to perform a pathway analysis of cell clusters in single-cell RNA-sequencing data.
+The ReactomeGSA package is a client to the web-based Reactome Analysis
+System. Essentially, it performs a gene set analysis using the latest
+version of the Reactome pathway database as a backend.
 
-
+This vignette shows how the ReactomeGSA package can be used to perform a
+pathway analysis of cell clusters in single-cell RNA-sequencing data.
 
 ### Citation
 
-To cite this package, use 
+To cite this package, use
 
-```
+```         
 Grentner A. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)
 ```
 
@@ -31,12 +36,12 @@ Grentner A. ReactomeGSA, https://github.com/reactome/ReactomeGSA (2019)
     )
 ```
 
-
 ## Installation
 
-Install the Seurat package from CRAN or github documentation from the satijalab/Seurat is provided by https://satijalab.org/seurat/articles/install.html 
-The `ReactomeGSA` package can be directly installed from Bioconductor:
-
+Install the Seurat package from CRAN or github documentation from the
+satijalab/Seurat is provided by
+<https://satijalab.org/seurat/articles/install.html> The `ReactomeGSA`
+package can be directly installed from Bioconductor:
 
 ```{r, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -56,9 +61,10 @@ if(!require(Seurat))
 
 ```
 
-
 ### Load libraries
-Load libraries from Reactome and Seurat. The Seurat package is required to perform the subaggegration and subclustering.  
+
+Load libraries from Reactome and Seurat. The Seurat package is required
+to perform the subaggegration and subclustering.
 
 ```{r}
 # load libraries
@@ -72,35 +78,58 @@ library(Seurat)
 
 ```{r prepare}
 # prepare example data set
+library(eList)
+library(scRNAseq)
 
-assay_data <- HeOrganAtlasData()
-counts <- assays(assay_data)[[1]]
-seurat_data <- CreateSeuratObject(counts = counts, project = "Test dataset", min.cells = 5) # data must be a Seurat object 
+data <- HeOrganAtlasData()
+# convert sce data to seurat object
+counts <- assays(data)[[1]]
+seurat_data <- CreateSeuratObject(counts = counts, project = "OrganAtlas", min.cells = 5)
+t2 <- seurat_data@meta.data
+t <- data.frame(colData(data))
+t3 <- data.frame(t,t2)
+seurat_data@meta.data <- t3
 
 seurat_data
 ```
 
+```{r seurat workflow}
+# perform standard seurat workflow for visualization 
+seurat_data <- NormalizeData(seurat_data, normalization.method = "LogNormalize", scale.factor = 10000)
+seurat_data <- FindVariableFeatures(seurat_data, selection.method = "vst", nfeatures = 2000)
+all.genes <- rownames(seurat_data)
+seurat_data <- ScaleData(seurat_data, features = all.genes)
+seurat_data <- RunPCA(seurat_data, features = VariableFeatures(object = organtest_data_seurat))
+seurat_data <- FindNeighbors(seurat_data, dims = 1:10)
+seurat_data <- FindClusters(seurat_data, resolution = 0.5)
+seurat_data <- RunUMAP(seurat_data, dims = 1:10)
 
-Check metadata to find variable which is required by split_by variable in the generate_pseudo_bulk_data() function
+# visualize subgroup 
+dim_plot <- DimPlot(seurat_data, reduction = "umap", group.by = "reclustered.broad", label = TRUE)
 
-```{r seurat metadata}
-seurat_data@metadata
 ```
 
+Check metadata to find variable which is required by split_by variable
+in the generate_pseudo_bulk_data() function
 
-### Generate Pseudo bulk data 
-|Method       |split_by                 | k parameter                           | 
-|-------------|-------------------------|---------------------------------------|
-|random       | "random"                |number of random pools                 |
-|variable     | "variable"              |variable in metadata                   |
-|subclustering| subclustering algorithm | (resolution group, comparison group)  |
+```{r seurat metadata}
+seurat_data@meta.data
+```
 
+### Generate Pseudo bulk data
 
-To set different subclustering algorithm the following are provided: 
-- Louvian
-- Louvian_multilevel
-- SLM
-- Leiden
+| Method        | split_by                | k parameter                          |
+|------------------|----------------------|---------------------------------|
+| random        | "random"                | number of random pools               |
+| variable      | "variable"              | variable in metadata                 |
+| subclustering | subclustering algorithm | (resolution group, comparison group) |
+
+To set different subclustering algorithm the following are provided:
+
+-   Louvian
+-   Louvian_multilevel
+-   SLM
+-   Leiden
 
 ```{r bulk-data}
 # generate pseudo bulk data
@@ -109,17 +138,18 @@ To set different subclustering algorithm the following are provided:
 pseudo_bulk_data_random <- generate_pseudo_bulk_data(seurat_data, "reclustered.broad","random",3) 
 
 # variable
-pseudo_bulk_data_variable <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","variable","samples")
+pseudo_bulk_data_variable <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","variable","orig.ident")
 
 # subclustering
 pseudo_bulk_data_subclustering <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","SLM",list(1,"B_and_plasma","Epithelial_cells"))
 
 ```
 
-
 ### Gernerate Metadata
-The funtion generate_metadata() automatically generates the metadata based on the split_by variable provided in the generate_pseudo_bulk_data() function
- 
+
+The function generate_metadata() automatically generates the metadata
+based on the split_by variable provided in the
+generate_pseudo_bulk_data() function
 
 ```{r bulk metadata}
 # generate meta data
@@ -146,12 +176,12 @@ result <- perform_reactome_analysis(request = my_request)
 
 ```
 
+### Result
 
-### Result 
-
-Reactome provides the differentially expressed between the choosen groups, with group 2 as reference and the regulated pathways. 
-Both are saved within the result object and can be accessed using the get_result() and pathway() function. 
-
+Reactome provides the differentially expressed between the choosen
+groups, with group 2 as reference and the regulated pathways. Both are
+saved within the result object and can be accessed using the
+get_result() and pathway() function.
 
 ```{r DEG result}
 # get result table
