@@ -166,8 +166,20 @@ generate_pseudo_bulk_data <- function(seurat_object, group_by, split_by = "rando
 ### SCE object ###
 
 split_variable_sce <- function(sce_object, group_by, k_variable){
-  aggregated_counts <- aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
-  return(aggregated_counts)
+    aggregated_object <- aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
+
+    assay_data_aggregated <- as.data.frame(assays(aggregated_object))
+    meta_data_aggregated <- colData(aggregated_object)[,c(group_by,"random_column")]
+    
+    clustering_level <- meta_data_aggregated$[[group_by]]
+    random_pools <- meta_data_aggregated$rand_column
+
+    combined_list <- mapply(function(x, y) paste(x, y, sep = "_"), clustering_level, random_pool)
+    combined_list <- as.list(combined_list)
+
+    colnames(assay_data_aggregated) <- combined_list
+
+    return(assay_data_aggregated)
 }
 
 
@@ -179,7 +191,7 @@ split_random_sce <- function(sce_object, group_by, k_variable){
     assay_data_aggregated <- as.data.frame(assays(aggregated_object))
     meta_data_aggregated <- colData(aggregated_object)[,c(group_by,"random_column")]
     
-    clustering_level <- meta_data_aggregated$group_by  # access column with variable
+    clustering_level <- meta_data_aggregated$[[group_by]]
     random_pools <- meta_data_aggregated$rand_column
 
     combined_list <- mapply(function(x, y) paste(x, y, sep = "_"), clustering_level, random_pool)
@@ -189,11 +201,35 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 
     return(assay_data_aggregated)
 }
+                                                    # group1, group2 must be string ``
+split_clustering <- function(sce_object, group_by, group1, group2){ # only one clustering algorithm is provided
+    subcluster.out <- quickSubCluster(sce, groups=nn.clusters,
+                                  prepFUN=function(x) { # Preparing the subsetted SCE for clustering.
+                                    dec <- modelGeneVar(x)
+                                    input <- denoisePCA(x, technical=dec,
+                                                        subset.row=getTopHVGs(dec, prop=0.1),
+                                                        BSPARAM=BiocSingular::IrlbaParam())
+                                  },
+                                  clusterFUN=function(x) { # Performing the subclustering in the subset.
+                                    g <- buildSNNGraph(x, use.dimred="PCA", k=k_variable) # resolution
+                                    igraph::cluster_walktrap(g)$membership
+                                  }
+    )  # returns a huge SCE object with further SCE objects that represnets the cluster with the subclusters 
+    
+    subclusters_sce_list <- subcluster.out@listData
 
-split_clustering <- function(sce_object, group_by, k_variable){
-    clusters <- clusterCells(sce_object, use.dimred = "PCA")
+    subcluster <- subclusters_sce_list$[[group1]]
+    subcluster_comp <- subclusters_sce_list$[[group2]]
 
+    aggregated_counts_subcluster <- aggregateAcrossCells(subcluster, ids=subcluster$subcluster)
+    aggregated_counts_subcluster_comp <- aggregateAcrossCells(subcluster_comp, ids=subcluster_comp$subcluster)
 
+    assay_data <- as.data.frame(assays(aggregated_counts_subcluster))
+    assay_data_comp <- as.data.frame(assays(aggregated_counts_subcluster_comp)) # different row number
+    
+    assay_data_merged <- cbind(assay_data, assay_data_comp) # TODO check if dataframe is correct
+
+    return(assay_data_merged)  
 }
 
 
