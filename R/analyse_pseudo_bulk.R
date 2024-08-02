@@ -10,7 +10,6 @@
 #' @param k_variable    variable dependant on the split_by -> meta data entry
 #'
 #' @returns             returns pseudo bulk generated data
-#' @export
 split_variable <- function(seurat_object, group_by, k_variable){
     log_info("Splitting Variable")
 
@@ -28,7 +27,6 @@ split_variable <- function(seurat_object, group_by, k_variable){
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @export
 split_variable_random <- function(seurat_object, group_by, k_variable){
     log_info("Splitting Random")
     
@@ -40,19 +38,18 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
     seurat_df <- as.data.frame(seurat_object@assays$RNA$counts)
         log_info('Retrive Result')
 
-    return(seurat_df) 
+    return(seurat_df)
 }
 
 
 #' method implementation subclustering
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
-#' @param alg           Seurat subclustering algorithm id 
+#' @param alg           Seurat subclustering algorithm id
 #' @param cluster1      cluster to subcluster
 #' @param cluster2      cluster to subcluster
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @export
 split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluster2){
     log_info("SubClustering")
 
@@ -165,6 +162,62 @@ generate_pseudo_bulk_data <- function(seurat_object, group_by, split_by = "rando
 
     }
 }
+
+### SCE object ###
+
+split_variable_sce <- function(sce_object, group_by, k_variable){
+  aggregated_counts <- aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
+  return(aggregated_counts)
+}
+
+
+split_random_sce <- function(sce_object, group_by, k_variable){
+    metadata <- colData(sce_object)
+    metadata$rand_column <- sample(1:k, nrow(metadata), replace = TRUE)
+    aggregated_object <- aggregateAcrossCells(sce_object, ids = sce_object$rand_column)
+    
+    assay_data_aggregated <- as.data.frame(assays(aggregated_object))
+    meta_data_aggregated <- colData(aggregated_object)[,c(group_by,"random_column")]
+    
+    clustering_level <- meta_data_aggregated$group_by  # access column with variable
+    random_pools <- meta_data_aggregated$rand_column
+
+    combined_list <- mapply(function(x, y) paste(x, y, sep = "_"), clustering_level, random_pool)
+    combined_list <- as.list(combined_list)
+
+    colnames(assay_data_aggregated) <- combined_list
+
+    return(assay_data_aggregated)
+}
+
+split_clustering <- function(sce_object, group_by, k_variable){
+    clusters <- clusterCells(sce_object, use.dimred = "PCA")
+
+
+}
+
+
+
+
+### function supporting SCE object   TODO use set methdos and set generic
+generate_pseudo_bulk_data_sce <- function(sce_object,group_by, split_by = "random", k_variable = "3"){
+    
+    if (split_by == "variable"){
+        log_info("Split by variable")
+        result <- split_variable_sce(sce_object, group_by, k_variable)
+        return(result)
+    }
+
+    if (split_by == "random"){
+        result <- split_random_sce(sce_object, group_by, k_variable)
+        return(result)
+    }
+
+}
+
+
+
+
 
 ### function to automatically generate the metadata ###
 
