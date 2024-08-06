@@ -1,26 +1,3 @@
-## Test code for pseudo bulk 
-
-
-## Setup and Packages
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-
-BiocManager::install("scRNAseq")
-BiocManager::install("scuttle")
-BiocManager::install("scran")
-BiocManager::install("scater")
-BiocManager::install("org.Mm.eg.db", force = TRUE)
-
-
-library(org.Mm.eg.db)
-library(scRNAseq)
-library(scuttle)
-library(scran)
-library(BiocSingular)
-library(methods)
-
-
-
 setGeneric("generate_pseudo_bulk_data", function(object, 
                                                  group_by = NULL, 
                                                  split_by  = "random", 
@@ -38,7 +15,7 @@ setGeneric("generate_pseudo_bulk_data", function(object,
 #' @examples
 #' random <- generate_pseudo_bulk_data(test_data,"seurat_clusters","random",2)
 #' variable <- generate_pseudo_bulk_data(test_data,"seurat_clusters","random","samples_id")
-#' louvian_clustering <- generate_pseudo_bulk_data(test_data,"seurat_clusters","Louvian",list(4,0,1)
+#' louvain_clustering <- generate_pseudo_bulk_data(test_data,"seurat_clusters","Louvian",list(4,0,1)
 #'
 #' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object, 
@@ -47,16 +24,13 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
                                                                         k_variable){
   
   if (split_by == "variable"){
-    #result <- split_variable(seurat_object, group_by, k_variable)
-    #return(result)
-    return("variable")
+    result <- split_variable(seurat_object, group_by, k_variable)
+    return(result)
   }
   
   if (split_by == "random"){
-    #result <- split_variable_random(seurat_object, group_by, k_variable)
-    #return(result)
-    return("random")
-    
+    result <- split_variable_random(seurat_object, group_by, k_variable)
+    return(result)
   }
   
   if(split_by =="Louvain"){
@@ -64,10 +38,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     cluster1_ <- k_variable[[2]]
     cluster2_ <- k_variable[[3]]
     
-    #result <- split_clustering(seurat_object, group_by,resolution_, 1, cluster1_,cluster2_)
-    #return(result)
-    return("Luivan")
-    
+    result <- split_clustering(seurat_object, group_by,resolution_, 1, cluster1_,cluster2_)
+    return(result)
   }
   
   if(split_by == "Louvain_multilevel"){
@@ -75,10 +47,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     cluster1_ <- k_variable[[2]]
     cluster2_ <- k_variable[[3]]
    
-     #result <- split_clustering(seurat_object, group_by,resolution_, 2, cluster1_,cluster2_)
-    #return(result)
-    return("laivian mulit")
-    
+    result <- split_clustering(seurat_object, group_by,resolution_, 2, cluster1_,cluster2_)
+    return(result)
   }
   
   if(split_by =="SLM"){
@@ -86,10 +56,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     cluster1_ <- k_variable[[2]]
     cluster2_ <- k_variable[[3]]
     
-    #result <- split_clustering(seurat_object, group_by,resolution_, 3, cluster1_,cluster2_)
-    #return(result)
-    return("SLM")
-    
+    result <- split_clustering(seurat_object, group_by,resolution_, 3, cluster1_,cluster2_)
+    return(result)
   }
   
   if(split_by =="Leiden"){
@@ -97,11 +65,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     cluster1_ <- k_variable[[2]]
     cluster2_ <- k_variable[[3]]
     
-    #result <- split_clustering(seurat_object, group_by,resolution_, 4, cluster1_,cluster2_)
-    #return(result)
-    return("Leiden")
-    
-    
+    result <- split_clustering(seurat_object, group_by,resolution_, 4, cluster1_,cluster2_)
+    return(result)
   }
 })
 
@@ -216,7 +181,8 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #'                                                nn.clusters, 
 #'                                                K_CLUSTER)
 #' 
-split_subclustering <- function(sce_object, group_by, k_variable){
+split_subclustering_sce <- function(sce_object, group_by, k_variable){
+  print(k_variable)
   
   #check if Dim reduction and Clustering is performed 
   if(length(reducedDimNames(SCE_OBJECT)) == 0){
@@ -233,8 +199,8 @@ split_subclustering <- function(sce_object, group_by, k_variable){
                                                           BSPARAM=BiocSingular::IrlbaParam())
                                     },
                                     clusterFUN=function(x) { # Performing the subclustering in the subset.
-                                      g <- buildSNNGraph(x, use.dimred="PCA", k=1)     
-                                      igraph::cluster_walktrap(g)$membership  ## TODO !!!!
+                                      g <- buildSNNGraph(x, use.dimred="PCA", k=k_variable[[1]])     
+                                      igraph::cluster_walktrap(g)$membership
                                     }
   )
   
@@ -332,6 +298,9 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
 
 
 
+
+setGeneric("generate_metadata", function(pseudo_bulk_data)
+                                         standardGeneric("generate_metadata"))
 #' generate metadata
 #' @param pseudo_bulk_data  pseudobulk data generated from the generate_pseudo_bulk function 
 #'
@@ -343,11 +312,9 @@ setMethod("generate_metadata", c("pseudo_bulk_data"="data.frame"), function(pseu
     Group <- groups
   )
   colnames(metadata) <- "Group"
-  
   metadata$index_use <- colnames(pseudo_bulk_data)
   rownames(metadata) <- metadata$index_use
   metadata$index_use <- NULL
   return(metadata)
-  
-})
 
+})
