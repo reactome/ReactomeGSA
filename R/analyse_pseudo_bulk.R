@@ -120,8 +120,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' 
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(assay(aggregated_object))
+  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
+  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assay(aggregated_object))
   meta_data_aggregated <- SingleCellExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
@@ -142,24 +142,24 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom SingleCellExperiment scuttle 
+#' @importFrom SingleCellExperiment scuttle
 #' 
 #' @examples
 #' # SCE_RESULT_RANDOM <- split_random_sce(SCE_OBJECT, GROUP_BY, K_NUMBER)
 #' 
 split_random_sce <- function(sce_object, group_by, k_variable){
-  metadata <- SingleCellExperiment::colData(SCE_OBJECT)
+  metadata <- SingleCellExperiment::colData(sce_object)
   
-  num_cells <- ncol(SCE_OBJECT)
-  random_data <- sample(1:K_NUMBER, num_cells, replace = TRUE)
-  SingleCellExperiment::colData(SCE_OBJECT)$random_column <- random_data
+  num_cells <- ncol(sce_object)
+  random_data <- sample(1:k_variable, num_cells, replace = TRUE)
+  SingleCellExperiment::colData(sce_object)$random_column <- random_data
   
-  aggregated_counts <- scuttle::aggregateAcrossCells(SCE_OBJECT, ids=colData(SCE_OBJECT)[,c(group_by, "random_column")])
+  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, "random_column")])
   
   meta_data_aggregated <- SingleCellExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
   aggregated_counts <- as.data.frame(SingleCellExperiment::assay(aggregated_counts))
   
-  clustering_level <- meta_data_aggregated[[group_by]] 
+  clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
   
   combined_list <- mapply(function(x, y) paste(x, y, sep = "_"),clustering_level, random_pools)
@@ -193,7 +193,7 @@ split_subclustering_sce <- function(sce_object, group_by, k_variable){
   print(k_variable)
   
   #check if Dim reduction and Clustering is performed 
-  if(length(SingleCellExperiment::reducedDimNames(SCE_OBJECT)) == 0){
+  if(length(SingleCellExperiment::reducedDimNames(sce_object)) == 0){
     print("No Dimensionaities for Subclustering available")
   }
   
