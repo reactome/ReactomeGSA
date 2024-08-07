@@ -1,10 +1,27 @@
-setGeneric("generate_pseudo_bulk_data", function(object, 
+#' generate_pseudo_bulk_data 
+#' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
+#' @param split_by      variable -> split by a variable within the metadata; k must be a string
+#'                      random -> splits based on a random number; k must be a number
+#'                      Louvain, Louvain_multilevel, SLM, Leiden -> subclusters k must be a list with [resolution, cluster_1, cluster_2]
+#' @param k_variable    variable dependent on the split_by
+#'
+#' @examples
+#' 
+#' #using SCE object
+#' SCE_OBJECT <- ZeiselBrainData()
+#' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)
+#' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue")
+#'
+#'
+#' @returns             returns pseudo bulk generated data
+#'
+#' @export
+setGeneric("generate_pseudo_bulk_data", function(object,
                                                  group_by = NULL, 
                                                  split_by  = "random", 
                                                  k_variable = "4") standardGeneric("generate_pseudo_bulk_data"))
 
-#' generate_pseudo_bulk_data using Seurat object
-#' @inherit generate_pseudo_bul_data 
+#' @inherit generate_pseudo_bul_data using Seurat
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -12,12 +29,6 @@ setGeneric("generate_pseudo_bulk_data", function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
-#' @examples
-#' random <- generate_pseudo_bulk_data(test_data,"seurat_clusters","random",2)
-#' variable <- generate_pseudo_bulk_data(test_data,"seurat_clusters","random","samples_id")
-#' louvain_clustering <- generate_pseudo_bulk_data(test_data,"seurat_clusters","Louvian",list(4,0,1)
-#'
-#' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object, 
                                                                         group_by, 
                                                                         split_by = "random", 
@@ -81,9 +92,6 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
-#' @examples
-#'
-#' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), function(object, 
                                                                                       group_by, 
                                                                                       split_by, 
@@ -113,11 +121,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @param k_variable    variable for sub setting must be in the metadata
 #' 
 #' @returns             returns pseudo bulk generated data
-#' @importFrom SingleCellExperiment scuttle 
-#' 
-#' @examples
-#' # SCE_RESULT_VARIABLE <- split_variable_sce(SCE_OBJECT, GROUP_BY,K_VARIABLE)
-#' 
+#' @importFrom SingleCellExperiment scuttle  
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
   aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
@@ -143,9 +147,6 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' @returns             returns pseudo bulk generated data
 #' 
 #' @importFrom SingleCellExperiment scuttle
-#' 
-#' @examples
-#' # SCE_RESULT_RANDOM <- split_random_sce(SCE_OBJECT, GROUP_BY, K_NUMBER)
 #' 
 split_random_sce <- function(sce_object, group_by, k_variable){
   metadata <- SingleCellExperiment::colData(sce_object)
@@ -183,14 +184,7 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @importFrom SingleCellExperiment scuttle scran
 #' 
-#' @examples
-#' K_CLUSTER <- list(3, 1,4)
-#' # SCE_RESULT_CLUSTERING <- split_subclustering(SCE_OBJECT, 
-#'                                                nn.clusters, 
-#'                                                K_CLUSTER)
-#' 
 split_subclustering_sce <- function(sce_object, group_by, k_variable){
-  print(k_variable)
   
   #check if Dim reduction and Clustering is performed 
   if(length(SingleCellExperiment::reducedDimNames(sce_object)) == 0){
