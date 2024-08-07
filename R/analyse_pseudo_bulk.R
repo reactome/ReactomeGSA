@@ -21,7 +21,7 @@ setGeneric("generate_pseudo_bulk_data", function(object,
                                                  split_by  = "random", 
                                                  k_variable = "4") standardGeneric("generate_pseudo_bulk_data"))
 
-#' @inherit generate_pseudo_bul_data using Seurat
+#' @inherit generate_pseudo_bulk_data using Seurat
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -33,50 +33,77 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
                                                                         group_by, 
                                                                         split_by = "random", 
                                                                         k_variable){
-  
+      
+  if (!is.character(split_by)) {
+    stop('Error: split_by must be a string e.g "variable", "random", "Louvain",...')
+  }
+    
   if (split_by == "variable"){
+    if (!is.character(k_variable)) {
+      stop('Error: k must be a string')
+    }
     result <- split_variable(seurat_object, group_by, k_variable)
     return(result)
   }
   
   if (split_by == "random"){
+    if (!is.numeric(k_variable)) {
+      stop('Error: k must be a number')
+    }
     result <- split_variable_random(seurat_object, group_by, k_variable)
     return(result)
   }
   
-  if(split_by =="Louvain"){
+  if(split_by == "Louvain"){
     resolution_ <- k_variable[[1]]
-    cluster1_ <- k_variable[[2]]
-    cluster2_ <- k_variable[[3]]
-    
-    result <- split_clustering(seurat_object, group_by,resolution_, 1, cluster1_,cluster2_)
+    subcluster_ref <- k_variable[[2]]   # subcluster variable depending on entry in metadata
+    subcluster_comp <- k_variable[[3]]  # subcluster variable depending on entry in metadata
+
+    if(!is.numeric(resolution_)){
+      stop('Error: resolution must be a number')
+    }
+
+    result <- split_clustering(seurat_object, group_by,resolution_, 1, subcluster_ref,subcluster_comp)
     return(result)
   }
   
   if(split_by == "Louvain_multilevel"){
     resolution_ <- k_variable[[1]]
-    cluster1_ <- k_variable[[2]]
-    cluster2_ <- k_variable[[3]]
+    subcluster_ref <- k_variable[[2]]   # subcluster variable depending on entry in metadata
+    subcluster_comp <- k_variable[[3]]  # subcluster variable depending on entry in metadata
    
-    result <- split_clustering(seurat_object, group_by,resolution_, 2, cluster1_,cluster2_)
+    if(!is.numeric(resolution_)){
+      stop('Error: resolution must be a number')
+    }
+   
+    result <- split_clustering(seurat_object, group_by,resolution_, 2, subcluster_ref,subcluster_comp)
     return(result)
   }
   
   if(split_by =="SLM"){
     resolution_ <- k_variable[[1]]
-    cluster1_ <- k_variable[[2]]
-    cluster2_ <- k_variable[[3]]
+    subcluster_ref <- k_variable[[2]]    # subcluster variable depending on entry in metadata
+    subcluster_comp <- k_variable[[3]]   # subcluster variable depending on entry in metadata
+
+
+    if(!is.numeric(resolution_)){
+      stop('Error: resolution must be a number')
+    }
     
-    result <- split_clustering(seurat_object, group_by,resolution_, 3, cluster1_,cluster2_)
+    result <- split_clustering(seurat_object, group_by,resolution_, 3, subcluster_ref,subcluster_comp)
     return(result)
   }
   
   if(split_by =="Leiden"){
     resolution_ <- k_variable[[1]]
-    cluster1_ <- k_variable[[2]]
-    cluster2_ <- k_variable[[3]]
-    
-    result <- split_clustering(seurat_object, group_by,resolution_, 4, cluster1_,cluster2_)
+    subcluster_ref <- k_variable[[2]]    # subcluster variable depending on entry in metadata
+    subcluster_comp <- k_variable[[3]]   # subcluster variable depending on entry in metadata
+  
+    if(!is.numeric(resolution_)){
+      stop('Error: resolution must be a number')
+    }
+
+    result <- split_clustering(seurat_object, group_by,resolution_, 4, subcluster_ref,subcluster_comp)
     return(result)
   }
 })
@@ -96,18 +123,42 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
                                                                                       group_by, 
                                                                                       split_by, 
                                                                                       k_variable){
+
+  if (!is.character(split_by)) {
+    stop('Error: split_by must be a string e.g "variable", "random", "subclustering" ')
+  }
+
   if (split_by == "variable"){
+    if (!is.character(k_variable)) {
+      stop('Error: k must be a string')
+    }
     result <- split_variable_sce(object, group_by, k_variable)
     return(result)
   }
   
   if (split_by == "random"){
+    if (!is.numeric(k_variable)) {
+      stop('Error: k must be a number')
+    }
     result <- split_random_sce(object, group_by, k_variable)
     return(result)
   }
   
-  if(split_by == "subclustering"){ 
-    result <- split_subclustering_sce(object, group_by, k_variable)
+  if(split_by == "subclustering"){
+    
+    if (group_by %in% c("Louvain","Leiden","SLM","Louvain_multilevel")) {
+      stop('Error: Louvain, SLM and Leiden clustering only available in Seurat')
+    }
+
+    resolution <- k_variable[[1]]   
+    subcluster_ref <- k_variable[[2]]     # subcluster variable depending on entry in metadata
+    subcluster_comp <-  k_variable[[3]]   # subcluster variable depending on entry in metadata
+
+    if (!is.numeric(resolution)) {
+      stop('Error: resolution must be a number')
+    }
+
+    result <- split_subclustering_sce(object, group_by, resolution, subcluster_ref, subcluster_comp)
     return(result)
   }
     
@@ -184,11 +235,11 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @importFrom SingleCellExperiment scuttle scran
 #' 
-split_subclustering_sce <- function(sce_object, group_by, k_variable){
+split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
   
   #check if Dim reduction and Clustering is performed 
   if(length(SingleCellExperiment::reducedDimNames(sce_object)) == 0){
-    print("No Dimensionaities for Subclustering available")
+    stop("No Dimensionaities for Subclustering available")
   }
   
   
@@ -201,12 +252,12 @@ split_subclustering_sce <- function(sce_object, group_by, k_variable){
                                                           BSPARAM=BiocSingular::IrlbaParam())
                                     },
                                     clusterFUN=function(x) { # Performing the subclustering in the subset.
-                                      g <- scran::buildSNNGraph(x, use.dimred="PCA", k=k_variable[[1]])     
+                                      g <- scran::buildSNNGraph(x, use.dimred="PCA", k=resolution)     
                                       igraph::cluster_walktrap(g)$membership
                                     }
   )
   
-  
+  resolution <- k_variable[[1]]
   subcluster_ref <- subcluster.out[[k_variable[[2]]]]
   subcluster_comp <-  subcluster.out[[k_variable[[3]]]]
   
@@ -235,7 +286,6 @@ split_subclustering_sce <- function(sce_object, group_by, k_variable){
 #' @importFrom Seurat
 split_variable <- function(seurat_object, group_by, k_variable){
   seurat_object <- Seurat::AggregateExpression(seurat_object, assays = "RNA", return.seurat = T, group.by = c(group_by,k_variable))
-  tail(Seurat::Cells(seurat_object))
   seurat_df <- as.data.frame(seurat_object@assays$RNA$counts)
   
     return(seurat_df) 
@@ -253,7 +303,6 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
   seurat_object$rand_column <- sample(1:k_variable, nrow(seurat_object), replace = TRUE)
   
   seurat_object <- Seurat::AggregateExpression(seurat_object, assays = "RNA", return.seurat = T, group.by = c(group_by,"rand_column"))
-  tail(Seurat::Cells(seurat_object))    
   seurat_df <- as.data.frame(seurat_object@assays$RNA$counts)
 
   return(seurat_df)
@@ -268,7 +317,7 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFromt Seurat
+#' @importFrom Seurat
 split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluster2){
   cluster_ids <- list()
   cluster_ids <- append(cluster_ids, cluster1)
@@ -286,7 +335,6 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
     # aggregate expression for cluster 
     seurat_object_sub <- Seurat::AggregateExpression(seurat_object_sub, assays = "RNA", return.seurat = T, group.by = c(group_by, cluster)) 
     
-    tail(Seurat::Cells(seurat_object))    
     seurat_df <- as.data.frame(seurat_object_sub@assays$RNA$counts)
     colnames(seurat_df) <- paste0(cluster, "_", 1:ncol(seurat_df)) 
     # rename columns 
