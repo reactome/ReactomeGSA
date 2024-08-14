@@ -8,9 +8,11 @@
 #' @examples
 #' 
 #' #using SCE object
+#' library(scRNAseq)e
 #' SCE_OBJECT <- ZeiselBrainData()
-#' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)
-#' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue")
+#' # generating pseudo bulk data using the SCE object above, and clustering level level1class from the metadata
+#' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)  # generate pseudo bulk data based on random subsampling
+#' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue") # generate pseudo bulk data based on variable within the metadata
 #'
 #'
 #' @returns             returns pseudo bulk generated data
@@ -29,6 +31,7 @@ setGeneric("generate_pseudo_bulk_data", function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
+#' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object, 
                                                                         group_by, 
                                                                         split_by = "random", 
@@ -36,6 +39,14 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
       
   if (!is.character(split_by)) {
     stop('Error: split_by must be a string e.g "variable", "random", "Louvain",...')
+  }
+
+  if(!(group_by %in% colnames(object@meta.data))){
+    stop('Error: group_by must be a column in metadata')
+  }
+
+  if(!(split_by %in% list("random","variable","Louvian","Louvain_multilevel","SLM","Leiden"))){
+    stop('Error: Algorithm not found must be "random","variable","Louvian","Louvain_multilevel","SLM","Leiden"')
   }
     
   if (split_by == "variable"){
@@ -54,57 +65,39 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     return(result)
   }
   
-  if(split_by == "Louvain"){
+  if(split_by == "Louvian" || split_by== "Louvain_multilevel" || split_by == "SLM" || "Leiden"){
+    if (length(data) != 3) {
+      stop('Error: k variables must contain [resolution, refrence cluster, comparison cluster]')
+    } 
+
     resolution_ <- k_variable[[1]]
     subcluster_ref <- k_variable[[2]]   # subcluster variable depending on entry in metadata
     subcluster_comp <- k_variable[[3]]  # subcluster variable depending on entry in metadata
+
 
     if(!is.numeric(resolution_)){
       stop('Error: resolution must be a number')
     }
 
-    result <- split_clustering(seurat_object, group_by,resolution_, 1, subcluster_ref,subcluster_comp)
-    return(result)
-  }
-  
-  if(split_by == "Louvain_multilevel"){
-    resolution_ <- k_variable[[1]]
-    subcluster_ref <- k_variable[[2]]   # subcluster variable depending on entry in metadata
-    subcluster_comp <- k_variable[[3]]  # subcluster variable depending on entry in metadata
-   
-    if(!is.numeric(resolution_)){
-      stop('Error: resolution must be a number')
-    }
-   
-    result <- split_clustering(seurat_object, group_by,resolution_, 2, subcluster_ref,subcluster_comp)
-    return(result)
-  }
-  
-  if(split_by =="SLM"){
-    resolution_ <- k_variable[[1]]
-    subcluster_ref <- k_variable[[2]]    # subcluster variable depending on entry in metadata
-    subcluster_comp <- k_variable[[3]]   # subcluster variable depending on entry in metadata
-
-
-    if(!is.numeric(resolution_)){
-      stop('Error: resolution must be a number')
+    if(split_by == "Louvain"){
+      result <- split_clustering(seurat_object, group_by,resolution_, 1, subcluster_ref,subcluster_comp)
+      return(result)
     }
     
-    result <- split_clustering(seurat_object, group_by,resolution_, 3, subcluster_ref,subcluster_comp)
-    return(result)
-  }
-  
-  if(split_by =="Leiden"){
-    resolution_ <- k_variable[[1]]
-    subcluster_ref <- k_variable[[2]]    # subcluster variable depending on entry in metadata
-    subcluster_comp <- k_variable[[3]]   # subcluster variable depending on entry in metadata
-  
-    if(!is.numeric(resolution_)){
-      stop('Error: resolution must be a number')
+    if(split_by == "Louvain_multilevel"){
+      result <- split_clustering(seurat_object, group_by,resolution_, 2, subcluster_ref,subcluster_comp)
+      return(result)
     }
-
-    result <- split_clustering(seurat_object, group_by,resolution_, 4, subcluster_ref,subcluster_comp)
-    return(result)
+    
+    if(split_by =="SLM"){
+      result <- split_clustering(seurat_object, group_by,resolution_, 3, subcluster_ref,subcluster_comp)
+      return(result)
+    }
+    
+    if(split_by =="Leiden"){
+      result <- split_clustering(seurat_object, group_by,resolution_, 4, subcluster_ref,subcluster_comp)
+      return(result)
+    }
   }
 })
 
@@ -119,6 +112,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
+#' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), function(object, 
                                                                                       group_by, 
                                                                                       split_by, 
@@ -126,6 +120,14 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 
   if (!is.character(split_by)) {
     stop('Error: split_by must be a string e.g "variable", "random", "subclustering" ')
+  }
+
+  if(!(split_by %in% list("variable","random","subclustering"))){
+    stop('Error: Algorithm not found must be "variable","random","subclustering"')
+  }
+    
+  if (!(group_by %in% colnames(colData(object)))) {
+    stop("Error: group_by must be a column in metadata")
   }
 
   if (split_by == "variable"){
@@ -149,6 +151,9 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
     if (group_by %in% c("Louvain","Leiden","SLM","Louvain_multilevel")) {
       stop('Error: Louvain, SLM and Leiden clustering only available in Seurat')
     }
+    if (length(k_variable) != 3) {
+      stop('Error: k variables must contain [resolution, refrence cluster, comparison cluster]')
+    } 
 
     resolution <- k_variable[[1]]   
     subcluster_ref <- k_variable[[2]]     # subcluster variable depending on entry in metadata
@@ -175,9 +180,9 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @importFrom SingleCellExperiment scuttle  
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assay(aggregated_object))
-  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
+  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
+  assay_data_aggregated <- as.data.frame(assay(aggregated_object))
+  meta_data_aggregated <- colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
   variable_pools <- meta_data_aggregated[[k_variable]]
@@ -200,16 +205,16 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' @importFrom SingleCellExperiment scuttle
 #' 
 split_random_sce <- function(sce_object, group_by, k_variable){
-  metadata <- SingleCellExperiment::colData(sce_object)
+  metadata <- colData(sce_object)
   
   num_cells <- ncol(sce_object)
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
-  SingleCellExperiment::colData(sce_object)$random_column <- random_data
+  colData(sce_object)$random_column <- random_data
   
   aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, "random_column")])
   
-  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
-  aggregated_counts <- as.data.frame(SingleCellExperiment::assay(aggregated_counts))
+  meta_data_aggregated <- colData(aggregated_counts)[,c(group_by,"random_column")]
+  aggregated_counts <- as.data.frame(assay(aggregated_counts))
   
   clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
@@ -225,11 +230,10 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 
 #' split SCE Object with random pooling
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
-#' @param k_variable    subcluster paramters
 #' 
-#' @param resolution    resolution
-#' @param cluster1      cluster to subcluster as areference
-#' @param cluster2      cluster to subcluster for comparison
+#' @param resolution            resolution
+#' @param subcluster_ref        cluster to subcluster as areference
+#' @param subcluster_comp       cluster to subcluster for comparison
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
@@ -239,7 +243,7 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   
   #check if Dim reduction and Clustering is performed 
   if(length(SingleCellExperiment::reducedDimNames(sce_object)) == 0){
-    stop("No Dimensionaities for Subclustering available")
+    stop("No Dimensionalities for Subclustering available")
   }
   
   
@@ -256,16 +260,12 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
                                       igraph::cluster_walktrap(g)$membership
                                     }
   )
-  
-  resolution <- k_variable[[1]]
-  subcluster_ref <- subcluster.out[[k_variable[[2]]]]
-  subcluster_comp <-  subcluster.out[[k_variable[[3]]]]
-  
+    
   aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subcluster_ref, ids=subcluster_ref$subcluster)
   aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subcluster_comp, ids=subcluster_comp$subcluster)
   
-  assay_data_ref <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_ref))
-  assay_data_comp <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_comp))
+  assay_data_ref <- as.data.frame(assay(aggregated_counts_subcluster_ref))
+  assay_data_comp <- as.data.frame(assay(aggregated_counts_subcluster_comp))
   
   re <- cbind(assay_data_ref, assay_data_comp)
   cols <- as.list(colnames(re))  # change column names
@@ -326,7 +326,6 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
   result_dataframe <- data.frame()
   
   # setup seurat object 
-  Seurat::Idents(seurat_object) <- group_by     
   for (cluster in cluster_ids){
     seurat_object_sub = subset(seurat_object, idents = cluster, invert = FALSE)
     seurat_object_sub <- Seurat::FindNeighbors(seurat_object_sub, dim = 1:10)
@@ -349,25 +348,3 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
   return(result_dataframe)
 }
 
-
-
-
-setGeneric("generate_metadata", function(pseudo_bulk_data)
-                                         standardGeneric("generate_metadata"))
-#' generate metadata
-#' @param pseudo_bulk_data  pseudobulk data generated from the generate_pseudo_bulk function 
-#'
-#' @returns                 returns metadata table for later use
-#' @export
-setMethod("generate_metadata", c("pseudo_bulk_data"="data.frame"), function(pseudo_bulk_data){cols <- colnames(pseudo_bulk_data)
-  groups <- sapply(strsplit(cols, "_"), `[`, 1)
-  metadata <- data.frame(
-    Group <- groups
-  )
-  colnames(metadata) <- "Group"
-  metadata$index_use <- colnames(pseudo_bulk_data)
-  rownames(metadata) <- metadata$index_use
-  metadata$index_use <- NULL
-  return(metadata)
-
-})

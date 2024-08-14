@@ -59,6 +59,17 @@ if (!require(ReactomeGSA.data))
 if(!require(Seurat))
     install.packages('Seurat')
 
+# install to access publlic datasetsß
+if (!require(scRNAseq))
+  BiocManager::install("scRNAseq")
+
+# install Seurat from CRAN
+if (!require(eList))
+  install.packages("eList")
+
+if (!require(SingleCellExperiment))
+  BiocManager::install("SingleCellExperiment")
+
 ```
 
 ### Load libraries
@@ -68,52 +79,26 @@ to perform the subaggegration and subclustering.
 
 ```{r}
 # load libraries
-
 library(ReactomeGSA)
 library(ReactomeGSA.data)
 library(Seurat)
+library(eList)
+library(scRNAseq)
+library(SingleCellExperiment)
 ```
 
 ### Prepare example dataset
 
 ```{r prepare}
 # prepare example data set
-library(eList)
-library(scRNAseq)
-
-data <- HeOrganAtlasData()
-# convert sce data to seurat object
-counts <- assays(data)[[1]]
-seurat_data <- CreateSeuratObject(counts = counts, project = "OrganAtlas", min.cells = 5)
-t2 <- seurat_data@meta.data
-t <- data.frame(colData(data))
-t3 <- data.frame(t,t2)
-seurat_data@meta.data <- t3
-
-seurat_data
-```
-
-```{r seurat workflow}
-# perform standard seurat workflow for visualization 
-seurat_data <- NormalizeData(seurat_data, normalization.method = "LogNormalize", scale.factor = 10000)
-seurat_data <- FindVariableFeatures(seurat_data, selection.method = "vst", nfeatures = 2000)
-all.genes <- rownames(seurat_data)
-seurat_data <- ScaleData(seurat_data, features = all.genes)
-seurat_data <- RunPCA(seurat_data, features = VariableFeatures(object = organtest_data_seurat))
-seurat_data <- FindNeighbors(seurat_data, dims = 1:10)
-seurat_data <- FindClusters(seurat_data, resolution = 0.5)
-seurat_data <- RunUMAP(seurat_data, dims = 1:10)
-
-# visualize subgroup 
-dim_plot <- DimPlot(seurat_data, reduction = "umap", group.by = "reclustered.broad", label = TRUE)
-
+SCE_OBJECT <- ZeiselBrainData()
 ```
 
 Check metadata to find variable which is required by split_by variable
 in the generate_pseudo_bulk_data() function
 
 ```{r seurat metadata}
-seurat_data@meta.data
+metadata <- SingleCellExperiment::colData(SCE_OBJECT)
 ```
 
 ### Generate Pseudo bulk data
@@ -131,21 +116,13 @@ To set different subclustering algorithm the following are provided:
 -   SLM
 -   Leiden
 
-```{r bulk-data}
-# generate pseudo bulk data
-
-# random
-pseudo_bulk_data_random <- generate_pseudo_bulk_data(seurat_data, "reclustered.broad","random",3) 
-
-# variable
-pseudo_bulk_data_variable <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","variable","orig.ident")
-
-# subclustering
-pseudo_bulk_data_subclustering <- generate_pseudo_bulk_data(seurat_object, "reclustered.broad","SLM",list(1,"B_and_plasma","Epithelial_cells"))
-
+```{r bulk data}
+SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)  
+SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue") 
 ```
 
-### Gernerate Metadata
+
+### Generate Metadata
 
 The function generate_metadata() automatically generates the metadata
 based on the split_by variable provided in the
@@ -153,7 +130,7 @@ generate_pseudo_bulk_data() function
 
 ```{r bulk metadata}
 # generate meta data
-metadata <- generate_metadata(pseudo_bulk_data_random)
+metadata <- generate_metadata(SCE_RESULT_RANDOM)
 metadata
 
 ```
@@ -163,12 +140,12 @@ metadata
 my_request <- ReactomeAnalysisRequest(method = "Camera")
 my_request <- set_parameters(request = my_request, max_missing_values = 0.5)
 my_request <- add_dataset(request = my_request, 
-                          expression_values = pseudo_bulk_data_random, 
+                          expression_values = SCE_RESULT_RANDOM, 
                           name = "Pseudo Bulk example",     # name for experiment
                           type = "rnaseq_counts",           # we expect the data to already be raw
                           comparison_factor = "Group",      # comparison for DEG;  must be string with ""
-                          comparison_group_1 = "NK",        # must be string with ""
-                          comparison_group_2 = "B",         # must be string with ""
+                          comparison_group_1 = "microglia",        # must be string with ""
+                          comparison_group_2 = "interneurons",         # must be string with ""
                           sample_data = metadata,
                           additional_factors = NULL)
 
