@@ -5,17 +5,18 @@
 #'                      Louvain, Louvain_multilevel, SLM, Leiden -> subclusters k must be a list with [resolution, cluster_1, cluster_2]
 #' @param k_variable    variable dependent on the split_by
 #'
+#' @returns             returns pseudo bulk generated data
+#' 
 #' @examples
 #' 
 #' #using SCE object
-#' library(scRNAseq)e
+#' library(scRNAseq)
 #' SCE_OBJECT <- ZeiselBrainData()
 #' # generating pseudo bulk data using the SCE object above, and clustering level level1class from the metadata
 #' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)  # generate pseudo bulk data based on random subsampling
 #' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue") # generate pseudo bulk data based on variable within the metadata
 #'
 #'
-#' @returns             returns pseudo bulk generated data
 #'
 #' @export
 setGeneric("generate_pseudo_bulk_data", function(object,
@@ -23,7 +24,6 @@ setGeneric("generate_pseudo_bulk_data", function(object,
                                                  split_by  = "random", 
                                                  k_variable = "4") standardGeneric("generate_pseudo_bulk_data"))
 
-#' @inherit generate_pseudo_bulk_data using Seurat
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -66,7 +66,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
   }
   
   if(split_by == "Louvian" || split_by== "Louvain_multilevel" || split_by == "SLM" || "Leiden"){
-    if (length(data) != 3) {
+    if (length(k_variable) != 3) {
       stop('Error: k variables must contain [resolution, refrence cluster, comparison cluster]')
     } 
 
@@ -104,7 +104,6 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 
 
 #' generate_pseudo_bulk_data using SingleCellExperiment
-#' @inherit generate_pseudo_bulk_data 
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -177,7 +176,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @param k_variable    variable for sub setting must be in the metadata
 #' 
 #' @returns             returns pseudo bulk generated data
-#' @importFrom SingleCellExperiment scuttle  
+#' @importFrom scuttle aggregateAcrossCells
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
   aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
@@ -202,7 +201,7 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom SingleCellExperiment scuttle
+#' @importFrom scuttle aggregateAcrossCells
 #' 
 split_random_sce <- function(sce_object, group_by, k_variable){
   metadata <- colData(sce_object)
@@ -237,8 +236,8 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom SingleCellExperiment scuttle scran
-#' 
+#' @importFrom scuttle aggregateAcrossCells
+#' @importFrom scran quickSubCluster
 split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
   
   #check if Dim reduction and Clustering is performed 
@@ -283,7 +282,7 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
 #' @param k_variable    variable dependent on the split_by -> meta data entry
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFrom Seurat
+#' @importFrom Seurat AggregateExpression
 split_variable <- function(seurat_object, group_by, k_variable){
   seurat_object <- Seurat::AggregateExpression(seurat_object, assays = "RNA", return.seurat = T, group.by = c(group_by,k_variable))
   seurat_df <- as.data.frame(seurat_object@assays$RNA$counts)
@@ -297,7 +296,7 @@ split_variable <- function(seurat_object, group_by, k_variable){
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFrom Seurat
+#' @importFrom Seurat AggregateExpression
 split_variable_random <- function(seurat_object, group_by, k_variable){
   nrow(seurat_object@meta.data)
   seurat_object$rand_column <- sample(1:k_variable, nrow(seurat_object), replace = TRUE)
@@ -317,7 +316,7 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFrom Seurat
+#' @importFrom Seurat FindNeighbors FindClusters AggregateExpression
 split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluster2){
   cluster_ids <- list()
   cluster_ids <- append(cluster_ids, cluster1)
