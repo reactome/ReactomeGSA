@@ -11,8 +11,8 @@ Description: The ReactomeGSA packages uses Reactome's online analysis service to
     Therefore, if you only require a gene set analysis, different packages are more suited.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr, SingleCellExperiment, scran, scater,  Seurat, scuttle
 LazyData: false
-Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr, SingleCellExperiment, scran, scater
 RoxygenNote: 7.3.2
 Suggests: 
     testthat,
