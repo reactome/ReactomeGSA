@@ -125,7 +125,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
     stop('Error: Algorithm not found must be "variable","random","subclustering"')
   }
     
-  if (!(group_by %in% colnames(colData(object)))) {
+  if (!(group_by %in% colnames(SingleCellExperiment::colData(object)))) {
     stop("Error: group_by must be a column in metadata")
   }
 
@@ -179,9 +179,9 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @importFrom scuttle aggregateAcrossCells
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(assay(aggregated_object))
-  meta_data_aggregated <- colData(aggregated_object)[,c(group_by,k_variable)]
+  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
+  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assay(aggregated_object))
+  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
   variable_pools <- meta_data_aggregated[[k_variable]]
@@ -204,16 +204,16 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' @importFrom scuttle aggregateAcrossCells
 #' 
 split_random_sce <- function(sce_object, group_by, k_variable){
-  metadata <- colData(sce_object)
+  metadata <- SingleCellExperiment::colData(sce_object)
   
   num_cells <- ncol(sce_object)
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
-  colData(sce_object)$random_column <- random_data
+  SingleCellExperiment::colData(sce_object)$random_column <- random_data
   
-  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, "random_column")])
+  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, "random_column")])
   
-  meta_data_aggregated <- colData(aggregated_counts)[,c(group_by,"random_column")]
-  aggregated_counts <- as.data.frame(assay(aggregated_counts))
+  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
+  aggregated_counts <- as.data.frame(SingleCellExperiment::assay(aggregated_counts))
   
   clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
@@ -263,8 +263,8 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subcluster_ref, ids=subcluster_ref$subcluster)
   aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subcluster_comp, ids=subcluster_comp$subcluster)
   
-  assay_data_ref <- as.data.frame(assay(aggregated_counts_subcluster_ref))
-  assay_data_comp <- as.data.frame(assay(aggregated_counts_subcluster_comp))
+  assay_data_ref <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_ref))
+  assay_data_comp <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_comp))
   
   re <- cbind(assay_data_ref, assay_data_comp)
   cols <- as.list(colnames(re))  # change column names
