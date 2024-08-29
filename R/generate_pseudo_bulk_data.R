@@ -53,7 +53,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     if (!is.character(k_variable)) {
       stop('Error: k must be a string')
     }
-    result <- split_variable(seurat_object, group_by, k_variable)
+    result <- split_variable(object, group_by, k_variable)
     return(result)
   }
   
@@ -61,7 +61,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     if (!is.numeric(k_variable)) {
       stop('Error: k must be a number')
     }
-    result <- split_variable_random(seurat_object, group_by, k_variable)
+    result <- split_variable_random(object, group_by, k_variable)
     return(result)
   }
   
@@ -80,22 +80,22 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
     }
 
     if(split_by == "Louvain"){
-      result <- split_clustering(seurat_object, group_by,resolution_, 1, subcluster_ref,subcluster_comp)
+      result <- split_clustering(object, group_by,resolution_, 1, subcluster_ref,subcluster_comp)
       return(result)
     }
     
     if(split_by == "Louvain_multilevel"){
-      result <- split_clustering(seurat_object, group_by,resolution_, 2, subcluster_ref,subcluster_comp)
+      result <- split_clustering(object, group_by,resolution_, 2, subcluster_ref,subcluster_comp)
       return(result)
     }
     
     if(split_by =="SLM"){
-      result <- split_clustering(seurat_object, group_by,resolution_, 3, subcluster_ref,subcluster_comp)
+      result <- split_clustering(object, group_by,resolution_, 3, subcluster_ref,subcluster_comp)
       return(result)
     }
     
     if(split_by =="Leiden"){
-      result <- split_clustering(seurat_object, group_by,resolution_, 4, subcluster_ref,subcluster_comp)
+      result <- split_clustering(object, group_by,resolution_, 4, subcluster_ref,subcluster_comp)
       return(result)
     }
   }
