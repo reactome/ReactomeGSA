@@ -111,6 +111,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
+#' @importFrom SingleCellExperiment
 #' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), function(object, 
                                                                                       group_by, 
@@ -176,7 +177,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @param k_variable    variable for sub setting must be in the metadata
 #' 
 #' @returns             returns pseudo bulk generated data
-#' @importFrom scuttle aggregateAcrossCells
+#' @importFrom scuttle aggregateAcrossCells SingleCellExperiment
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
   aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
@@ -201,8 +202,7 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom scuttle aggregateAcrossCells
-#' 
+#' @importFrom scuttle aggregateAcrossCells SingleCellExperiment
 split_random_sce <- function(sce_object, group_by, k_variable){
   metadata <- SingleCellExperiment::colData(sce_object)
   
@@ -236,8 +236,7 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom scuttle aggregateAcrossCells
-#' @importFrom scran quickSubCluster
+#' @importFrom scuttle aggregateAcrossCells scran quickSubCluster SingleCellExperiment
 split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
   
   #check if Dim reduction and Clustering is performed 
