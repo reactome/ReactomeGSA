@@ -1,17 +1,20 @@
 Package: ReactomeGSA
 Type: Package
-Title: Client for the Reactome Analysis Service for comparative multi-omics gene set analysis
+Title: Client for the Reactome Analysis Service for Comparative Multi-Omics Gene Set Analysis
 Version: 1.17.1
 Authors@R: person("Johannes", "Griss", email = "johannes.griss@meduniwien.ac.at", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-2206-9511"))
-Description: The ReactomeGSA packages uses Reactome's online analysis service to perform a multi-omics
-    gene set analysis. The main advantage of this package is, that the retrieved results can be 
-    visualized using REACTOME's powerful webapplication.
-    Since Reactome's analysis service also uses R to perfrom the actual gene set
-    analysis you will get similar results when using the same packages (such as limma and edgeR) locally.
+Author: Johannes Griss [aut, cre]
+Maintainer: Johannes Griss <johannes.griss@meduniwien.ac.at>
+Description: The ReactomeGSA package uses Reactome's online analysis service to perform multi-omics
+    gene set analysis. The main advantage of this package is that the retrieved results can be 
+    visualized using REACTOME's powerful web application.
+    Since Reactome's analysis service also uses R to perform the actual gene set
+    analysis, you will get similar results when using the same packages (such as limma and edgeR) locally.
     Therefore, if you only require a gene set analysis, different packages are more suited.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr
+Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr, 
+    Seurat (>= 3.0), scran, scuttle
 LazyData: false
 RoxygenNote: 7.3.2
 Suggests: 
@@ -24,11 +27,8 @@ Suggests:
 Enhances:
     limma,
     edgeR,
-    Seurat (>= 3.0),
     scater,
-    SingleCellExperiment, 
-    scran, 
-    scuttle
+    SingleCellExperiment
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology, GeneExpression, Reactome
 BugReports: https://github.com/reactome/ReactomeGSA/issues

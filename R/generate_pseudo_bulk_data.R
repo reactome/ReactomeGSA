@@ -181,7 +181,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
   aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assay(aggregated_object))
+  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assays(aggregated_object))
   meta_data_aggregated <- SingleCellExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
@@ -205,7 +205,7 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' @importFrom scuttle aggregateAcrossCells SingleCellExperiment
 split_random_sce <- function(sce_object, group_by, k_variable){
   metadata <- SingleCellExperiment::colData(sce_object)
-  
+
   num_cells <- ncol(sce_object)
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
   SingleCellExperiment::colData(sce_object)$random_column <- random_data
@@ -213,7 +213,7 @@ split_random_sce <- function(sce_object, group_by, k_variable){
   aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, "random_column")])
   
   meta_data_aggregated <- SingleCellExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
-  aggregated_counts <- as.data.frame(SingleCellExperiment::assay(aggregated_counts))
+  aggregated_counts <- as.data.frame(SingleCellExperiment::assays(aggregated_counts))
   
   clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
@@ -239,38 +239,47 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' @importFrom scuttle aggregateAcrossCells scran quickSubCluster SingleCellExperiment
 split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
   
-  #check if Dim reduction and Clustering is performed 
-  if(length(SingleCellExperiment::reducedDimNames(sce_object)) == 0){
+  
+  # Check if dimensionality reduction has been performed
+  if (length(SingleCellExperiment::reducedDimNames(sce_object)) == 0) {
     stop("No Dimensionalities for Subclustering available")
   }
   
-  
-  # group_by are the nn.clusters defined for subclustering -> list 
-  subcluster.out <- scran::quickSubCluster(sce_object, groups=group_by,
-                                    prepFUN=function(x) { # Preparing the subsetted SCE for clustering.
-                                      dec <- scran::modelGeneVar(x)
-                                      input <- scran::denoisePCA(x, technical=dec,
-                                                          subset.row=scran::getTopHVGs(dec, prop=0.1),
-                                                          BSPARAM=BiocSingular::IrlbaParam())
-                                    },
-                                    clusterFUN=function(x) { # Performing the subclustering in the subset.
-                                      g <- scran::buildSNNGraph(x, use.dimred="PCA", k=resolution)     
-                                      igraph::cluster_walktrap(g)$membership
-                                    }
+  # Run subclustering
+  subclusters <- scran::quickSubCluster(
+    sce_object,
+    groups = SingleCellExperiment::colData(sce_object)[[group_by]],  # Ensure `group_by` is a valid column name
+    prepFUN = function(x) { # Preparing subsetted SCE for clustering
+      dec <- scran::modelGeneVar(x)
+      scran::denoisePCA(x, technical = dec,
+                                 subset.row = scran::getTopHVGs(dec, prop = 0.1),
+                                 BSPARAM = BiocSingular::IrlbaParam())
+    },
+    clusterFUN = function(x) { # Performing subclustering
+      g <- scran::buildSNNGraph(x, use.dimred = "PCA", k = resolution)
+      igraph::cluster_walktrap(g)$membership
+    }
   )
-    
-  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subcluster_ref, ids=subcluster_ref$subcluster)
-  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subcluster_comp, ids=subcluster_comp$subcluster)
   
-  assay_data_ref <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_ref))
-  assay_data_comp <- as.data.frame(SingleCellExperiment::assay(aggregated_counts_subcluster_comp))
+  
+  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=SingleCellExperiment::colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=SingleCellExperiment::colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
+  
+  
+  assay_data_ref <- as.data.frame(SingleCellExperiment::assays(aggregated_counts_subcluster_ref))
+  assay_data_comp <- as.data.frame(SingleCellExperiment::assays(aggregated_counts_subcluster_comp))
+  
+  colnames(assay_data_ref) <- paste0(subcluster_ref, "_", colnames(assay_data_ref))
+  colnames(assay_data_comp) <- paste0(subcluster_comp, "_",  colnames(assay_data_comp))
+  
   
   re <- cbind(assay_data_ref, assay_data_comp)
-  cols <- as.list(colnames(re))  # change column names
+  cols <- as.list(colnames(re))
   cols <- lapply(cols, function(x) gsub("\\.", "_", x))
   colnames(re) <- cols
   
-  return (re)
+  return(re)
+  
 }
 
 
