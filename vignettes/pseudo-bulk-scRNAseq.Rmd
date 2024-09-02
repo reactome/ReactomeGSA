@@ -4,7 +4,7 @@ author: "Alexander Grentner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pseudo-bulk-scRNAseq}
+  %\VignetteIndexEntry{Analysing single-cell RNA-sequencing Pathways using Pseudo Bulk}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

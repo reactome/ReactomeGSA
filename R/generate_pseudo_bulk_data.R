@@ -111,7 +111,6 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 #' @param k_variable    variable dependent on the split_by
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFrom SingleCellExperiment
 #' @export
 setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), function(object, 
                                                                                       group_by, 
@@ -126,7 +125,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
     stop('Error: Algorithm not found must be "variable","random","subclustering"')
   }
     
-  if (!(group_by %in% colnames(SingleCellExperiment::colData(object)))) {
+  if (!(group_by %in% colnames(colData(object)))) {
     stop("Error: group_by must be a column in metadata")
   }
 
@@ -177,12 +176,12 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @param k_variable    variable for sub setting must be in the metadata
 #' 
 #' @returns             returns pseudo bulk generated data
-#' @importFrom scuttle aggregateAcrossCells SingleCellExperiment
+#' @importFrom scuttle aggregateAcrossCells 
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(SingleCellExperiment::assays(aggregated_object))
-  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
+  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
+  assay_data_aggregated <- as.data.frame(assay(aggregated_object))
+  meta_data_aggregated <- colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
   variable_pools <- meta_data_aggregated[[k_variable]]
@@ -202,18 +201,18 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom scuttle aggregateAcrossCells SingleCellExperiment
+#' @importFrom scuttle aggregateAcrossCells 
 split_random_sce <- function(sce_object, group_by, k_variable){
-  metadata <- SingleCellExperiment::colData(sce_object)
+  metadata <- colData(sce_object)
 
   num_cells <- ncol(sce_object)
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
-  SingleCellExperiment::colData(sce_object)$random_column <- random_data
+  colData(sce_object)$random_column <- random_data
   
-  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=SingleCellExperiment::colData(sce_object)[,c(group_by, "random_column")])
+  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, "random_column")])
   
-  meta_data_aggregated <- SingleCellExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
-  aggregated_counts <- as.data.frame(SingleCellExperiment::assays(aggregated_counts))
+  meta_data_aggregated <- colData(aggregated_counts)[,c(group_by,"random_column")]
+  aggregated_counts <- as.data.frame(assay(aggregated_counts))
   
   clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
@@ -236,7 +235,15 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 #' 
-#' @importFrom scuttle aggregateAcrossCells scran quickSubCluster SingleCellExperiment
+#' @importFrom SingleCellExperiment reducedDimNames
+#' @importFrom scran quickSubCluster
+#' @importFrom scran modelGeneVar
+#' @importFrom scran denoisePCA
+#' @importFrom scran getTopHVGs
+#' @importFrom BiocSingular IrlbaParam
+#' @importFrom scran buildSNNGraph
+#' @importFrom igraph cluster_walktrap
+#' @importFrom scuttle aggregateAcrossCells 
 split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
   
   
@@ -248,7 +255,7 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   # Run subclustering
   subclusters <- scran::quickSubCluster(
     sce_object,
-    groups = SingleCellExperiment::colData(sce_object)[[group_by]],  # Ensure `group_by` is a valid column name
+    groups = colData(sce_object)[[group_by]],  # Ensure `group_by` is a valid column name
     prepFUN = function(x) { # Preparing subsetted SCE for clustering
       dec <- scran::modelGeneVar(x)
       scran::denoisePCA(x, technical = dec,
@@ -262,12 +269,12 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   )
   
   
-  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=SingleCellExperiment::colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
-  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=SingleCellExperiment::colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
   
   
-  assay_data_ref <- as.data.frame(SingleCellExperiment::assays(aggregated_counts_subcluster_ref))
-  assay_data_comp <- as.data.frame(SingleCellExperiment::assays(aggregated_counts_subcluster_comp))
+  assay_data_ref <- as.data.frame(assay(aggregated_counts_subcluster_ref))
+  assay_data_comp <- as.data.frame(assay(aggregated_counts_subcluster_comp))
   
   colnames(assay_data_ref) <- paste0(subcluster_ref, "_", colnames(assay_data_ref))
   colnames(assay_data_comp) <- paste0(subcluster_comp, "_",  colnames(assay_data_comp))
@@ -324,7 +331,9 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
 #' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
-#' @importFrom Seurat FindNeighbors FindClusters AggregateExpression
+#' @importFrom Seurat FindNeighbors 
+#' @importFrom Seurat FindClusters 
+#' @importFrom Seurat AggregateExpression
 split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluster2){
   cluster_ids <- list()
   cluster_ids <- append(cluster_ids, cluster1)
