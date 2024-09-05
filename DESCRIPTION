@@ -30,7 +30,8 @@ Enhances:
     scater,
     scran, 
     scuttle,
-    SingleCellExperiment
+    SingleCellExperiment,
+    ReactomeGSA
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology, GeneExpression, Reactome
 BugReports: https://github.com/reactome/ReactomeGSA/issues

@@ -32,6 +32,8 @@ setGeneric("generate_pseudo_bulk_data", function(object,
 #'
 #' @returns             returns pseudo bulk generated data
 #' @export
+#' @name generate_pseudo_bulk_data
+#' @title Generate Pseudo Bulk Data for Seurat Objects
 setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object, 
                                                                         group_by, 
                                                                         split_by = "random", 
