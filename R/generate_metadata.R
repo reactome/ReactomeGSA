@@ -1,7 +1,7 @@
 #' generate_metadata
 #' 
 #' The pseudobulk data is generated using the 
-#' [`generate_pseudo_bulk()`] function.
+#'  \code{\link{generate_pseudo_bulk()}} function.
 #' 
 #' @param pseudo_bulk_data Pseudobulk data generated from the `generate_pseudo_bulk` function
 #' @returns Metadata table for later use
