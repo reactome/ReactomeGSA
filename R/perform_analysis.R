@@ -50,7 +50,7 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
   analysis_id <- start_reactome_analysis(request = request, compress = compress, reactome_url = reactome_url)
 
   # get the status
-  completed <- get_reactome_analysis_status(analysis_id)
+  completed <- get_reactome_analysis_status(analysis_id, reactome_url)
 
   # create a progress bar
   if (verbose)  {
@@ -75,7 +75,7 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
     Sys.sleep(1)
     
     completed <- tryCatch({
-        get_reactome_analysis_status(analysis_id)
+        get_reactome_analysis_status(analysis_id, reactome_url)
       },
       error=function(cond) {
         # simply ignore this the first 10 times

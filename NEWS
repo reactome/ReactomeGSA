@@ -1,3 +1,10 @@
+Changes in version 1.17.3 (2024-02-01)
++ Fixed a bug in vignette showcasing the reanalysis of public data.
+
+Changes in version 1.17.2 (2023-11-28)
++ Added a set of new functions to support ReactomeGSA's features to load public datasets.
++ Added a new vignette to showcase how public datasets can easily be loaded using the ReactomeGSA package.
+
 Changes in version 1.17.1
 + Fixed vignettes
 

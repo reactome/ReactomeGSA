@@ -93,7 +93,8 @@ setMethod("plot_gsva_pathway", c("object" = "ReactomeAnalysisResult"), function(
 #' gsva_result <- analyse_sc_clusters(jerby_b_cells, verbose = FALSE)
 #' 
 #' # plot the heatmap
-#' relevant_pathways <- c("R-HSA-983170", "R-HSA-388841", "R-HSA-2132295", "R-HSA-983705", "R-HSA-5690714")
+#' relevant_pathways <- c("R-HSA-983170", "R-HSA-388841", "R-HSA-2132295", 
+#'                        "R-HSA-983705", "R-HSA-5690714")
 #' plot_gsva_heatmap(gsva_result, 
 #'                   pathway_ids = relevant_pathways, # limit to these pathways
 #'                   margins = c(6,30), # adapt the figure margins in heatmap.2
@@ -271,7 +272,6 @@ setMethod("plot_gsva_pca", c("object" = "ReactomeAnalysisResult"), function(obje
 #'
 #' @return Boolean indicating whether the object is a GSVA result.
 #'
-#' @examples
 is_gsva_result <- function(object) {
   # must contain the "pathways" result
   if (!"pathways" %in% ReactomeGSA::result_types(object)) {
