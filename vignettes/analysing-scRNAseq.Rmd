@@ -71,7 +71,6 @@ All of this is wrapped in the single `analyse_sc_clusters` function.
 
 ```{R}
 library(ReactomeGSA)
-
 gsva_result <- analyse_sc_clusters(jerby_b_cells, verbose = TRUE)
 ```
 
@@ -83,7 +82,7 @@ gsva_result
 
 `pathways` returns the pathway-level expression values per cell cluster:
 
-```{r}
+```{r }
 pathway_expression <- pathways(gsva_result)
 
 # simplify the column names by removing the default dataset identifier
