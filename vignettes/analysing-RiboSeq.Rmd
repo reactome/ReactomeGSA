@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 ## Introduction
 
 TODO write text here Gionmattia approx 4 sentences
+TODO delete this line
 
 
 ## Installation
