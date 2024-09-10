@@ -1,0 +1,92 @@
+---
+title: "Analysing RiboSeq Data"
+author: "Alexander Grentner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analysing RiboSeq Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+TODO write text here Gionmattia approx 4 sentences
+
+
+## Installation
+
+The `ReactomeGSA` package can be directly installed from Bioconductor:
+
+```{r, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+if (!require(ReactomeGSA))
+  BiocManager::install("ReactomeGSA")
+
+
+```
+
+## Getting available methods
+
+The Reactome Analysis System provides multiple pathway algorithms but only PADOG is available for Ribo-Seq data analysis. 
+Therefore, to analyse Ribo-Seq data "PADOG" must be selected to choose a modified version for valid Pathway analysis
+
+
+```{r, echo=FALSE}
+library(ReactomeGSA)
+
+my_request <- ReactomeAnalysisRequest(method = "Padog")
+my_request
+```
+
+All methods for PADOG are available to perform Ribo-Seq analysis. 
+
+```{r, echo=FALSE}
+# show the parameter names for the method
+padog_params <- available_methods$parameters[available_methods$name == "PADOG"][[1]]
+paste0(padog_params$name, " (", padog_params$type, ", ", padog_params$default, ")")
+```
+
+## Load data
+
+To perform Ribo-Seq Data analysis a Ribo-Seq file and a RNA-Seq file is needed. Both files need matching column names. Both files are then processed 
+
+```{r, echo=FALSE}
+
+```
+
+
+## Set parameters
+
+Set parameters for Ribo-Seq analysis request.
+
+```{r, echo=FALSE}
+my_request <- set_parameters(request = my_request, max_missing_values = 0.5)
+my_request
+```
+
+
+
+
+
+```{r, echo=FALSE}
+my_request <- add_dataset(request = my_request, 
+                          expression_values = ribo_example, 
+                          name = "Ribo Sequencing Data", 
+                          type = "ribo_seq",
+                          comparison_factor = "condition", 
+                          comparison_group_1 = "treated", 
+                          comparison_group_2 = "untreated"
+                          )
+my_request
+```
+
