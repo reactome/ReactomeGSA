@@ -18,8 +18,12 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-TODO write text here Gionmattia approx 4 sentences
+This vignette illustratrs how to use the ReactomeGSA R Client with RNA-Seq and Ribo-Seq (or Polysome-Seq) count data, in order to perform a Gene Set Analysis (GSA) on top of a Differential Translation Analysis (DTA).
+A DTA allows to observe to which extent gene expression is driven by transcription or translation, when comparing samples between two conditions. 
+The result of such analysis is usually in the form of a table, where each gene is categorised into a Regulatory Mode based on its changes in RNA-Seq derived counts, Ribo-Seq derived counts, or Translational Efficiency (TE) (ie. if it's changes in expression between the two conditions are driven by transcription, translation or both).
+This integration with ReactomeGSA allows to first execute the DTA and then further contextualise the results on biological pathways, thus giving an overview on which gene sets are afffected by translation regulation and how.
 
+For additional information regarding Differential Translation Analyses and TE, please refer to [Chotani S. et al. 2019] (https://pubmed.ncbi.nlm.nih.gov/31763789/)
 
 ## Installation
 
