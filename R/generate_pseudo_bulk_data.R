@@ -40,20 +40,20 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
                                                                         k_variable){
   
   if (!is.character(split_by)) {
-    stop('Error: split_by must be a string e.g "variable", "random", "Louvain",...')
+    stop("Error: split_by must be a string e.g \"variable\", \"random\", \"Louvain\",...")
   }
   
   if(!(group_by %in% colnames(object@meta.data))){
-    stop('Error: group_by must be a column in metadata')
+    stop("Error: group_by must be a column in metadata")
   }
   
   if(!(split_by %in% list("random","variable","Louvian","Louvain_multilevel","SLM","Leiden"))){
-    stop('Error: Algorithm not found must be "random","variable","Louvian","Louvain_multilevel","SLM","Leiden"')
+    stop("Error: Algorithm not found must be \"random\",\"variable\",\"Louvian\",\"Louvain_multilevel\",\"SLM\",\"Leiden\" ")
   }
   
   if (split_by == "variable"){
     if (!is.character(k_variable)) {
-      stop('Error: k must be a string')
+      stop("Error: k must be a string")
     }
     result <- split_variable(object, group_by, k_variable)
     return(result)
@@ -61,7 +61,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
   
   if (split_by == "random"){
     if (!is.numeric(k_variable)) {
-      stop('Error: k must be a number')
+      stop("Error: k must be a number")
     }
     result <- split_variable_random(object, group_by, k_variable)
     return(result)
@@ -69,7 +69,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
   
   if(split_by == "Louvian" || split_by== "Louvain_multilevel" || split_by == "SLM" || "Leiden"){
     if (length(k_variable) != 3) {
-      stop('Error: k variables must contain [resolution, refrence cluster, comparison cluster]')
+      stop("Error: k variables must contain [resolution, refrence cluster, comparison cluster]")
     } 
     
     resolution_ <- k_variable[[1]]
@@ -120,20 +120,20 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
                                                                                       k_variable){
   
   if (!is.character(split_by)) {
-    stop('Error: split_by must be a string e.g "variable", "random", "subclustering" ')
+    stop("Error: split_by must be a string e.g \"variable\", \"random\", \"subclustering\" ")
   }
   
   if(!(split_by %in% list("variable","random","subclustering"))){
     stop('Error: Algorithm not found must be "variable","random","subclustering"')
   }
   
-  if (!(group_by %in% colnames(colData(object)))) {
+  if (!(group_by %in% colnames(SummarizedExperiment::colData(object)))) {
     stop("Error: group_by must be a column in metadata")
   }
   
   if (split_by == "variable"){
     if (!is.character(k_variable)) {
-      stop('Error: k must be a string')
+      stop("Error: k must be a string")
     }
     result <- split_variable_sce(object, group_by, k_variable)
     return(result)
@@ -141,7 +141,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
   
   if (split_by == "random"){
     if (!is.numeric(k_variable)) {
-      stop('Error: k must be a number')
+      stop("Error: k must be a number")
     }
     result <- split_random_sce(object, group_by, k_variable)
     return(result)
@@ -150,10 +150,10 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
   if(split_by == "subclustering"){
     
     if (group_by %in% c("Louvain","Leiden","SLM","Louvain_multilevel")) {
-      stop('Error: Louvain, SLM and Leiden clustering only available in Seurat')
+      stop("Error: Louvain, SLM and Leiden clustering only available in Seurat")
     }
     if (length(k_variable) != 3) {
-      stop('Error: k variables must contain [resolution, refrence cluster, comparison cluster]')
+      stop("Error: k variables must contain [resolution, refrence cluster, comparison cluster]")
     } 
     
     resolution <- k_variable[[1]]   
@@ -180,9 +180,9 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' @returns             returns pseudo bulk generated data
 split_variable_sce <- function(sce_object, group_by, k_variable){
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, k_variable)])
-  assay_data_aggregated <- as.data.frame(assay(aggregated_object))
-  meta_data_aggregated <- colData(aggregated_object)[,c(group_by,k_variable)]
+  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SummarizedExperiment::colData(sce_object)[,c(group_by, k_variable)])
+  assay_data_aggregated <- as.data.frame(SummarizedExperiment::assay(aggregated_object))
+  meta_data_aggregated <- SummarizedExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
   
   clustering_level <- meta_data_aggregated[[group_by]]
   variable_pools <- meta_data_aggregated[[k_variable]]
@@ -202,16 +202,16 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 #' 
 #' @returns             returns pseudo bulk generated data
 split_random_sce <- function(sce_object, group_by, k_variable){
-  metadata <- colData(sce_object)
+  metadata <- SummarizedExperiment::colData(sce_object)
   
   num_cells <- ncol(sce_object)
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
-  colData(sce_object)$random_column <- random_data
+  SummarizedExperiment::colData(sce_object)$random_column <- random_data
   
-  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=colData(sce_object)[,c(group_by, "random_column")])
+  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=SummarizedExperiment::colData(sce_object)[,c(group_by, "random_column")])
   
-  meta_data_aggregated <- colData(aggregated_counts)[,c(group_by,"random_column")]
-  aggregated_counts <- as.data.frame(assay(aggregated_counts))
+  meta_data_aggregated <- SummarizedExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
+  aggregated_counts <- as.data.frame(SummarizedExperiment::assay(aggregated_counts))
   
   clustering_level <- meta_data_aggregated[[group_by]]
   random_pools <- meta_data_aggregated$random_column
@@ -222,7 +222,6 @@ split_random_sce <- function(sce_object, group_by, k_variable){
   
   return(aggregated_counts)
 }
-
 
 
 #' split SCE Object with random pooling
@@ -244,7 +243,7 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   # Run subclustering
   subclusters <- scran::quickSubCluster(
     sce_object,
-    groups = colData(sce_object)[[group_by]],  # Ensure `group_by` is a valid column name
+    groups = SummarizedExperiment::colData(sce_object)[[group_by]],  # Ensure `group_by` is a valid column name
     prepFUN = function(x) { # Preparing subsetted SCE for clustering
       dec <- scran::modelGeneVar(x)
       scran::denoisePCA(x, technical = dec,
@@ -258,12 +257,12 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
   )
   
   
-  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
-  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=SummarizedExperiment::colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=SummarizedExperiment::colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
   
   
-  assay_data_ref <- as.data.frame(assay(aggregated_counts_subcluster_ref))
-  assay_data_comp <- as.data.frame(assay(aggregated_counts_subcluster_comp))
+  assay_data_ref <- as.data.frame(SummarizedExperiment::assay(aggregated_counts_subcluster_ref))
+  assay_data_comp <- as.data.frame(SummarizedExperiment::assay(aggregated_counts_subcluster_comp))
   
   colnames(assay_data_ref) <- paste0(subcluster_ref, "_", colnames(assay_data_ref))
   colnames(assay_data_comp) <- paste0(subcluster_comp, "_",  colnames(assay_data_comp))

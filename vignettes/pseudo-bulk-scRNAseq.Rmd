@@ -63,10 +63,6 @@ if(!require(Seurat))
 if (!require(scRNAseq))
   BiocManager::install("scRNAseq")
 
-# install Seurat from CRAN
-if (!require(eList))
-  install.packages("eList")
-
 if (!require(SingleCellExperiment))
   BiocManager::install("SingleCellExperiment")
 
@@ -82,7 +78,6 @@ to perform the subaggegration and subclustering.
 library(ReactomeGSA)
 library(ReactomeGSA.data)
 library(Seurat)
-library(eList)
 library(scRNAseq)
 library(SingleCellExperiment)
 ```
