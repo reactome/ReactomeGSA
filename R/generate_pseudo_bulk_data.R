@@ -224,7 +224,6 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 }
 
 
-
 #' split SCE Object with random pooling
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' 
