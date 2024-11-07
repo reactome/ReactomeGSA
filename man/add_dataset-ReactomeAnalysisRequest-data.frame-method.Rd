@@ -74,10 +74,10 @@ my_request <- add_dataset(request = my_request,
 }
 \seealso{
 Other add_dataset methods: 
+\code{\link{add_dataset}()},
 \code{\link{add_dataset,ReactomeAnalysisRequest,DGEList-method}},
 \code{\link{add_dataset,ReactomeAnalysisRequest,EList-method}},
 \code{\link{add_dataset,ReactomeAnalysisRequest,ExpressionSet-method}},
-\code{\link{add_dataset,ReactomeAnalysisRequest,matrix-method}},
-\code{\link{add_dataset}()}
+\code{\link{add_dataset,ReactomeAnalysisRequest,matrix-method}}
 }
 \concept{add_dataset methods}
