@@ -61,17 +61,123 @@ data(jerby_b_cells)
 jerby_b_cells
 ```
 
-## Pathway analysis of cell clusters
+## Types of analyses
 
-The pathway analysis is at the very end of a scRNA-seq workflow. This means, that any Q/C was already performed, the data was normalized and cells were already clustered.
+There are two methods to analyse scRNA-seq data using ReactomeGSA:
+
+ReactomeGSA can generate pseudo-bulk data from scRNA-seq
+data and then analyse this data using the classical quantitative pathway
+analysis algorithms. Thereby, it is possible to directly compare, f.e. 
+two cell types with each other or two treatment approaches. 
+The result is a classical pathway analysis result with
+p-values and fold-changes attributed to each pathway.
+
+The `analyse_sc_clusters` function offers a second approach using
+the gene set variation algorithm `ssGSEA` to derive pathway-level
+quantitative values for each cluster or cell type in the dataset.
+This is helpful to visualize the "expression level" of pathways
+accross the dataset. Statistical analyses have to be performed separately.
+
+## Comparative pathway analysis (pseudo-bulk approach)
+
+The pathway analysis is at the very end of a scRNA-seq workflow. This means, 
+that any Q/C was already performed, the data was normalized and cells were already clustered.
+
+In this example we are going to compare `Cluster 1` against `Cluster 2`.
+
+```{r}
+# store the Idents as a meta.data field - this was
+# removed while compressing the object as an example
+jerby_b_cells$clusters <- Idents(jerby_b_cells)
+
+table(jerby_b_cells$clusters)
+```
+
+As a next step, we need to create the pseudo-bulk data for the analysis. This
+is achieved through the `generate_pseudo_bulk_data` function.
+
+```{R}
+library(ReactomeGSA)
+
+# This creates a pseudo-bulk object by splitting each cluster in 4
+# random bulks of data. This approach can be changed through the
+# split_by and k_variable parameter.
+pseudo_bulk_data <- generate_pseudo_bulk_data(jerby_b_cells, group_by = "clusters")
+
+# we can immediately create the metadata data.frame for this data
+pseudo_metadata <- generate_metadata(pseudo_bulk_data)
+```
+
+This pseudo-bulk data is directly compatible with the existing algorithms
+for quantitative pathway analysis and can be processed using the respective
+ReactomeGSA methods.
+
+```{r}
+# Create a new request object using 'Camera' for the gene set analysis
+my_request <- ReactomeAnalysisRequest(method = "Camera")
+
+# set the maximum number of allowed missing values to 50%
+my_request <- set_parameters(request = my_request, max_missing_values = 0.5)
+
+# add the pseudo-bulk data as a dataset
+my_request <- add_dataset(request = my_request,
+                          expression_values = pseudo_bulk_data,
+                          sample_data = pseudo_metadata,
+                          name = "Pseudo-bulk",
+                          type = "rnaseq_counts",
+                          comparison_factor = "Group",
+                          comparison_group_1 = "Cluster 1",
+                          comparison_group_2 = "Cluster 2")
+
+my_request
+```
+
+This request object can be directly submitted to the ReactomeGSA analysis. 
+
+```{r}
+quant_result <- perform_reactome_analysis(my_request, compress = FALSE)
+quant_result
+```
+
+This object can be used in the same fashion as any ReactomeGSA result object.
+
+```{r}
+# get the pathway-level results
+quant_pathways <- pathways(quant_result)
+head(quant_pathways)
+```
+
+```{r}
+# get the top pathways to label them
+library(tidyr)
+library(dplyr)
+
+top_pathways <- quant_pathways %>% 
+  tibble::rownames_to_column(var = "Id") %>%
+  filter(`FDR.Pseudo-bulk` < 0.001) %>%
+  arrange(desc(`av_foldchange.Pseudo-bulk`))
+
+# limit to a few pathway for aesthetic reasons
+top_pathways <- top_pathways[c(1,5,6), ]
+
+# create a simple volcano plot of the pathway results
+library(ggplot2)
+ggplot(quant_pathways,
+       aes(x = `av_foldchange.Pseudo-bulk`,
+           y = -log10(`FDR.Pseudo-bulk`))) +
+  geom_vline(xintercept = c(log2(0.5), log2(2)), colour="grey", linetype = "longdash") +
+  geom_hline(yintercept = -log10(0.05), colour="grey", linetype = "longdash") +
+  geom_point() +
+  geom_label(data = top_pathways, aes(label = Name), nudge_y = 1, check_overlap = TRUE)
+```
+
+## Pathway analysis of cell clusters (analyse_sc_clusters)
 
 The ReactomeGSA package can now be used to get pathway-level expression values for every cell cluster. This is achieved by calculating the mean gene expression for every cluster and then submitting this data to a gene set variation analysis. 
 
 All of this is wrapped in the single `analyse_sc_clusters` function.
 
 ```{R}
-library(ReactomeGSA)
-
 gsva_result <- analyse_sc_clusters(jerby_b_cells, verbose = TRUE)
 ```
 
@@ -109,7 +215,7 @@ max_difference <- max_difference[order(max_difference$diff, decreasing = T), ]
 head(max_difference)
 ```
 
-## Plotting the results
+### Plotting the results
 
 The ReactomeGSA package contains two functions to visualize these pathway results. The first simply plots the expression for a selected pathway:
 
@@ -141,7 +247,7 @@ This analysis shows us that cluster 8 has a marked up-regulation of B Cell recep
 
 Therefore, we are able to further classify the observed B cell subtypes based on their pathway activity.
 
-## Pathway-level PCA
+### Pathway-level PCA
 
 The pathway-level expression analysis can also be used to run a Principal Component Analysis on the samples. This is simplified through the function `plot_gsva_pca`:
 

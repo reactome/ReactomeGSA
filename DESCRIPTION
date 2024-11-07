@@ -21,6 +21,7 @@ License: MIT + file LICENSE
 URL: https://github.com/reactome/ReactomeGSA
 BugReports: https://github.com/reactome/ReactomeGSA/issues
 Imports: 
+    Biobase,
     BiocSingular,
     dplyr,
     ggplot2,
@@ -31,24 +32,20 @@ Imports:
     methods,
     progress,
     RColorBrewer,
-    SingleCellExperiment,
     SummarizedExperiment,
     tidyr
 Suggests: 
-    Biobase,
     devtools,
     knitr,
     ReactomeGSA.data,
     rmarkdown,
-    testthat
-Enhances:
-    edgeR,
-    limma,
-    ReactomeGSA,
     scater,
     scran,
+    scRNAseq,
     scuttle,
-    Seurat (>= 3.0)
+    Seurat (>= 3.0),
+    SingleCellExperiment,
+    testthat
 VignetteBuilder: 
     knitr
 biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology,

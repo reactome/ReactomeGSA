@@ -1,4 +1,6 @@
 #' generate_pseudo_bulk_data 
+#' 
+#' @param object        The Seurat or SingleCellExperiment object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -10,20 +12,31 @@
 #' @examples
 #' 
 #' #using SCE object
-#' library(scRNAseq)
+#' library("scRNAseq")
 #' SCE_OBJECT <- ZeiselBrainData()
-#' # generating pseudo bulk data using the SCE object above, and clustering level level1class from the metadata
-#' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class", "random",5)  # generate pseudo bulk data based on random subsampling
-#' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue") # generate pseudo bulk data based on variable within the metadata
+#' # generating pseudo bulk data using the SCE object above,
+#' # and clustering level level1class from the metadata
 #'
+#' # generate pseudo bulk data based on random subsampling
+#' SCE_RESULT_RANDOM <- generate_pseudo_bulk_data(SCE_OBJECT,
+#'                                                group_by = "level1class",
+#'                                                split_by = "random",
+#'                                                k_variable = 5)
 #'
+#' # generate pseudo bulk data based on variable within the metadata
+#' SCE_RESULT_VARIABLE <- generate_pseudo_bulk_data(SCE_OBJECT, "level1class","variable","tissue")
 #'
 #' @export
 setGeneric("generate_pseudo_bulk_data", function(object,
                                                  group_by = NULL, 
                                                  split_by  = "random", 
-                                                 k_variable = "4") standardGeneric("generate_pseudo_bulk_data"))
+                                                 k_variable = 4) standardGeneric("generate_pseudo_bulk_data"))
 
+#' generate_pseudo_bulk_data - Seurat
+#'
+#' Generate Pseudo Bulk Data for Seurat Objects
+#'
+#' @param object        The object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -32,12 +45,10 @@ setGeneric("generate_pseudo_bulk_data", function(object,
 #'
 #' @returns             returns pseudo bulk generated data
 #' @export
-#' @name generate_pseudo_bulk_data
-#' @title Generate Pseudo Bulk Data for Seurat Objects
 setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object, 
                                                                         group_by, 
                                                                         split_by = "random", 
-                                                                        k_variable){
+                                                                        k_variable = 4){
   
   if (!is.character(split_by)) {
     stop("Error: split_by must be a string e.g \"variable\", \"random\", \"Louvain\",...")
@@ -105,7 +116,9 @@ setMethod("generate_pseudo_bulk_data", c("object" = "Seurat"), function(object,
 
 
 
-#' generate_pseudo_bulk_data using SingleCellExperiment
+#' generate_pseudo_bulk_data - SingleCellExperiment
+#' 
+#' @param object        The SingleCellExperiment object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param split_by      variable -> split by a variable within the metadata; k must be a string
 #'                      random -> splits based on a random number; k must be a number
@@ -174,6 +187,7 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 
 
 #' split SCE Object by variable
+#' @param sce_object        The SingleCellExperiment object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param k_variable    variable for sub setting must be in the metadata
 #' 
@@ -197,6 +211,7 @@ split_variable_sce <- function(sce_object, group_by, k_variable){
 
 
 #' split SCE Object with random pooling
+#' @param sce_object    The SingleCellExperiment object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param k_variable    number of pools that should be created
 #' 
@@ -225,14 +240,15 @@ split_random_sce <- function(sce_object, group_by, k_variable){
 
 
 #' split SCE Object with random pooling
-#' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
-#' 
+#' @param sce_object            The SingleCellExperiment object to analyse.
+#' @param group_by              entry in metadata table, based on these 
+#'                              cluster annotation pseudo bulk is performed
 #' @param resolution            resolution
 #' @param subcluster_ref        cluster to subcluster as areference
 #' @param subcluster_comp       cluster to subcluster for comparison
 #' 
 #' @returns             returns pseudo bulk generated data
-split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_ref,subcluster_comp){
+split_subclustering_sce <- function(sce_object, group_by, resolution, subcluster_ref, subcluster_comp) {
   
   
   # Check if dimensionality reduction has been performed
@@ -280,7 +296,9 @@ split_subclustering_sce <- function(sce_object, group_by, resolution,subcluster_
 
 
 
-#' split Seurat object by variable 
+#' split Seurat object by variable
+#' 
+#' @param seurat_object The Seurat object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param k_variable    variable dependent on the split_by -> meta data entry
 #'
@@ -294,6 +312,8 @@ split_variable <- function(seurat_object, group_by, k_variable){
 
 
 #' split Seurat object by random pooling 
+#' 
+#' @param seurat_object The Seurat object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
 #' @param k_variable    number of random pools
 #'
@@ -310,23 +330,25 @@ split_variable_random <- function(seurat_object, group_by, k_variable){
 
 
 #' method implementation subclustering
+#' 
+#' @param seurat_object The Seurat object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
+#' @param res           The clustering resolution to use.
 #' @param alg           Seurat subclustering algorithm id
 #' @param cluster1      cluster to subcluster
 #' @param cluster2      cluster to subcluster
-#' @param k_variable    number of random pools
 #'
 #' @returns             returns pseudo bulk generated data
 split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluster2){
   cluster_ids <- list()
   cluster_ids <- append(cluster_ids, cluster1)
   cluster_ids <- append(cluster_ids, cluster2)
-  
+
   result_dataframe <- data.frame()
-  
-  # setup seurat object 
+
+  # setup seurat object
   for (cluster in cluster_ids){
-    seurat_object_sub = subset(seurat_object, idents = cluster, invert = FALSE)
+    seurat_object_sub <- subset(seurat_object, idents = cluster, invert = FALSE)
     seurat_object_sub <- Seurat::FindNeighbors(seurat_object_sub, dim = 1:10)
     seurat_object_sub <- Seurat::FindClusters(seurat_object_sub, resolution = res, algorithm = alg, cluster.name = cluster)  
     
@@ -338,9 +360,9 @@ split_clustering <- function(seurat_object, group_by, res, alg, cluster1, cluste
     # rename columns 
     if (nrow(result_dataframe) == 0){
       result_dataframe <- data.frame(index = 1:nrow(seurat_df))
-      result_dataframe <- cbind(result_dataframe,seurat_df)
+      result_dataframe <- cbind(result_dataframe, seurat_df)
     } else {
-      result_dataframe <- cbind(result_dataframe,seurat_df)
+      result_dataframe <- cbind(result_dataframe, seurat_df)
     } 
   }
   
