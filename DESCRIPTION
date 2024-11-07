@@ -1,4 +1,3 @@
-Package: ReactomeGSA
 Type: Package
 Title: Client for the Reactome Analysis Service for comparative multi-omics gene set analysis
 Version: 1.21.0
@@ -10,22 +9,38 @@ Description: The ReactomeGSA packages uses Reactome's online analysis service to
     analysis you will get similar results when using the same packages (such as limma and edgeR) locally.
     Therefore, if you only require a gene set analysis, different packages are more suited.
 License: MIT + file LICENSE
+URL: https://github.com/reactome/ReactomeGSA
+BugReports: https://github.com/reactome/ReactomeGSA/issues
+Imports: 
+    Biobase,
+    BiocSingular,
+    dplyr,
+    ggplot2,
+    gplots,
+    httr,
+    igraph,
+    jsonlite,
+    methods,
+    progress,
+    RColorBrewer,
+    SummarizedExperiment,
+    tidyr
+Suggests: 
+    devtools,
+    knitr,
+    ReactomeGSA.data,
+    rmarkdown,
+    scater,
+    scran,
+    scRNAseq,
+    scuttle,
+    Seurat (>= 3.0),
+    SingleCellExperiment,
+    testthat
+VignetteBuilder: 
+    knitr
+biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology,
+    GeneExpression, Reactome
 Encoding: UTF-8
 LazyData: false
-Imports: jsonlite, httr, progress, ggplot2, methods, gplots, RColorBrewer, dplyr, tidyr, Biobase
-RoxygenNote: 7.2.3
-Suggests: 
-    testthat,
-    knitr,
-    rmarkdown,
-    ReactomeGSA.data,
-    devtools
-Enhances:
-    limma,
-    edgeR,
-    Seurat (>= 3.0),
-    scater
-VignetteBuilder: knitr
-biocViews: GeneSetEnrichment, Proteomics, Transcriptomics, SystemsBiology, GeneExpression, Reactome
-BugReports: https://github.com/reactome/ReactomeGSA/issues
-URL: https://github.com/reactome/ReactomeGSA
+RoxygenNote: 7.3.2
