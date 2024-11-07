@@ -1,3 +1,6 @@
+Changes in version 1.21.1 (2024-11-07)
++ Added new functions to perform quantitative comparative pathway analyses for scRNA-seq data.
+
 Changes in version 1.17.3 (2024-02-01)
 + Fixed a bug in vignette showcasing the reanalysis of public data.
 

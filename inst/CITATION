@@ -1,6 +1,24 @@
 citHeader("To cite the ReactomeGSA in publications use:")
 
 citEntry(entry="article",  
+         title  = "ReactomeGSA: new features to simplify public data reuse",
+         author = personList(
+           person(given="Alexander", family="Grentner"),
+           person(given="Eliot", family="Ragueneau"),
+           person(given="Chuqiao", family="Gong"),
+           person(given="Adrian", family="Prinz"),
+           person(given="Sabina", family="Gansberger"),
+           person(given="Inigo", family="Oyarzun"),
+           person(given="Henning", family="Hermjakob"),
+           person(given="Johannes", family="Griss")),
+         journal = "Bioinformatics",
+         year = "2024",
+         doi = "10.1093/bioinformatics/btae338",
+         url = "https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/38806182/",
+         textVersion = "A Grentner, E Ragueneau, C Gong, A Prinz, S Gansberger, I Oyarzun, H Hermjakob, J Griss (2024) ReactomeGSA: new features to simplify public data reuse. Bioinformatics 40(6):btae338. doi: 10.1093/bioinformatics/btae338"
+)
+
+citEntry(entry="article",  
          title  = "ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis",
          author = personList(
            person(given="Johannes", family="Griss"),
@@ -9,9 +27,9 @@ citEntry(entry="article",
            person(given="Vy", family="Nguyen"),
            person(given="Antonio", family="Fabregat"),
            person(given="Henning", family="Hermjakob")),
-         journal = "bioRxiv",
+         journal = "Mol Cell Proteomics",
          year = "2020",
-         doi = "10.1101/2020.04.16.044958",
-         url = "https://www.biorxiv.org/content/early/2020/04/18/2020.04.16.044958",
-         textVersion = "J Griss, G Viteri, K Sidiropoulos, V Nguyen, A Fabregat, and H Hermjakob (2020). bioRxiv ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis. doi: 10.1101/2020.04.16.044958"
+         doi = "10.1074/mcp.TIR120.002155",
+         url = "https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/32907876/",
+         textVersion = "J Griss, G Viteri, K Sidiropoulos, V Nguyen, A Fabregat, and H Hermjakob (2020) ReactomeGSA - Efficient Multi-Omics Comparative Pathway Analysis. Mol Cell Proteomics 19(12):2115-2125. doi: 10.1074/mcp.TIR120.002155"
 )
