@@ -2,7 +2,7 @@ Type: Package
 Package: ReactomeGSA
 Title: Client for the Reactome Analysis Service for comparative
     multi-omics gene set analysis
-Version: 1.24.0
+Version: 1.25.0
 Authors@R: 
     person("Johannes", "Griss", , "johannes.griss@meduniwien.ac.at", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2206-9511"))
