@@ -119,7 +119,7 @@ perform_reactome_analysis <- function(request, verbose = TRUE, compress = TRUE, 
 
   # retrieve the result
   if (verbose) message("Retrieving result...")
-  result <- get_reactome_analysis_result(analysis_id = analysis_id)
+  result <- get_reactome_analysis_result(analysis_id = analysis_id, reactome_url = reactome_url)
 
   return(result)
 }
