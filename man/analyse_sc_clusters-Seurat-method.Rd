@@ -13,7 +13,7 @@
   report_email = NULL,
   verbose = FALSE,
   assay = "RNA",
-  slot = "counts",
+  layer = "counts",
   ...
 )
 }
@@ -39,7 +39,7 @@ are send to the supplied e-mail address.}
 
 \item{assay}{By default, the "RNA" assay is used, which contains the original read counts.}
 
-\item{slot}{The slot in the Seurat object to use. Default and recommended approach is to use the raw counts.}
+\item{layer}{The layer in the Seurat object to use. Default and recommended approach is to use the raw counts.}
 
 \item{...}{Parameters passed to the specific implementation. Detailed documentations
 can be found there.}

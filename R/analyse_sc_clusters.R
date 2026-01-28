@@ -52,7 +52,7 @@ setGeneric("analyse_sc_clusters", function(object, use_interactors = TRUE,
 #' 
 #' @param object The \code{Seurat} object containing the single cell RNA-sequencing data.
 #' @param assay By default, the "RNA" assay is used, which contains the original read counts.
-#' @param slot The slot in the Seurat object to use. Default and recommended approach is to use the raw counts.
+#' @param layer The layer in the Seurat object to use. Default and recommended approach is to use the raw counts.
 setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_interactors = TRUE, 
                                                                   include_disease_pathways = FALSE,  
                                                                   create_reactome_visualization = FALSE,
@@ -60,14 +60,14 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
                                                                   report_email = NULL,
                                                                   verbose = FALSE, 
                                                                   assay = "RNA",
-                                                                  slot = "counts", ...) {
+                                                                  layer = "counts", ...) {
   # make sure the assay exists
   if (!assay %in% Seurat::Assays(object)) {
     stop("Error: Assay '", assay, "' does not exist in passed Seurat object.", call. = FALSE)
   }
   
   # get the data
-  raw_data <- Seurat::GetAssayData(object, assay = assay, slot = slot)
+  raw_data <- Seurat::GetAssayData(object, assay = assay, layer = layer)
   
   # get the identis
   cell_ids <- as.character( Seurat::Idents(object) )
