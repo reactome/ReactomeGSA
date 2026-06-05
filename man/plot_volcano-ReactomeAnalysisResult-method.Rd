@@ -34,15 +34,15 @@ plot_obj <- plot_volcano(griss_melanoma_result)
 # display the plot using `print(plot_obj)`
 }
 \seealso{
-Other ReactomeAnalysisResult functions: 
-\code{\link{get_result}()},
+Other ReactomeAnalysisResult functions:
+\code{\link[=get_result]{get_result()}},
 \code{\link{names,ReactomeAnalysisResult-method}},
-\code{\link{open_reactome}()},
-\code{\link{pathways}()},
-\code{\link{plot_correlations}()},
-\code{\link{plot_gsva_heatmap}()},
-\code{\link{plot_gsva_pathway}()},
-\code{\link{plot_heatmap}()},
-\code{\link{reactome_links}()},
-\code{\link{result_types}()}
+\code{\link[=open_reactome]{open_reactome()}},
+\code{\link[=pathways]{pathways()}},
+\code{\link[=plot_correlations]{plot_correlations()}},
+\code{\link[=plot_gsva_heatmap]{plot_gsva_heatmap()}},
+\code{\link[=plot_gsva_pathway]{plot_gsva_pathway()}},
+\code{\link[=plot_heatmap]{plot_heatmap()}},
+\code{\link[=reactome_links]{reactome_links()}},
+\code{\link[=result_types]{result_types()}}
 }

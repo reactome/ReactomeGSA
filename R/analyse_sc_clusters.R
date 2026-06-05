@@ -123,7 +123,7 @@ setMethod("analyse_sc_clusters", c("object" = "Seurat"), function(object, use_in
 #' @inherit analyse_sc_clusters
 #' 
 #' @param object The \code{SingleCellExperiment} object containing the single cell RNA-sequencing data.
-#' @param ... Parameters passed to scater's \code{aggregateAcrossCells} function.
+#' @param ... Parameters passed to scrapper's \code{aggregateAcrossCells} function.
 setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(object, use_interactors = TRUE, 
                                                                   include_disease_pathways = FALSE,  
                                                                   create_reactome_visualization = FALSE,
@@ -131,9 +131,9 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
                                                                   report_email = NULL,
                                                                   verbose = FALSE,
                                                                   cell_ids, ...) {
-  # make sure scater is available
-  if (!requireNamespace("scater")) {
-    stop("Error: This function requires 'scater'. Please install it using BiocManager::install(\"scater\")")
+  # make sure scrapper is available
+  if (!requireNamespace("scrapper")) {
+    stop("Error: This function requires 'scrapper'. Please install it using BiocManager::install(\"scrapper\")")
   }
   
   # check if cell_ids specifies a metadata field
@@ -149,14 +149,14 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
   }
   
   # create the parameters for the AverageExpression call
-  scater_params <- list(...)
-  scater_params[["x"]] <- object
-  scater_params[["ids"]] = cell_ids
+  scrapper_params <- list(...)
+  scrapper_params[["x"]] <- counts(object)
+  scrapper_params[["factors"]] = list(grouping = cell_ids)
   
   # get the count data
   if (verbose) message("Calculating average expression per cluster...")
-  agg_counts <- do.call(scater::aggregateAcrossCells, scater_params)
-  counts <- SingleCellExperiment::counts(agg_counts)
+  agg_counts <- do.call(scrapper::aggregateAcrossCells, scrapper_params)
+  counts <- agg_counts$sums
   
   # create the ReactomeGSA request
   request <- ReactomeGSA::ReactomeAnalysisRequest(method = "ssGSEA")
@@ -173,10 +173,11 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
   
   # create the request object
   df_counts <- data.frame(counts)
-  cell_groups <- colnames(df_counts)
+  cell_groups <- agg_counts$combinations$grouping
+  colnames(df_counts) <- cell_groups
   
   request <- ReactomeGSA::add_dataset(request, expression_values = df_counts, 
-                                      name = "Seurat", type = "rnaseq_counts", 
+                                      name = "SCE", type = "rnaseq_counts", 
                                       comparison_factor = "Cluster", comparison_group_1 = unique(cell_groups)[1], comparison_group_2 = unique(cell_groups)[2], 
                                       sample_data = data.frame(row.names = cell_groups, Cluster = cell_groups))
   

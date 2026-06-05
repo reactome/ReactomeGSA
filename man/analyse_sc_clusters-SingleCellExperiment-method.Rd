@@ -39,7 +39,7 @@ are send to the supplied e-mail address.}
 \item{cell_ids}{A factor specifying the group to which each cell belongs. For example, \code{object$cluster}. 
 Alternatively, a string specifying the metada field's name may be passed.}
 
-\item{...}{Parameters passed to scater's \code{aggregateAcrossCells} function.}
+\item{...}{Parameters passed to scrapper's \code{aggregateAcrossCells} function.}
 }
 \value{
 A \code{\link{ReactomeAnalysisResult}} object.

@@ -62,8 +62,8 @@ get_reactome_methods()
 get_reactome_methods(print_details = TRUE, method = "PADOG")
 }
 \seealso{
-Other Reactome Service functions: 
-\code{\link{get_reactome_data_types}()}
+Other Reactome Service functions:
+\code{\link[=get_reactome_data_types]{get_reactome_data_types()}}
 }
 \author{
 Johannes Griss

@@ -73,7 +73,7 @@ my_request <- add_dataset(request = my_request,
                           additional_factors = c("cell.type", "patient.id"))
 }
 \seealso{
-Other add_dataset methods: 
+Other add_dataset methods:
 \code{\link{add_dataset,ReactomeAnalysisRequest,DGEList-method}},
 \code{\link{add_dataset,ReactomeAnalysisRequest,EList-method}},
 \code{\link{add_dataset,ReactomeAnalysisRequest,ExpressionSet-method}},

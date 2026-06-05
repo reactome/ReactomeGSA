@@ -35,8 +35,8 @@ available_types$id
 get_reactome_data_types()
 }
 \seealso{
-Other Reactome Service functions: 
-\code{\link{get_reactome_methods}()}
+Other Reactome Service functions:
+\code{\link[=get_reactome_methods]{get_reactome_methods()}}
 }
 \author{
 Johannes Griss

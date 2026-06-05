@@ -38,15 +38,15 @@ prot_fc <- get_result(griss_melanoma_result, type = "fold_changes", name = "prot
 head(prot_fc)
 }
 \seealso{
-Other ReactomeAnalysisResult functions: 
+Other ReactomeAnalysisResult functions:
 \code{\link{names,ReactomeAnalysisResult-method}},
-\code{\link{open_reactome}()},
-\code{\link{pathways}()},
-\code{\link{plot_correlations}()},
-\code{\link{plot_gsva_heatmap}()},
-\code{\link{plot_gsva_pathway}()},
-\code{\link{plot_heatmap}()},
-\code{\link{plot_volcano}()},
-\code{\link{reactome_links}()},
-\code{\link{result_types}()}
+\code{\link[=open_reactome]{open_reactome()}},
+\code{\link[=pathways]{pathways()}},
+\code{\link[=plot_correlations]{plot_correlations()}},
+\code{\link[=plot_gsva_heatmap]{plot_gsva_heatmap()}},
+\code{\link[=plot_gsva_pathway]{plot_gsva_pathway()}},
+\code{\link[=plot_heatmap]{plot_heatmap()}},
+\code{\link[=plot_volcano]{plot_volcano()}},
+\code{\link[=reactome_links]{reactome_links()}},
+\code{\link[=result_types]{result_types()}}
 }
