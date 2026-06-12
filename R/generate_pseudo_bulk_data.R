@@ -183,9 +183,6 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
   
 })
 
-
-
-
 #' split SCE Object by variable
 #' @param sce_object        The SingleCellExperiment object to analyse.
 #' @param group_by      entry in metadata table, based on these cluster annotation pseudo bulk is performed
@@ -193,8 +190,8 @@ setMethod("generate_pseudo_bulk_data", c("object" = "SingleCellExperiment"), fun
 #' 
 #' @returns             returns pseudo bulk generated data
 split_variable_sce <- function(sce_object, group_by, k_variable){
+  aggregated_object <- scrapper::aggregateAcrossCells.se(sce_object, factors = SummarizedExperiment::colData(sce_object)[,c(group_by, k_variable)])
   
-  aggregated_object <- scuttle::aggregateAcrossCells(sce_object, ids=SummarizedExperiment::colData(sce_object)[,c(group_by, k_variable)])
   assay_data_aggregated <- as.data.frame(SummarizedExperiment::assay(aggregated_object))
   meta_data_aggregated <- SummarizedExperiment::colData(aggregated_object)[,c(group_by,k_variable)]
   
@@ -223,7 +220,7 @@ split_random_sce <- function(sce_object, group_by, k_variable){
   random_data <- sample(1:k_variable, num_cells, replace = TRUE)
   SummarizedExperiment::colData(sce_object)$random_column <- random_data
   
-  aggregated_counts <- scuttle::aggregateAcrossCells(sce_object, ids=SummarizedExperiment::colData(sce_object)[,c(group_by, "random_column")])
+  aggregated_counts <- scrapper::aggregateAcrossCells.se(sce_object, factors = SummarizedExperiment::colData(sce_object)[,c(group_by, "random_column")])
   
   meta_data_aggregated <- SummarizedExperiment::colData(aggregated_counts)[,c(group_by,"random_column")]
   aggregated_counts <- as.data.frame(SummarizedExperiment::assay(aggregated_counts))
@@ -273,8 +270,8 @@ split_subclustering_sce <- function(sce_object, group_by, resolution, subcluster
   )
   
   
-  aggregated_counts_subcluster_ref <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_ref]], id=SummarizedExperiment::colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
-  aggregated_counts_subcluster_comp <- scuttle::aggregateAcrossCells(subclusters@listData[[subcluster_comp]], id=SummarizedExperiment::colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_ref <- scrapper::aggregateAcrossCells.se(subclusters@listData[[subcluster_ref]], factors=SummarizedExperiment::colData(subclusters@listData[[subcluster_ref]])[,c(group_by, "subcluster")])
+  aggregated_counts_subcluster_comp <- scrapper::aggregateAcrossCells.se(subclusters@listData[[subcluster_comp]], factors=SummarizedExperiment::colData(subclusters@listData[[subcluster_comp]])[,c(group_by, "subcluster")])
   
   
   assay_data_ref <- as.data.frame(SummarizedExperiment::assay(aggregated_counts_subcluster_ref))

@@ -150,7 +150,7 @@ setMethod("analyse_sc_clusters", c("object" = "SingleCellExperiment"), function(
   
   # create the parameters for the AverageExpression call
   scrapper_params <- list(...)
-  scrapper_params[["x"]] <- counts(object)
+  scrapper_params[["x"]] <- SingleCellExperiment::counts(object)
   scrapper_params[["factors"]] = list(grouping = cell_ids)
   
   # get the count data
